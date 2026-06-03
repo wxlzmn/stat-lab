@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>📊</text></svg>">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>错题本 - Stat-Lab</title>
+  <link rel="stylesheet" href="../shared/css/variables-warm.css">
+  <link rel="stylesheet" href="../shared/css/variables-academic.css">
+  <link rel="stylesheet" href="../shared/css/base.css">
+  <link rel="stylesheet" href="../shared/css/components.css">
+  <link rel="stylesheet" href="../shared/css/pages.css">
+  <link rel="stylesheet" href="../shared/css/responsive.css">
+</head>
+<body>
+
+  <main style="max-width:800px;margin:0 auto;padding:24px;">
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:28px;flex-wrap:wrap;gap:12px;">
+      <h2 style="font-family:var(--font-display);color:var(--text-primary);font-size:1.5rem;margin:0;">📝 错题本</h2>
+      <button class="btn" onclick="clearAllErrors()" style="font-size:0.8rem;">🗑 清空全部错题</button>
+    </div>
+
+    <div style="margin-bottom:20px;">
+      <label for="subject-filter" style="font-size:0.82rem;font-weight:600;color:var(--text-primary);margin-right:8px;">📂 筛选学科：</label>
+      <select id="subject-filter" class="btn" onchange="renderErrors()" style="font-size:0.85rem;padding:6px 12px;">
+        <option value="">全部学科</option>
+      </select>
+    </div>
+
+    <div id="error-list" class="error-list"></div>
+
+    <div style="text-align:center;margin-top:32px;">
+      <a href="index.html" class="btn">🏠 返回首页</a>
+    </div>
+  </main>
+
+  <script src="../shared/js/storage.js"></script>
+  <script src="../shared/js/router.js"></script>
+  <script>
+    injectNavbar('errors');
+
+    var TYPE_LABELS = {
+      'single': '单选题',
+      'multi': '多选题',
+      'truefalse': '判断题',
+      'fill': '填空题'
+    };
+
+    // Populate subject filter dropdown from SUBJECT_REGISTRY
+    function populateSubjectFilter() {
+      var select = document.getElementById('subject-filter');
+      for (var i = 0; i < SUBJECT_REGISTRY.length; i++) {
+        var opt = document.createElement('option');
+        opt.value = SUBJECT_REGISTRY[i].id;
+        opt.textContent = SUBJECT_REGISTRY[i].icon + ' ' + SUBJECT_REGISTRY[i].name;
+        select.appendChild(opt);
+      }
+    }
+
+    function renderErrors() {
+      var selectedSubject = document.getElementById('subject-filter').value;
+      var subjectsToRender = [];
+      if (selectedSubject) {
+        for (var i = 0; i < SUBJECT_REGISTRY.length; i++) {
+          if (SUBJECT_REGISTRY[i].id === selectedSubject) {
+            subjectsToRender.push(SUBJECT_REGISTRY[i]);
+            break;
+          }
+        }
+      } else {
+        subjectsToRender = SUBJECT_REGISTRY.slice();
+      }
+
+      var container = document.getElementById('error-list');
+      var totalErrors = 0;
+      var chapterCount = 0;
+
+      // First pass: count totals
+      for (var s = 0; s < subjectsToRender.length; s++) {
+        var subj = subjectsToRender[s];
+        for (var c = 0; c < subj.chapters.length; c++) {
+          var chapErrs = EcoStore.getErrors(subj.id, subj.chapters[c].id);
+          if (chapErrs.length > 0) {
+            totalErrors += chapErrs.length;
+            chapterCount++;
+          }
+        }
+      }
+
+      if (totalErrors === 0) {
+        container.innerHTML =
+          '<div style="text-align:center;padding:64px 24px;color:var(--text-secondary);">' +
+            '<div style="font-size:4rem;margin-bottom:16px;">🎉</div>' +
+            '<p style="font-size:1.1rem;margin-bottom:8px;">暂无错题，继续保持！</p>' +
+            '<p style="font-size:0.85rem;margin-bottom:20px;">去做几道练习题，答错的题目会自动收集到这里</p>' +
+            '<a href="index.html" class="btn btn-primary">去练习 →</a>' +
+          '</div>';
+        return;
+      }
+
+      var summaryHtml = '<div style="margin-bottom:20px;font-size:0.9rem;color:var(--text-secondary);">' +
+        '共 <strong style="color:var(--warning);">' + totalErrors + '</strong> 道错题，分布在 ' + chapterCount + ' 个章节' +
+        '</div>';
+
+      var chaptersHtml = '';
+      for (var s2 = 0; s2 < subjectsToRender.length; s2++) {
+        var subj2 = subjectsToRender[s2];
+        for (var c2 = 0; c2 < subj2.chapters.length; c2++) {
+          var ch = subj2.chapters[c2];
+          var chapterErrors = EcoStore.getErrors(subj2.id, ch.id);
+          if (chapterErrors.length === 0) continue;
+
+          chaptersHtml +=
+            '<div class="error-chapter" style="margin-bottom:24px;">' +
+              '<div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px;margin-bottom:12px;">' +
+                '<h3 style="margin:0;font-size:1rem;">' +
+                  subj2.icon + ' ' + ch.title +
+                  ' <span class="tag" style="margin-left:6px;font-size:0.75rem;">' + chapterErrors.length + '题</span>' +
+                '</h3>' +
+                '<div style="display:flex;gap:6px;">' +
+                  '<button class="btn" onclick="clearChapterErrors(\'' + subj2.id + '\', \'' + ch.id + '\')" style="font-size:0.75rem;padding:4px 12px;">清空本章</button>' +
+                  '<a href="../subjects/' + subj2.id + '/quiz/' + ch.id + '.html" class="btn btn-primary" style="font-size:0.75rem;padding:4px 12px;">重新练习</a>' +
+                '</div>' +
+              '</div>' +
+              chapterErrors.map(function(q, i) { return renderErrorItem(subj2.id, ch.id, q, i); }).join('') +
+            '</div>';
+        }
+      }
+
+      container.innerHTML = summaryHtml + chaptersHtml;
+    }
+
+    function renderErrorItem(subjectId, chapterId, q, index) {
+      var answerDisplay = '';
+      if (q.type === 'fill') {
+        answerDisplay =
+          '<div style="margin-top:8px;font-size:0.85rem;">' +
+            '<span style="color:#dc2626;">你的答案：<strong>' + (q.userAnswer || '（未作答）') + '</strong></span>' +
+            '&nbsp;|&nbsp;' +
+            '<span style="color:#16a34a;">正确答案：<strong>' + q.answer + '</strong></span>' +
+          '</div>';
+      } else if (q.options) {
+        answerDisplay =
+          '<div style="margin-top:8px;font-size:0.85rem;">' +
+            q.options.map(function(opt, oi) {
+              var isCorrect = Array.isArray(q.answer) ? q.answer.indexOf(oi) !== -1 : q.answer === oi;
+              var isUserWrong = Array.isArray(q.userAnswer) ? q.userAnswer.indexOf(oi) !== -1 : q.userAnswer === oi;
+              var style = 'padding:2px 0;';
+              if (isCorrect) style += 'color:#16a34a;';
+              if (isUserWrong && !isCorrect) style += 'color:#dc2626;text-decoration:line-through;';
+              var marker = '';
+              if (isCorrect) marker = ' ✓';
+              if (isUserWrong && !isCorrect) marker = ' ✗';
+              return '<div style="' + style + '">' + opt + marker + '</div>';
+            }).join('') +
+          '</div>';
+      }
+
+      return '' +
+        '<div class="error-item" style="background:var(--bg-card);border:1px dashed #fde68a;border-radius:8px;padding:14px;margin-bottom:10px;box-shadow:var(--shadow);">' +
+          '<div style="display:flex;align-items:flex-start;gap:8px;margin-bottom:6px;">' +
+            '<span class="tag" style="flex-shrink:0;">' + (TYPE_LABELS[q.type] || q.type) + '</span>' +
+            '<span style="font-weight:600;color:var(--text-primary);">' + q.question + '</span>' +
+          '</div>' +
+          answerDisplay +
+          '<div style="margin-top:10px;padding-top:8px;border-top:1px dashed #fde68a;font-size:0.84rem;color:var(--text-body);line-height:1.6;">' +
+            '<strong style="color:var(--accent);">💡 解析：</strong>' + q.explanation +
+          '</div>' +
+          '<button class="retry-btn" onclick="removeSingleError(\'' + subjectId + '\', \'' + chapterId + '\', \'' + q.id + '\')" style="margin-top:8px;background:#f0fdf4;color:#16a34a;border:1px solid #bbf7d0;border-radius:6px;padding:4px 12px;cursor:pointer;font-size:0.8rem;">' +
+            '✅ 已掌握，移出错题本' +
+          '</button>' +
+        '</div>';
+    }
+
+    function clearChapterErrors(subjectId, chapterId) {
+      var chName = chapterId;
+      for (var i = 0; i < SUBJECT_REGISTRY.length; i++) {
+        for (var c = 0; c < SUBJECT_REGISTRY[i].chapters.length; c++) {
+          if (SUBJECT_REGISTRY[i].id === subjectId && SUBJECT_REGISTRY[i].chapters[c].id === chapterId) {
+            chName = SUBJECT_REGISTRY[i].chapters[c].title;
+            break;
+          }
+        }
+      }
+      if (confirm('确定清空「' + chName + '」的所有错题？')) {
+        EcoStore.clearErrors(subjectId, chapterId);
+        renderErrors();
+      }
+    }
+
+    function clearAllErrors() {
+      if (confirm('确定清空全部错题？此操作不可恢复。')) {
+        for (var i = 0; i < SUBJECT_REGISTRY.length; i++) {
+          EcoStore.clearErrors(SUBJECT_REGISTRY[i].id);
+        }
+        renderErrors();
+      }
+    }
+
+    function removeSingleError(subjectId, chapterId, questionId) {
+      EcoStore.removeError(subjectId, chapterId, questionId);
+      renderErrors();
+    }
+
+    // Initial setup
+    populateSubjectFilter();
+    renderErrors();
+  </script>
+</body>
+</html>

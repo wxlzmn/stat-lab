@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>实验 - Stat-Lab</title>
+<link rel="stylesheet" href="../../../shared/css/variables-warm.css">
+<link rel="stylesheet" href="../../../shared/css/variables-academic.css">
+<link rel="stylesheet" href="../../../shared/css/base.css">
+<link rel="stylesheet" href="../../../shared/css/components.css">
+<link rel="stylesheet" href="../../../shared/css/pages.css">
+<link rel="stylesheet" href="../../../shared/css/responsive.css">
+</head>
+<body>
+<main>
+  <div style="text-align:center;padding:24px 20px 8px;">
+    <h1 style="color:#1e3a8a;">Code Lab</h1>
+    <p style="color:var(--text-muted);">Interactive algorithm experiments</p>
+  </div>
+  <div id="lab-grid" class="home-grid"></div>
+</main>
+<script src="../../shared/js/storage.js"></script>
+<script src="../../shared/js/router.js"></script>
+<script>
+(function() {
+  var labs = [
+    { id: 's5-optimize', title: 'Gradient Descent', icon: '📉', desc: 'Interactive GD path visualization. Adjust learning rate, starting point, and function type.' },
+    { id: 's6-supervised', title: 'Linear Regression', icon: '🎯', desc: 'OLS, Ridge, and Lasso regression with real-time coefficient updates.' },
+    { id: 's7-tree', title: 'Decision Tree', icon: '🌳', desc: 'Build and visualize decision boundaries step by step.' }
+  ];
+  var subject = SUBJECT_REGISTRY[1];
+
+  var cardsHtml = '';
+  for (var i = 0; i < labs.length; i++) {
+    var lab = labs[i];
+    cardsHtml += '' +
+      '<div class="module-card">' +
+        '<span class="card-icon">' + lab.icon + '</span>' +
+        '<h3>' + lab.title + '</h3>' +
+        '<p>' + lab.desc + '</p>' +
+        '<div class="card-links">' +
+          '<a href="' + lab.id + '.html" class="btn btn-primary">Open Lab</a>' +
+          '<a href="../knowledge/' + lab.id + '.html" class="btn">Knowledge</a>' +
+        '</div>' +
+      '</div>';
+  }
+  document.getElementById('lab-grid').innerHTML = cardsHtml;
+  injectNavbar('lab', 'stat-comp');
+})();
+</script>
+</body>
+</html>

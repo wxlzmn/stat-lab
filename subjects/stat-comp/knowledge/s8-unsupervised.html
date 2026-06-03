@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>知识点 - Stat-Lab</title>
+<link rel="stylesheet" href="../../../shared/css/variables-warm.css">
+<link rel="stylesheet" href="../../../shared/css/variables-academic.css">
+<link rel="stylesheet" href="../../../shared/css/base.css">
+<link rel="stylesheet" href="../../../shared/css/components.css">
+<link rel="stylesheet" href="../../../shared/css/pages.css">
+<link rel="stylesheet" href="../../../shared/css/responsive.css">
+  <link rel="stylesheet" href="../../../shared/vendor/katex.min.css">
+</head>
+<body>
+<main>
+  <div class="knowledge-layout">
+    <aside class="sidebar" id="toc-sidebar"></aside>
+    <div class="content-area" id="content-area"></div>
+  </div>
+</main>
+<script src="../../../shared/js/storage.js"></script>
+<script src="../data/knowledge.js"></script>
+<script src="../../../shared/js/router.js"></script>
+<script src="../../../shared/vendor/katex.min.js"></script>
+<script src="../../../shared/vendor/auto-render.min.js"></script>
+<script>
+var CHAPTER_ID = 's8-unsupervised';
+(function() {
+  injectNavbar('knowledge', 'stat-comp', CHAPTER_ID);
+  renderKnowledgePage('stat-comp', CHAPTER_ID);
+})();
+</script>
+</body>
+</html>

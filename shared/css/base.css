@@ -1,0 +1,19 @@
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{font-size:16px;-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale;scroll-behavior:smooth}
+body{font-family:var(--font-body);font-size:1rem;color:var(--text-body);background:var(--bg-page);line-height:1.85;min-height:100vh;padding-top:var(--navbar-height);transition:background var(--transition-slow),color var(--transition-slow)}
+h1,h2,h3,h4,h5,h6{font-family:var(--font-display);color:var(--text-primary);line-height:1.45}
+h1{font-size:1.85rem;margin-bottom:.5rem}h2{font-size:1.45rem;margin-bottom:.4rem}h3{font-size:1.2rem;margin-bottom:.3rem}h4{font-size:1.05rem}
+a{color:var(--text-primary);text-decoration:none;transition:color var(--transition-fast)}a:hover{color:var(--accent)}
+p{margin-bottom:.85rem}ul,ol{padding-left:1.5rem;margin-bottom:.85rem}li{margin-bottom:.25rem}img{max-width:100%;height:auto}
+a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible,.option-item:focus-visible,.toc-item:focus-visible,.retry-btn:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
+code{font-family:var(--font-mono);font-size:.88em;background:var(--accent-soft);padding:2px 7px;border-radius:4px;color:var(--text-primary)}
+pre{font-family:var(--font-mono);font-size:.88em;background:#fafaf9;border:1px var(--border-style) var(--border-dashed);border-radius:var(--radius);padding:16px 20px;overflow-x:auto;margin-bottom:16px;line-height:1.7}
+@keyframes fadeSlideIn{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
+main,.knowledge-layout,.quiz-container,.calc-container,.error-list{animation:fadeSlideIn .4s ease-out both}
+.breadcrumb{display:flex;align-items:center;gap:6px;flex-wrap:wrap;padding:14px 0 6px;font-size:.82rem;color:var(--text-muted)}
+.breadcrumb a{color:var(--text-muted)}.breadcrumb a:hover{color:var(--accent)}
+.breadcrumb .sep{color:var(--border);user-select:none}.breadcrumb .current{color:var(--text-primary);font-weight:600}
+
+/* === Theme transition: smooth color/bg switch === */
+body,main,.navbar,.sidebar,.content-block,.module-card,.subject-card,.question-card,.calc-card,.stat-card,.error-item,.search-result-item,.glossary-card,.flashcard,.highlight-box,.formula-block,.code-block,.option-item,.comparison-table td,.comparison-table th,.calc-result{transition:background-color .35s ease,border-color .35s ease,color .3s ease,box-shadow .35s ease}
+.navbar .nav-links a,.sidebar .toc-item,.btn,.btn-primary,.retry-btn,.tag,.subject-selector{transition:background-color .25s ease,color .25s ease,border-color .35s ease}

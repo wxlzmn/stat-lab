@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>测验 - Stat-Lab</title>
+<link rel="stylesheet" href="../../../shared/css/variables-warm.css">
+<link rel="stylesheet" href="../../../shared/css/variables-academic.css">
+<link rel="stylesheet" href="../../../shared/css/base.css">
+<link rel="stylesheet" href="../../../shared/css/components.css">
+<link rel="stylesheet" href="../../../shared/css/pages.css">
+<link rel="stylesheet" href="../../../shared/css/responsive.css">
+  <link rel="stylesheet" href="../../../shared/vendor/katex.min.css">
+</head>
+<body>
+<main><div id="quiz-container" class="quiz-container"></div></main>
+<script src="../../../shared/js/storage.js"></script>
+<script src="../../../shared/js/router.js"></script>
+<script src="../data/quiz.js"></script>
+<script src="../../../shared/vendor/katex.min.js"></script>
+<script src="../../../shared/vendor/auto-render.min.js"></script>
+<script src="../../../shared/js/quiz-engine.js"></script>
+<script>
+var CHAPTER_ID = 's6-supervised';
+(function() {
+  injectNavbar('quiz', 'stat-comp', CHAPTER_ID);
+  var questions = window.STATCOMP_QUIZ ? (window.STATCOMP_QUIZ[CHAPTER_ID] || []) : [];
+  QuizEngine.init('stat-comp', CHAPTER_ID, questions);
+})();
+</script>
+</body>
+</html>

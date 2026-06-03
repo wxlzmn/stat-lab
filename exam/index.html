@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>📝</text></svg>">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>模拟考试 - Stat-Lab</title>
+  <link rel="stylesheet" href="../shared/css/variables-warm.css">
+  <link rel="stylesheet" href="../shared/css/variables-academic.css">
+  <link rel="stylesheet" href="../shared/css/base.css">
+  <link rel="stylesheet" href="../shared/css/components.css">
+  <link rel="stylesheet" href="../shared/css/pages.css">
+  <link rel="stylesheet" href="../shared/css/responsive.css">
+  <style>
+    .config-panel { background:var(--bg-card); border:2px dashed var(--border-dashed); border-radius:var(--radius); padding:20px; margin-bottom:20px; box-shadow:var(--shadow); }
+    .config-panel label { display:inline-block; margin-right:12px; font-size:0.85rem; cursor:pointer; }
+    .config-panel input[type="checkbox"] { margin-right:4px; }
+    .config-panel select { padding:6px 12px; border:2px solid #fde68a; border-radius:6px; background:#fffbeb; font-size:0.9rem; color:var(--text-primary); }
+  </style>
+</head>
+<body>
+
+  <main style="max-width:900px;margin:0 auto;padding:24px;">
+    <div style="text-align:center;margin-bottom:20px;">
+      <h2 style="font-family:var(--font-display);font-size:1.5rem;color:var(--text-primary);">📝 模拟考试</h2>
+    </div>
+
+    <div class="config-panel" id="config-panel">
+      <div style="margin-bottom:12px;">
+        <strong>选择学科：</strong>
+        <select id="subject-select" onchange="onSubjectChange()" style="margin-left:8px;"></select>
+      </div>
+      <div style="margin-bottom:12px;"><strong>选择章节：</strong></div>
+      <div id="chapter-checks"></div>
+      <div style="margin-top:12px;"><strong>选择题型：</strong></div>
+      <div id="type-checks"></div>
+      <div style="margin-top:12px;">
+        <label>题目数量：<input type="number" id="q-count" value="30" min="5" max="100" style="width:70px;padding:4px 8px;border:2px solid #fde68a;border-radius:4px;"></label>
+        <button class="btn btn-primary" onclick="startExam()" style="margin-left:12px;">生成试卷 📝</button>
+      </div>
+    </div>
+
+    <div id="exam-container"></div>
+  </main>
+
+  <script src="../shared/js/storage.js"></script>
+  <script src="../shared/js/router.js"></script>
+  <script src="../shared/js/quiz-engine.js"></script>
+  <script src="../subjects/econstats/data/quiz.js"></script>
+  <script src="../subjects/stat-comp/data/quiz.js"></script>
+  <script src="../shared/js/exam-engine.js"></script>
+  <script>
+    var types = [
+      { id: 'single', label: '单选题' },
+      { id: 'multi', label: '多选题' },
+      { id: 'truefalse', label: '判断题' },
+      { id: 'fill', label: '填空题' },
+      { id: 'short', label: '简答题' },
+      { id: 'calc', label: '计算题' }
+    ];
+
+    var currentSubjectId = 'econstats';
+
+    injectNavbar('exam');
+
+    function getSubjectChapters(subjectId) {
+      if (typeof SUBJECT_REGISTRY === 'undefined') return [];
+      for (var i = 0; i < SUBJECT_REGISTRY.length; i++) {
+        if (SUBJECT_REGISTRY[i].id === subjectId) return SUBJECT_REGISTRY[i].chapters;
+      }
+      return [];
+    }
+
+    function renderSubjectSelector() {
+      if (typeof SUBJECT_REGISTRY === 'undefined') return;
+      var select = document.getElementById('subject-select');
+      var html = '';
+      for (var i = 0; i < SUBJECT_REGISTRY.length; i++) {
+        var s = SUBJECT_REGISTRY[i];
+        html += '<option value="' + s.id + '"' + (s.id === currentSubjectId ? ' selected' : '') + '>' + s.icon + ' ' + s.name + '</option>';
+      }
+      select.innerHTML = html;
+    }
+
+    function renderConfig() {
+      var chapters = getSubjectChapters(currentSubjectId);
+      document.getElementById('chapter-checks').innerHTML = chapters.map(function(ch) {
+        return '<label><input type="checkbox" value="' + ch.id + '" checked> ' + ch.icon + ' ' + ch.title + '</label>';
+      }).join('');
+      document.getElementById('type-checks').innerHTML = types.map(function(t) {
+        return '<label><input type="checkbox" value="' + t.id + '" checked> ' + t.label + '</label>';
+      }).join('');
+    }
+
+    function onSubjectChange() {
+      currentSubjectId = document.getElementById('subject-select').value;
+      renderConfig();
+    }
+
+    function startExam() {
+      var selectedChapters = [];
+      document.querySelectorAll('#chapter-checks input:checked').forEach(function(cb) {
+        selectedChapters.push(cb.value);
+      });
+      var selectedTypes = [];
+      document.querySelectorAll('#type-checks input:checked').forEach(function(cb) {
+        selectedTypes.push(cb.value);
+      });
+      var count = parseInt(document.getElementById('q-count').value) || 30;
+      if (selectedChapters.length === 0) { alert('请至少选择一个章节'); return; }
+      if (selectedTypes.length === 0) { alert('请至少选择一种题型'); return; }
+      document.getElementById('config-panel').style.display = 'none';
+      ExamEngine.init({
+        subjectId: currentSubjectId,
+        chapters: selectedChapters,
+        types: selectedTypes,
+        questionCount: count
+      });
+    }
+
+    renderSubjectSelector();
+    renderConfig();
+  </script>
+</body>
+</html>

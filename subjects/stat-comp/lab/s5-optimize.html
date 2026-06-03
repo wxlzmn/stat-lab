@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>梯度下降实验 - Stat-Lab</title>
+<link rel="stylesheet" href="../../../shared/css/variables-warm.css">
+<link rel="stylesheet" href="../../../shared/css/variables-academic.css">
+<link rel="stylesheet" href="../../../shared/css/base.css">
+<link rel="stylesheet" href="../../../shared/css/components.css">
+<link rel="stylesheet" href="../../../shared/css/pages.css">
+<link rel="stylesheet" href="../../../shared/css/responsive.css">
+</head>
+<body>
+<main class="lab-container">
+  <div style="text-align:center;padding:12px 0;">
+    <h2 style="color:#1e3a8a;">Gradient Descent Lab</h2>
+    <p style="color:var(--text-muted);font-size:0.9rem;">Interactive visualization of gradient descent optimization</p>
+  </div>
+
+  <div class="lab-layout">
+    <div class="lab-editor" style="flex:0.4;">
+      <div class="lab-editor-header">
+        <span>Parameters</span>
+      </div>
+      <div style="padding:20px;color:#e2e8f0;overflow-y:auto;flex:1;">
+        <div style="margin-bottom:16px;">
+          <label style="display:block;color:#94a3b8;font-size:0.8rem;margin-bottom:4px;">Function Type</label>
+          <select id="func-type" style="width:100%;padding:8px;background:#0f172a;color:#e2e8f0;border:1px solid #334155;border-radius:4px;font-size:0.9rem;">
+            <option value="quadratic">Quadratic: f(x,y) = x² + y²</option>
+            <option value="rosenbrock">Rosenbrock: f(x,y) = (1-x)² + 100(y-x²)²</option>
+          </select>
+        </div>
+        <div style="margin-bottom:16px;">
+          <label style="display:block;color:#94a3b8;font-size:0.8rem;margin-bottom:4px;">Learning Rate: <span id="lr-val">0.1</span></label>
+          <input type="range" id="lr-slider" min="0.01" max="0.5" step="0.01" value="0.1" style="width:100%;accent-color:#3b82f6;">
+        </div>
+        <div style="margin-bottom:16px;">
+          <label style="display:block;color:#94a3b8;font-size:0.8rem;margin-bottom:4px;">Iterations: <span id="iter-val">20</span></label>
+          <input type="range" id="iter-slider" min="5" max="100" step="5" value="20" style="width:100%;accent-color:#3b82f6;">
+        </div>
+        <div style="margin-bottom:16px;">
+          <label style="display:block;color:#94a3b8;font-size:0.8rem;margin-bottom:4px;">Start X: <span id="sx-val">8.0</span></label>
+          <input type="range" id="sx-slider" min="-10" max="10" step="0.5" value="8" style="width:100%;accent-color:#f59e0b;">
+        </div>
+        <div style="margin-bottom:16px;">
+          <label style="display:block;color:#94a3b8;font-size:0.8rem;margin-bottom:4px;">Start Y: <span id="sy-val">8.0</span></label>
+          <input type="range" id="sy-slider" min="-10" max="10" step="0.5" value="8" style="width:100%;accent-color:#f59e0b;">
+        </div>
+        <button id="run-btn" class="lab-run-btn" style="width:100%;padding:12px;margin-top:8px;">Run Gradient Descent</button>
+        <div style="margin-top:16px;font-size:0.8rem;color:#94a3b8;line-height:1.6;">
+          <p><strong>Gradient Descent Algorithm:</strong></p>
+          <p>θ<sub>t+1</sub> = θ<sub>t</sub> - η · ∇f(θ<sub>t</sub>)</p>
+          <p style="margin-top:8px;">Observe how the learning rate η affects convergence. Too large → divergence. Too small → slow convergence.</p>
+        </div>
+      </div>
+    </div>
+    <div class="lab-output" style="flex:0.6;display:flex;align-items:center;justify-content:center;">
+      <canvas id="gd-canvas" width="600" height="500" style="max-width:100%;"></canvas>
+    </div>
+  </div>
+</main>
+
+<script src="../../../shared/js/storage.js"></script>
+<script src="../../../shared/js/router.js"></script>
+<script src="../../../shared/js/viz-gd.js"></script>
+<script>
+(function() {
+  injectNavbar('lab', 'stat-comp', 's5-optimize', 'Optimization Methods');
+
+  var canvas = document.getElementById('gd-canvas');
+  var runBtn = document.getElementById('run-btn');
+
+  function getConfig() {
+    return {
+      function: document.getElementById('func-type').value,
+      learningRate: parseFloat(document.getElementById('lr-slider').value),
+      iterations: parseInt(document.getElementById('iter-slider').value),
+      startX: parseFloat(document.getElementById('sx-slider').value),
+      startY: parseFloat(document.getElementById('sy-slider').value)
+    };
+  }
+
+  function run() {
+    GDVisualizer.init('gd-canvas', getConfig());
+  }
+
+  // Slider value displays
+  document.getElementById('lr-slider').addEventListener('input', function() {
+    document.getElementById('lr-val').textContent = this.value;
+    run();
+  });
+  document.getElementById('iter-slider').addEventListener('input', function() {
+    document.getElementById('iter-val').textContent = this.value;
+    run();
+  });
+  document.getElementById('sx-slider').addEventListener('input', function() {
+    document.getElementById('sx-val').textContent = this.value;
+    run();
+  });
+  document.getElementById('sy-slider').addEventListener('input', function() {
+    document.getElementById('sy-val').textContent = this.value;
+    run();
+  });
+  document.getElementById('func-type').addEventListener('change', run);
+  runBtn.addEventListener('click', run);
+
+  // Initial render
+  setTimeout(run, 300);
+})();
+</script>
+</body>
+</html>

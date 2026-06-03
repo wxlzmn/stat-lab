@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>线性回归实验 - Stat-Lab</title>
+<link rel="stylesheet" href="../../../shared/css/variables-warm.css">
+<link rel="stylesheet" href="../../../shared/css/variables-academic.css">
+<link rel="stylesheet" href="../../../shared/css/base.css">
+<link rel="stylesheet" href="../../../shared/css/components.css">
+<link rel="stylesheet" href="../../../shared/css/pages.css">
+<link rel="stylesheet" href="../../../shared/css/responsive.css">
+</head>
+<body>
+<main class="lab-container">
+  <div style="text-align:center;padding:12px 0;">
+    <h2 style="color:#1e3a8a;">Linear Regression Lab</h2>
+    <p style="color:var(--text-muted);font-size:0.9rem;">OLS, Ridge, and Lasso regression with interactive visualization</p>
+  </div>
+
+  <div class="lab-layout">
+    <div class="lab-editor" style="flex:0.4;">
+      <div class="lab-editor-header">
+        <span>Controls</span>
+      </div>
+      <div style="padding:20px;color:#e2e8f0;overflow-y:auto;flex:1;">
+        <div style="margin-bottom:16px;">
+          <label style="display:block;color:#94a3b8;font-size:0.8rem;margin-bottom:4px;">Regression Type</label>
+          <select id="reg-type" style="width:100%;padding:8px;background:#0f172a;color:#e2e8f0;border:1px solid #334155;border-radius:4px;font-size:0.9rem;">
+            <option value="ols">OLS (Ordinary Least Squares)</option>
+            <option value="ridge">Ridge (L2 Regularization)</option>
+            <option value="lasso">Lasso (L1 Regularization)</option>
+          </select>
+        </div>
+        <div style="margin-bottom:16px;" id="alpha-group">
+          <label style="display:block;color:#94a3b8;font-size:0.8rem;margin-bottom:4px;">Regularization α: <span id="alpha-val">1.0</span></label>
+          <input type="range" id="alpha-slider" min="0.01" max="10" step="0.01" value="1" style="width:100%;accent-color:#3b82f6;">
+        </div>
+        <div style="margin-bottom:16px;">
+          <label style="display:block;color:#94a3b8;font-size:0.8rem;margin-bottom:4px;">Sample Size: <span id="n-val">30</span></label>
+          <input type="range" id="n-slider" min="10" max="100" step="5" value="30" style="width:100%;accent-color:#3b82f6;">
+        </div>
+        <div style="margin-bottom:16px;">
+          <label style="display:block;color:#94a3b8;font-size:0.8rem;margin-bottom:4px;">Noise Level: <span id="noise-val">1.0</span></label>
+          <input type="range" id="noise-slider" min="0.1" max="5" step="0.1" value="1" style="width:100%;accent-color:#3b82f6;">
+        </div>
+        <button id="run-btn" class="lab-run-btn" style="width:100%;padding:12px;margin-top:8px;">Regenerate & Fit</button>
+        <div id="coeff-display" style="margin-top:16px;font-size:0.85rem;color:#e2e8f0;line-height:1.6;">
+          <p style="color:#94a3b8;">Fitted coefficients will appear here...</p>
+        </div>
+      </div>
+    </div>
+    <div class="lab-output" style="flex:0.6;display:flex;align-items:center;justify-content:center;">
+      <canvas id="reg-canvas" width="600" height="500" style="max-width:100%;"></canvas>
+    </div>
+  </div>
+</main>
+
+<script src="../../../shared/js/storage.js"></script>
+<script src="../../../shared/js/router.js"></script>
+<script>
+(function() {
+  injectNavbar('lab', 'stat-comp', 's6-supervised', 'Supervised Learning');
+
+  var canvas = document.getElementById('reg-canvas');
+  var ctx = canvas.getContext('2d');
+  var w = canvas.width, h = canvas.height;
+
+  // Simple RNG
+  function rng(seed) {
+    var s = seed;
+    return function() {
+      s = (s * 1103515245 + 12345) & 0x7fffffff;
+      return (s >> 16) / 32768;
+    };
+  }
+
+  function generateData(n, noise, seed) {
+    var rand = rng(seed);
+    var data = [];
+    var trueSlope = 2.5;
+    var trueIntercept = 1.0;
+    for (var i = 0; i < n; i++) {
+      var x = rand() * 10;
+      var y = trueIntercept + trueSlope * x + (rand() - 0.5) * 2 * noise;
+      data.push({ x: x, y: y });
+    }
+    return data;
+  }
+
+  function olsFit(data) {
+    var n = data.length;
+    var sumX = 0, sumY = 0, sumXY = 0, sumX2 = 0;
+    for (var i = 0; i < n; i++) {
+      sumX += data[i].x;
+      sumY += data[i].y;
+      sumXY += data[i].x * data[i].y;
+      sumX2 += data[i].x * data[i].x;
+    }
+    var slope = (n * sumXY - sumX * sumY) / (n * sumX2 - sumX * sumX);
+    var intercept = (sumY - slope * sumX) / n;
+
+    // R-squared
+    var yMean = sumY / n;
+    var ssTot = 0, ssRes = 0;
+    for (var j = 0; j < n; j++) {
+      var yPred = intercept + slope * data[j].x;
+      ssTot += (data[j].y - yMean) * (data[j].y - yMean);
+      ssRes += (data[j].y - yPred) * (data[j].y - yPred);
+    }
+    var r2 = 1 - ssRes / ssTot;
+
+    return { slope: slope, intercept: intercept, r2: r2 };
+  }
+
+  function ridgeFit(data, alpha) {
+    var n = data.length;
+    var sumX = 0, sumY = 0, sumXY = 0, sumX2 = 0;
+    for (var i = 0; i < n; i++) {
+      sumX += data[i].x;
+      sumY += data[i].y;
+      sumXY += data[i].x * data[i].y;
+      sumX2 += data[i].x * data[i].x;
+    }
+    var slope = (n * sumXY - sumX * sumY) / (n * sumX2 - sumX * sumX + alpha);
+    var intercept = (sumY - slope * sumX) / n;
+    return { slope: slope, intercept: intercept, r2: null };
+  }
+
+  function lassoFit(data, alpha) {
+    // Soft thresholding for simple univariate case
+    var ols = olsFit(data);
+    var slope = ols.slope;
+    if (Math.abs(slope) <= alpha / data.length) slope = 0;
+    else if (slope > 0) slope = slope - alpha / data.length;
+    else slope = slope + alpha / data.length;
+    var n = data.length;
+    var sumX = 0, sumY = 0;
+    for (var i = 0; i < n; i++) { sumX += data[i].x; sumY += data[i].y; }
+    var intercept = (sumY - slope * sumX) / n;
+    return { slope: slope, intercept: intercept, r2: null };
+  }
+
+  function draw(data, slope, intercept, r2, regType) {
+    ctx.clearRect(0, 0, w, h);
+
+    var margin = { left: 60, bottom: 50, top: 20, right: 20 };
+    var pw = w - margin.left - margin.right;
+    var ph = h - margin.top - margin.bottom;
+
+    // Find bounds
+    var xMin = 0, xMax = 10;
+    var yMin = Infinity, yMax = -Infinity;
+    for (var i = 0; i < data.length; i++) {
+      if (data[i].y < yMin) yMin = data[i].y;
+      if (data[i].y > yMax) yMax = data[i].y;
+    }
+    var yPad = (yMax - yMin) * 0.1 + 1;
+    yMin -= yPad; yMax += yPad;
+
+    // Grid
+    ctx.strokeStyle = '#f1f5f9';
+    ctx.lineWidth = 0.5;
+    for (var gx = 0; gx <= 10; gx += 2) {
+      var sx = margin.left + (gx - xMin) / (xMax - xMin) * pw;
+      ctx.beginPath(); ctx.moveTo(sx, margin.top); ctx.lineTo(sx, margin.top + ph); ctx.stroke();
+    }
+    for (var gy = Math.floor(yMin); gy <= Math.ceil(yMax); gy++) {
+      var sy = margin.top + (1 - (gy - yMin) / (yMax - yMin)) * ph;
+      ctx.beginPath(); ctx.moveTo(margin.left, sy); ctx.lineTo(margin.left + pw, sy); ctx.stroke();
+    }
+
+    // Axes
+    ctx.strokeStyle = '#94a3b8';
+    ctx.lineWidth = 1.5;
+    ctx.beginPath();
+    ctx.moveTo(margin.left, margin.top); ctx.lineTo(margin.left, margin.top + ph);
+    ctx.moveTo(margin.left, margin.top + ph); ctx.lineTo(margin.left + pw, margin.top + ph);
+    ctx.stroke();
+
+    // Data points
+    for (var j = 0; j < data.length; j++) {
+      var px = margin.left + (data[j].x - xMin) / (xMax - xMin) * pw;
+      var py = margin.top + (1 - (data[j].y - yMin) / (yMax - yMin)) * ph;
+      ctx.beginPath();
+      ctx.arc(px, py, 4, 0, Math.PI * 2);
+      ctx.fillStyle = '#3b82f6';
+      ctx.fill();
+      ctx.strokeStyle = '#fff';
+      ctx.lineWidth = 1;
+      ctx.stroke();
+    }
+
+    // Regression line
+    var x0 = xMin, x1 = xMax;
+    var y0 = intercept + slope * x0;
+    var y1 = intercept + slope * x1;
+
+    var lx0 = margin.left + (x0 - xMin) / (xMax - xMin) * pw;
+    var ly0 = margin.top + (1 - (y0 - yMin) / (yMax - yMin)) * ph;
+    var lx1 = margin.left + (x1 - xMin) / (xMax - xMin) * pw;
+    var ly1 = margin.top + (1 - (y1 - yMin) / (yMax - yMin)) * ph;
+
+    ctx.beginPath();
+    ctx.moveTo(lx0, ly0);
+    ctx.lineTo(lx1, ly1);
+    ctx.strokeStyle = '#ef4444';
+    ctx.lineWidth = 2.5;
+    ctx.stroke();
+
+    // Equation label
+    var eqLabel = 'y = ' + intercept.toFixed(2) + ' + ' + slope.toFixed(2) + 'x';
+    if (r2 !== null) eqLabel += '  R² = ' + r2.toFixed(3);
+    ctx.fillStyle = '#1e293b';
+    ctx.font = 'bold 12px monospace';
+    ctx.fillText(eqLabel, margin.left, margin.top - 4);
+
+    // Axis labels
+    ctx.fillStyle = '#64748b';
+    ctx.font = '11px sans-serif';
+    ctx.fillText('x', margin.left + pw / 2, margin.top + ph + 35);
+    ctx.save();
+    ctx.translate(14, margin.top + ph / 2);
+    ctx.rotate(-Math.PI / 2);
+    ctx.fillText('y', 0, 0);
+    ctx.restore();
+
+    // Update coefficient display
+    var display = document.getElementById('coeff-display');
+    if (display) {
+      display.innerHTML = '' +
+        '<p><strong>' + regType + ' Results:</strong></p>' +
+        '<p>Intercept β₀ = <strong>' + intercept.toFixed(3) + '</strong></p>' +
+        '<p>Slope β₁ = <strong>' + slope.toFixed(3) + '</strong></p>' +
+        (r2 !== null ? '<p>R² = <strong>' + r2.toFixed(4) + '</strong></p>' : '');
+    }
+
+    // Legend
+    ctx.fillStyle = '#3b82f6';
+    ctx.fillRect(w - 160, margin.top, 10, 10);
+    ctx.fillStyle = '#1e293b';
+    ctx.font = '11px sans-serif';
+    ctx.fillText('Data (n=' + data.length + ')', w - 146, margin.top + 9);
+
+    ctx.strokeStyle = '#ef4444';
+    ctx.lineWidth = 2;
+    ctx.beginPath(); ctx.moveTo(w - 160, margin.top + 20); ctx.lineTo(w - 140, margin.top + 20); ctx.stroke();
+    ctx.fillText(regType + ' fit', w - 134, margin.top + 24);
+  }
+
+  function run() {
+    var regType = document.getElementById('reg-type').value;
+    var alpha = parseFloat(document.getElementById('alpha-slider').value);
+    var n = parseInt(document.getElementById('n-slider').value);
+    var noise = parseFloat(document.getElementById('noise-slider').value);
+
+    // Show/hide alpha for OLS
+    document.getElementById('alpha-group').style.display = regType === 'ols' ? 'none' : 'block';
+
+    var data = generateData(n, noise, n * 7);
+    var result;
+    if (regType === 'ridge') result = ridgeFit(data, alpha);
+    else if (regType === 'lasso') result = lassoFit(data, alpha);
+    else result = olsFit(data);
+
+    var typeNames = { ols: 'OLS', ridge: 'Ridge', lasso: 'Lasso' };
+    draw(data, result.slope, result.intercept, result.r2, typeNames[regType]);
+  }
+
+  document.getElementById('reg-type').addEventListener('change', run);
+  document.getElementById('alpha-slider').addEventListener('input', function() {
+    document.getElementById('alpha-val').textContent = this.value;
+    run();
+  });
+  document.getElementById('n-slider').addEventListener('input', function() {
+    document.getElementById('n-val').textContent = this.value;
+    run();
+  });
+  document.getElementById('noise-slider').addEventListener('input', function() {
+    document.getElementById('noise-val').textContent = this.value;
+    run();
+  });
+  document.getElementById('run-btn').addEventListener('click', run);
+
+  setTimeout(run, 300);
+})();
+</script>
+</body>
+</html>

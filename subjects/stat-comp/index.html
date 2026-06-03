@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>统计计算 - Stat-Lab</title>
+<link rel="stylesheet" href="../../shared/css/variables-warm.css">
+<link rel="stylesheet" href="../../shared/css/variables-academic.css">
+<link rel="stylesheet" href="../../shared/css/base.css">
+<link rel="stylesheet" href="../../shared/css/components.css">
+<link rel="stylesheet" href="../../shared/css/pages.css">
+<link rel="stylesheet" href="../../shared/css/responsive.css">
+</head>
+<body>
+<main>
+  <div style="text-align:center;padding:24px 20px 8px;">
+    <h1 style="color:#1e3a8a;">统计计算</h1>
+    <p style="color:var(--text-muted);">5 章节 · 算法可视化 · 代码实验</p>
+  </div>
+  <div id="chapter-grid" class="home-grid"></div>
+</main>
+<script src="../../shared/js/storage.js"></script>
+<script src="../../shared/js/router.js"></script>
+<script>
+(function() {
+  var subject = SUBJECT_REGISTRY[1];
+  var cardsHtml = '';
+  for (var c = 0; c < subject.chapters.length; c++) {
+    var ch = subject.chapters[c];
+    cardsHtml += '' +
+      '<div class="module-card">' +
+        '<span class="card-icon">' + ch.icon + '</span>' +
+        '<h3>' + ch.title + '</h3>' +
+        '<p>' + ch.title + '</p>' +
+        '<div class="card-links">' +
+          '<a href="knowledge/' + ch.id + '.html" class="btn">知识点</a>' +
+          '<a href="quiz/' + ch.id + '.html" class="btn btn-primary">测验</a>' +
+          (ch.id === 's5-optimize' || ch.id === 's6-supervised' || ch.id === 's7-tree' ? '<a href="lab/' + ch.id + '.html" class="btn">实验</a>' : '') +
+        '</div>' +
+      '</div>';
+  }
+  document.getElementById('chapter-grid').innerHTML = cardsHtml;
+  injectNavbar('subject-home', 'stat-comp');
+})();
+</script>
+</body>
+</html>

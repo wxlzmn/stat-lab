@@ -1,0 +1,56 @@
+@media (max-width:1024px){
+  .knowledge-layout{flex-direction:column}
+  .sidebar{position:relative;top:0;width:100%;min-width:unset;height:auto;max-height:40vh;border-right:none;border-bottom:2px var(--border-style) var(--border-dashed)}
+  .content-area{max-width:100%;padding:20px}
+  .content-block{padding:16px 18px}
+  .navbar{padding:0 16px}
+  .navbar .nav-links{gap:2px}
+  .navbar .nav-links a{padding:5px 8px;font-size:.8rem}
+  .home-grid{grid-template-columns:1fr;padding:24px}
+  .lab-layout{flex-direction:column}
+  .lab-editor{border-radius:var(--radius) var(--radius) 0 0;min-height:250px}
+  .lab-output{border-radius:0 0 var(--radius) var(--radius);border-left:1px var(--border-style) var(--border-dashed)}
+}
+@media (max-width:768px){
+  :root{--sidebar-width:100%;--content-max:100%}
+  body{padding-top:var(--navbar-height)}
+  .hamburger-btn{display:flex}
+  .navbar .nav-links{display:none;position:fixed;top:var(--navbar-height);left:0;width:100%;flex-direction:column;background:var(--bg-card);border-bottom:2px var(--border-style) var(--border-dashed);padding:12px 20px;box-shadow:var(--shadow-hover);z-index:999}
+  .navbar .nav-links.open{display:flex}
+  .navbar .nav-links a{padding:10px 14px;border-radius:var(--radius-sm);font-size:.95rem;width:100%}
+  .knowledge-layout{flex-direction:column}
+  .sidebar{display:none}
+  .content-area{padding:16px 12px;max-width:100%}
+  .home-grid{grid-template-columns:1fr;padding:16px;gap:14px}
+  .quiz-container{padding:16px 12px}
+  .question-card{padding:20px 16px}
+  .calc-container{padding:16px 12px}
+  .calc-input-group{flex-direction:column;align-items:flex-start}
+  .calc-input-group label{min-width:unset}
+  .calc-input-group input,.calc-input-group select{width:100%;min-width:unset}
+  .dashboard-grid{grid-template-columns:1fr;padding:16px}
+  .search-container{padding:16px 12px}
+  .lab-layout{flex-direction:column}
+}
+@media (max-width:480px){
+  .navbar .brand{font-size:1rem}
+  .content-block h2{font-size:1.15rem}
+  .question-card h3{font-size:1rem}
+  .quiz-result .score-number{font-size:2.4rem}
+  .stat-card .stat-value{font-size:1.8rem}
+  h1{font-size:1.4rem}h2{font-size:1.2rem}h3{font-size:1.05rem}
+}
+@media print{
+  :root{--bg-page:#fff;--bg-card:#fff;--text-primary:#000;--text-secondary:#333;--text-body:#222;--border-style:solid;--border-dashed:#ccc;font-size:11pt}
+  body{padding-top:0;background:#fff;color:#000;line-height:1.6}
+  .navbar,.hamburger-btn,.sidebar,.btn,.retry-btn,.breadcrumb,.quiz-progress,.progress-bar{display:none!important}
+  .knowledge-layout{display:block;min-height:auto}
+  .content-area{max-width:100%;padding:0}
+  .content-block{box-shadow:none;border:none;padding:12px 0;margin-bottom:8px;page-break-inside:avoid}
+  .home-grid{display:block;padding:0}
+  .module-card{box-shadow:none;border:1px solid #ccc;page-break-inside:avoid;margin-bottom:12px}
+  .question-card,.calc-card,.stat-card,.error-item,.search-result-item{box-shadow:none;border:1px solid #ccc;page-break-inside:avoid}
+  .formula-block{background:#f9f9f9;border:1px solid #ddd}
+  a{color:#000;text-decoration:underline}
+  .lab-editor,.lab-run-btn{display:none!important}
+}

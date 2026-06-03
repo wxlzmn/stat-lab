@@ -1,0 +1,13 @@
+[data-theme="academic"] {
+  --bg-page: #f5f7fb; --bg-card: #ffffff; --bg-sidebar: #eef2f9; --bg-input: #ffffff;
+  --text-primary: #172554; --text-secondary: #334155; --text-body: #475569; --text-muted: #64748b;
+  --accent: #2563eb; --accent-soft: #eff4fb; --highlight: #3b82f6; --warning: #dc2626;
+  --border: #d4dce8; --border-dashed: #9bb5e0; --border-style: solid;
+  --shadow: 0 1px 2px rgba(0,0,0,0.05); --shadow-hover: 0 4px 12px rgba(20,60,140,0.08); --shadow-card: 0 1px 2px rgba(0,0,0,0.03);
+  --radius: 10px; --radius-sm: 6px; --radius-lg: 14px;
+  --font-display: "Noto Serif SC",serif; --font-body: "Noto Sans SC",sans-serif; --font-mono: "JetBrains Mono","Cascadia Code",monospace;
+  --sidebar-width: 250px; --content-max: 820px; --navbar-height: 54px;
+  --bg-success: #f0fdf4; --color-success: #16a34a; --bg-warning-soft: #fef2f2; --text-on-accent: #ffffff;
+  --transition-fast: 0.12s ease; --transition-base: 0.2s ease; --transition-slow: 0.35s ease;
+  --subject-color: #3b82f6; --subject-color-deep: #1d4ed8; --subject-color-light: #eef2ff; --subject-color-text: #1e3a8a;
+}
