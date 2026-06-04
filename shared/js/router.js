@@ -63,9 +63,9 @@ function injectNavbar(pageType, subjectId, chapterId, chapterTitle) {
   } else if (subjPageTypes[pageType]) {
     depth = '../../';
   } else if (deepPageTypes[pageType]) {
-    depth = '../../../../';
-  } else {
     depth = '../../../';
+  } else {
+    depth = '../../../../';
   }
   var subject = null;
   if (subjectId) {
@@ -130,9 +130,9 @@ function switchSubject(subjectId) {
   var path = window.location.pathname;
   var depth;
   if (path.indexOf('/knowledge/') !== -1 || path.indexOf('/quiz/') !== -1 || path.indexOf('/lab/') !== -1) {
-    depth = '../../../../';
-  } else if (path.indexOf('/subjects/') !== -1) {
     depth = '../../../';
+  } else if (path.indexOf('/subjects/') !== -1) {
+    depth = '../../';
   } else if (path.indexOf('/dashboard/') !== -1 || path.indexOf('/exam/') !== -1 ||
              path.indexOf('/search/') !== -1 || path.indexOf('/flashcards/') !== -1 ||
              path.indexOf('/errors/') !== -1 || path.indexOf('/login/') !== -1) {
@@ -150,7 +150,7 @@ function renderBreadcrumb(subject, chapterId, chapterTitle, pageType) {
     if (subject.chapters[c].id === chapterId) { chapterName = subject.chapters[c].title; break; }
   }
   var pageLabel = pageType === 'knowledge' ? '知识点' : pageType === 'quiz' ? '测验' : '实验';
-  var depth = '../../../../';
+  var depth = '../../../';
   var bc = document.createElement('div');
   bc.className = 'breadcrumb';
   bc.innerHTML = '' +
