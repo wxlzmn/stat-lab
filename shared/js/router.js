@@ -244,7 +244,7 @@ function renderContentBlock(block, subjectId) {
     case 'formula': return '<div class="formula-block">' + (block.label ? '<div class="formula-label">' + block.label + '</div>' : '') + '<div>$$' + block.latex + '$$</div>' + (block.note ? '<div style="font-size:0.82rem;color:#78716c;margin-top:4px;">' + block.note + '</div>' : '') + '</div>';
     case 'highlight': return '<div class="highlight-box ' + (block.level || 'important') + '">' + block.body + '</div>';
     case 'comparison': return '<div style="margin:12px 0;">' + (block.title ? '<div style="font-weight:700;margin-bottom:6px;color:var(--text-primary);">' + block.title + '</div>' : '') + '<table class="comparison-table"><tbody>' + (block.rows || []).map(function(row, ri) { return '<tr>' + row.map(function(cell, ci) { return ri === 0 ? '<th>' + cell + '</th>' : '<td>' + cell + '</td>'; }).join('') + '</tr>'; }).join('') + '</tbody></table></div>';
-    case 'code': return '<div class="code-block">' + (block.language ? '<span class="code-lang">' + block.language + '</span>' : '') + (block.explain ? '<div class="code-explain">' + block.explain + '</div>' : '') + '<pre>' + (block.body || '') + '</pre>' + (block.output ? '<div class="code-output"><strong>▶ 运行结果：</strong><br>' + block.output + (block.outputExplain ? '<div class="output-explain">' + block.outputExplain + '</div>' : '') + '</div>' : '') + (block.caption ? '<div style="font-size:0.78rem;color:#94a3b8;margin-top:6px;">' + block.caption + '</div>' : '') + '</div>';
+    case 'code': return '<div class="code-block">' + (block.language ? '<span class="code-lang">' + block.language + '</span>' : '') + (block.explain ? '<div class="code-explain">' + block.explain + '</div>' : '') + '<pre class="code-editor" contenteditable="true" spellcheck="false">' + (block.body || '') + '</pre>' + '<button class="code-run-btn" onclick="runCodeBlock(this)">&#9654; 运行</button>' + '<div class="code-live-output"></div>' + (block.caption ? '<div style="font-size:0.78rem;color:#94a3b8;margin-top:6px;">' + block.caption + '</div>' : '') + '</div>';
     case 'case': {
       var caseData = null;
       var casesVar = subjectId === 'econstats' ? 'ECOSTATS_CASES' : null;
@@ -289,4 +289,108 @@ function initTocHighlight() {
 function showError(msg) {
   var el = document.getElementById('content-area');
   if (el) el.innerHTML = '<div style="text-align:center;padding:64px;color:var(--warning);">' + msg + '</div>';
+}
+
+/** HTML 转义——防止 XSS */
+function escapeHtml(text) {
+  return text.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+}
+
+/** 执行代码块中的 Python 代码 */
+function runCodeBlock(btn) {
+  var block = btn.closest('.code-block');
+  if (!block) return;
+  var editor = block.querySelector('.code-editor');
+  var output = block.querySelector('.code-live-output');
+  if (!editor || !output) return;
+  var code = editor.textContent || '';
+
+  // Pyodide 未就绪——提示用户等待
+  if (typeof PyodideRuntime === 'undefined') {
+    output.style.display = 'block';
+    output.innerHTML = '<div class="error">❌ Pyodide 运行时未加载。请刷新页面后重试。</div>';
+    return;
+  }
+  if (!PyodideRuntime.isReady()) {
+    // 加载已经停止（之前失败过）——显示错误并提供重试
+    if (!PyodideRuntime.isLoading()) {
+      var errMsg = PyodideRuntime.getError ? PyodideRuntime.getError() : null;
+      output.style.display = 'block';
+      output.innerHTML = '<div class="error">' +
+        '❌ Pyodide 加载失败' + (errMsg ? '：' + escapeHtml(errMsg) : '——可能是网络连接问题') +
+        '<br><br><button class="code-run-btn" onclick="var b=this.closest(\'.code-block\').querySelector(\'.code-run-btn\');PyodideRuntime.init();runCodeBlock(b);" style="display:inline-block;width:auto;padding:6px 16px;">🔄 点击重试</button>' +
+        '</div>';
+      return;
+    }
+    // 正在加载中——显示等待消息 + 超时检测
+    output.style.display = 'block';
+    output.innerHTML = '<div class="loading">Pyodide 正在加载中（首次约需 10-30 秒，取决于网络速度），请稍候...</div>';
+    // 注册就绪回调，就绪后自动运行（★ 加 isReady 二次检查——回调可能因失败触发）
+    PyodideRuntime.onReady(function() {
+      if (!PyodideRuntime.isReady()) return;
+      output.innerHTML = '<div class="loading">Pyodide 就绪！正在执行...</div>';
+      runCodeBlock(btn);
+    });
+    // ★ 30 秒超时：如果还没就绪，显示错误并提供重试
+    var startTime = Date.now();
+    var checkInterval = setInterval(function() {
+      if (PyodideRuntime.isReady()) { clearInterval(checkInterval); return; }
+      if (!PyodideRuntime.isLoading() || Date.now() - startTime > 150000) {
+        clearInterval(checkInterval);
+        if (!PyodideRuntime.isReady()) {
+          var eMsg = PyodideRuntime.getError ? PyodideRuntime.getError() : null;
+          output.innerHTML = '<div class="error">' +
+            '⏰ Pyodide 加载超时' + (eMsg ? '：' + escapeHtml(eMsg) : '——jsDelivr CDN 可能在您的网络环境下不可达') +
+            '<br><br><button class="code-run-btn" onclick="var b=this.closest(\'.code-block\').querySelector(\'.code-run-btn\');PyodideRuntime.init();runCodeBlock(b);" style="display:inline-block;width:auto;padding:6px 16px;">🔄 点击重试</button>' +
+            '</div>';
+        }
+      }
+    }, 1000);
+    return;
+  }
+
+  // Pyodide 已就绪——执行代码
+  btn.disabled = true;
+  btn.classList.add('loading');
+  btn.innerHTML = '⏳ 执行中...';
+  output.style.display = 'block';
+  output.innerHTML = '';
+
+  PyodideRuntime.run(code, {
+    onStdout: function(text) {
+      // 流式输出（可选——等批量一起显示更简洁）
+    },
+    onStderr: function(text) {
+      // 流式 stderr
+    }
+  }).then(function(res) {
+    var html = '';
+    if (res.stdout) {
+      html += '<div class="stdout">' + escapeHtml(res.stdout) + '</div>';
+    }
+    if (res.stderr) {
+      html += '<div class="stderr">' + escapeHtml(res.stderr) + '</div>';
+    }
+    if (res.images && res.images.length > 0) {
+      for (var i = 0; i < res.images.length; i++) {
+        html += '<img src="' + res.images[i] + '" class="output-figure" alt="matplotlib figure ' + (i+1) + '">';
+      }
+    }
+    if (res.error) {
+      html += '<div class="error">❌ ' + escapeHtml(res.error) + '</div>';
+    }
+    var hasVisual = res.images && res.images.length > 0;
+    var hasOutput = res.stdout || res.stderr;
+    if (!html) {
+      html = '<span style="color:#94a3b8;">（代码执行完成——无 print 输出和图形。你可以修改上方代码后再次运行）</span>';
+    }
+    output.innerHTML = html;
+    output.scrollTop = output.scrollHeight;
+  }).catch(function(err) {
+    output.innerHTML = '<div class="error">❌ 执行异常: ' + escapeHtml(err.message || String(err)) + '</div>';
+  }).then(function() {
+    btn.disabled = false;
+    btn.classList.remove('loading');
+    btn.innerHTML = '&#9654; 运行';
+  });
 }

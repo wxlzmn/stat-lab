@@ -19,7 +19,9 @@
     <div class="content-area" id="content-area"></div>
   </div>
 </main>
+<script src="https://fastly.jsdelivr.net/pyodide/v0.26.1/full/pyodide.js"></script>
 <script src="../../../shared/js/storage.js"></script>
+<script src="../../../shared/js/pyodide-runtime.js"></script>
 <script src="../data/knowledge.js"></script>
 <script src="../../../shared/js/router.js"></script>
 <script src="../../../shared/vendor/katex.min.js"></script>
@@ -27,6 +29,7 @@
 <script>
 var CHAPTER_ID = 's5-optimize';
 (function() {
+  if (typeof PyodideRuntime !== 'undefined') PyodideRuntime.init();
   injectNavbar('knowledge', 'stat-comp', CHAPTER_ID);
   renderKnowledgePage('stat-comp', CHAPTER_ID);
 })();
