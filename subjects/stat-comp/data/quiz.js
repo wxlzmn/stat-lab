@@ -153,7 +153,127 @@ var STATCOMP_QUIZ = {
       blanks: ['x*', 'π(x_{t-1})q(x*|x_{t-1})', '拒绝并保持x_{t-1}'],
       explanation: 'MH算法的核心三步：1)从建议分布提议新状态$x^*$；2)计算MH接受比率（包含建议分布的非对称修正）；3)以概率$\\alpha$接受，否则停留。当建议分布对称时，MH比简化为$\\pi(x^*)/\\pi(x_{t-1})$。',
       knowledgePoint: 'MCMC方法基础'
+    },
+    {
+      id: 's4-q16', type: 'single', chapter: 's4-dist', difficulty: 2,
+      question: '指数分布Exp(λ)具有"无记忆性"。若某电子元件寿命X~Exp(0.01)，已正常工作100小时，则它还能再工作至少100小时的概率为：',
+      options: [
+        'e⁻¹ ≈ 0.368',
+        '1 - e⁻¹ ≈ 0.632',
+        '0.5',
+        '取决于已工作时间'
+      ],
+      answer: 0,
+      explanation: 'P(X>200|X>100)=P(X>100)=e^{-0.01×100}=e^{-1}≈0.368。无记忆性意味着未来寿命分布不依赖于已存活时间——这是指数分布独有的性质（离散情形对应几何分布）。',
+      knowledgePoint: '概率分布基础'
+    },
+    {
+      id: 's4-q17', type: 'single', chapter: 's4-dist', difficulty: 2,
+      question: 'Box-Muller变换用于生成哪种分布的随机数？',
+      options: [
+        '指数分布',
+        '泊松分布',
+        '标准正态分布',
+        '均匀分布'
+      ],
+      answer: 2,
+      explanation: 'Box-Muller变换将两个独立U(0,1)随机数U₁,U₂转换为两个独立N(0,1)随机数：Z₁=√(-2lnU₁)cos(2πU₂), Z₂=√(-2lnU₁)sin(2πU₂)。这是生成正态随机数的经典方法。',
+      knowledgePoint: '逆变换法与直接采样'
+    },
+    {
+      id: 's4-q18', type: 'multi', chapter: 's4-dist', difficulty: 3,
+      question: 'MCMC收敛诊断的常用方法包括哪些？（多选）',
+      options: [
+        'Gelman-Rubin诊断（比较多条链的链间/链内方差）',
+        '有效样本量(ESS)估计',
+        '迹图(Trace Plot)目视检查',
+        '计算接受率(Acceptance Rate)',
+        't检验判断均值是否为零'
+      ],
+      answer: [0,1,2,3],
+      explanation: '前四种均为标准MCMC诊断方法。Gelman-Rubin的R-hat统计量接近1表明链已混合。ESS反映考虑自相关后的"等效独立样本数"。迹图应呈现"毛虫状"随机波动。接受率过高或过低都需调整建议分布。',
+      knowledgePoint: 'MCMC方法基础'
+    },
+    {
+      id: 's4-q19', type: 'multi', chapter: 's4-dist', difficulty: 3,
+      question: '关于重要性采样(Importance Sampling)，以下哪些说法正确？（多选）',
+      options: [
+        '通过从提议分布采样并加权来估计期望',
+        '重要性权重w(x)=f(x)/g(x)，其中f是目标分布，g是提议分布',
+        '提议分布的尾部应比目标分布更厚（即g(x)在f(x)非零处都非零）',
+        '重要性采样的方差不依赖于提议分布的选择',
+        '有效样本量ESS≈(Σwᵢ)²/Σwᵢ²可以用来评估重要性采样的效率'
+      ],
+      answer: [0,1,2,4],
+      explanation: '重要性采样的方差高度依赖于提议分布g的选择。若g的尾部比f薄，则权重可能极端不平衡（少数样本权重极大），导致估计不稳定。ESS公式衡量权重的均匀程度。',
+      knowledgePoint: '逆变换法与直接采样'
+    },
+    {
+      id: 's4-q20', type: 'truefalse', chapter: 's4-dist', difficulty: 1,
+      question: '接受-拒绝采样中，若目标分布f(x)=Beta(2,5)和建议分布g(x)=U(0,1)，则最优M值（使接受率最高）约为Beta(2,5)密度函数的最大值。',
+      options: [
+        '正确',
+        '错误'
+      ],
+      answer: 0,
+      explanation: '正确。最优M=sup f(x)/g(x)，对U(0,1)即sup f(x)。Beta(2,5)在x=0.2处取得最大值，M即为该点密度值，此时接受率1/M最高。',
+      knowledgePoint: '接受-拒绝采样'
+    },
+    {
+      id: 's4-q21', type: 'truefalse', chapter: 's4-dist', difficulty: 2,
+      question: '大数定律保证了蒙特卡洛积分的收敛性：样本均值几乎必然收敛到真实期望，且收敛速率为O(1/n)。',
+      options: [
+        '正确',
+        '错误'
+      ],
+      answer: 1,
+      explanation: '前半句正确（大数定律保证收敛），但收敛速率为O(1/√n)而非O(1/n)——这是中心极限定理的结论。这也是MC方法的主要局限：精度每提高一位需要100倍样本。',
+      knowledgePoint: '概率分布基础'
+    },
+    {
+      id: 's4-q22', type: 'fill', chapter: 's4-dist', difficulty: 2,
+      question: '对于独立同分布样本X₁,...,Xₙ~f(x;θ)，对数似然函数定义为ℓ(θ)=____。最大似然估计(MLE)是通过最大化ℓ(θ)来估计参数θ的方法。',
+      answer: "∑ᵢ₌₁ⁿ log f(Xᵢ; θ)",
+      explanation: '似然函数L(θ)=∏ᵢ f(Xᵢ;θ)，取对数得ℓ(θ)=∑ᵢ log f(Xᵢ;θ)。对数变换将乘积转为求和，简化计算且避免数值下溢。',
+      knowledgePoint: 'MCMC方法基础'
+    },
+    {
+      id: 's4-q23', type: 'fill', chapter: 's4-dist', difficulty: 2,
+      question: '若X₁,...,Xₙ~N(μ,σ²)且σ已知，则μ的95%置信区间为____。这个区间有95%的概率覆盖真实的μ。',
+      answer: "X̄ ± 1.96·σ/√n",
+      explanation: '样本均值X̄~N(μ, σ²/n)，标准化后(X̄-μ)/(σ/√n)~N(0,1)。P(|Z|<1.96)=0.95，反解不等式即得置信区间。1.96是标准正态的97.5%分位数。',
+      knowledgePoint: '概率分布基础'
+    },
+    {
+      id: 's4-q24', type: 'code-analysis', chapter: 's4-dist', difficulty: 3,
+      question: '以下代码用逆变换法从指数分布采样。解释：(1)为什么U~U(0,1)经过F⁻¹(U)变换后服从Exp(λ)？(2)直方图与理论密度曲线为什么吻合？',
+      code: 'def inv_exp(n, lam=1.0):\n    U = np.random.uniform(0, 1, n)\n    X = -np.log(1 - U) / lam  # 逆变换\n    return X\n\nX = inv_exp(10000, lam=2.0)\n# 样本均值=0.4998 ≈ 1/λ=0.5\n# 直方图与理论密度f(x)=2e^{-2x}完全吻合',
+      output: '样本均值0.4998 ≈ 1/λ=0.5，直方图与理论密度λe^{-λx}高度吻合',
+      analysisPoints: [
+        '逆变换原理：若U~U(0,1)，则对任意连续CDF F，有F⁻¹(U)~F。因为P(F⁻¹(U)≤x)=P(U≤F(x))=F(x)',
+        '指数分布CDF为F(x)=1-e^{-λx}，其逆为F⁻¹(u)=-log(1-u)/λ。由于1-U与U同分布，等价于-log(U)/λ',
+        '样本均值0.4998≈0.5=1/λ验证了指数分布的期望公式E[X]=1/λ',
+        '直方图与理论密度的吻合是逆变换正确性的视觉证明：10000个采样点足以让经验分布逼近真实分布'
+      ],
+      answer: undefined,
+      explanation: '',
+      knowledgePoint: 'undefined'
+    },
+    {
+      id: 's4-q25', type: 'algo-judge', chapter: 's4-dist', difficulty: 3,
+      question: '比较以下随机数生成和采样方法，选出所有正确的陈述：',
+      options: [
+        '逆变换法要求目标分布的CDF有解析形式的逆函数（或可数值求解），但采样效率高（每个U(0,1)产生一个样本）',
+        '接受-拒绝采样不需要CDF的逆，但需要找到合适的建议分布和上界M',
+        'MCMC方法产生的样本是独立的（i.i.d.）',
+        'Gibbs采样在高维问题中特别有用，因为它将多维采样分解为一系列一维条件采样',
+        '重要性采样产生的加权样本可以用于估计期望，但不能直接当作目标分布的独立样本使用'
+      ],
+      answer: [0,1,3,4],
+      explanation: 'MCMC产生的样本序列存在自相关——相邻样本高度依赖，不是独立同分布的。这正是需要burn-in和thinning的原因。其余陈述均正确。',
+      knowledgePoint: '采样方法综合'
     }
+
   ],
 
   's5-optimize': [
@@ -307,7 +427,127 @@ var STATCOMP_QUIZ = {
       answer: [0, 2, 4],
       explanation: '牛顿法可用于非凸函数但可能收敛到局部最优(或鞍点)。坐标下降法对非光滑可分函数(如Lasso)特别有效，但并非适用于所有损失函数。',
       knowledgePoint: '优化方法综述'
+    },
+    {
+      id: 's5-q16', type: 'single', chapter: 's5-optimize', difficulty: 2,
+      question: 'Adam优化器结合了哪两种方法的优点？',
+      options: [
+        '牛顿法 + 坐标下降法',
+        '动量法(Momentum) + 自适应学习率(RMSprop)',
+        'BFGS + 共轭梯度法',
+        '模拟退火 + 遗传算法'
+      ],
+      answer: 1,
+      explanation: 'Adam(Adaptive Moment Estimation)维护一阶动量mₜ(指数移动平均的梯度)和二阶动量vₜ(指数移动平均的梯度平方)。mₜ提供动量加速，vₜ实现逐参数自适应学习率。',
+      knowledgePoint: '随机梯度下降与动量法'
+    },
+    {
+      id: 's5-q17', type: 'single', chapter: 's5-optimize', difficulty: 2,
+      question: '若函数f(x)的Hessian矩阵在所有点都是半正定的，则f(x)是：',
+      options: [
+        '严格凸函数',
+        '凸函数',
+        '凹函数',
+        '非凸函数'
+      ],
+      answer: 1,
+      explanation: 'Hessian半正定(∇²f⪰0)是凸函数的二阶条件。若Hessian严格正定(∇²f≻0)，则是严格凸函数（如f(x)=x²）。凹函数的Hessian半负定。',
+      knowledgePoint: '优化问题基础'
+    },
+    {
+      id: 's5-q18', type: 'multi', chapter: 's5-optimize', difficulty: 3,
+      question: '比较DFP和BFGS两种拟牛顿法，以下哪些是正确的？（多选）',
+      options: [
+        '两者都通过迭代更新Hessian逆的近似矩阵，避免直接计算Hessian',
+        'BFGS使用rank-2更新公式，数值稳定性优于DFP的rank-2更新',
+        'L-BFGS是BFGS的有限内存版本，只存储最近的m对向量',
+        '拟牛顿法保持了牛顿法的二次收敛速度',
+        'BFGS是目前公认最有效的拟牛顿法之一，在scipy.optimize.minimize中为默认方法'
+      ],
+      answer: [0,1,2,4],
+      explanation: '拟牛顿法具有超线性收敛而非二次收敛。BFGS在实践中几乎总是优于DFP（更好的自校正性质和舍入误差容忍度），因此成为标准选择。',
+      knowledgePoint: '牛顿法与拟牛顿法'
+    },
+    {
+      id: 's5-q19', type: 'multi', chapter: 's5-optimize', difficulty: 2,
+      question: '以下哪些因素会影响SGD的收敛速度和最终精度？（多选）',
+      options: [
+        'Batch Size（批次大小）',
+        '学习率及其衰减策略',
+        '参数初始化的方式',
+        '损失函数的Lipschitz常数',
+        '训练数据的排列顺序（Shuffle）'
+      ],
+      answer: [0,1,2,3,4],
+      explanation: '以上全部影响SGD。小batch引入更多噪声但可能帮助逃离鞍点；合适的学习率衰减可平衡收敛速度和精度；好的初始化（如Xavier/He）减轻梯度消失/爆炸；Lipschitz常数影响梯度有界性；Shuffle确保每epoch的梯度无偏。',
+      knowledgePoint: '随机梯度下降与动量法'
+    },
+    {
+      id: 's5-q20', type: 'truefalse', chapter: 's5-optimize', difficulty: 1,
+      question: '梯度检验(Gradient Checking)通过数值微分 ∂J/∂θᵢ≈[J(θ+εeᵢ)-J(θ-εeᵢ)]/(2ε) 来验证解析梯度的正确性，是调试优化算法的常用手段。',
+      options: [
+        '正确',
+        '错误'
+      ],
+      answer: 0,
+      explanation: '正确。中心差分公式的误差为O(ε²)，优于前向差分的O(ε)。典型ε=10⁻⁴~10⁻⁶。若解析梯度与数值梯度的相对误差>10⁻³，说明实现可能有bug。',
+      knowledgePoint: '梯度下降法'
+    },
+    {
+      id: 's5-q21', type: 'truefalse', chapter: 's5-optimize', difficulty: 2,
+      question: '增加batch size总是能提高SGD的收敛速度，因为梯度估计更准确。',
+      options: [
+        '正确',
+        '错误'
+      ],
+      answer: 1,
+      explanation: '不完全正确。大batch梯度确实更准确（方差更小），但每次更新计算量大增。更重要的是，小batch的梯度噪声实际上有助于逃离鞍点和局部最优。实践中中等batch(32-256)通常在速度和泛化性能之间取得最佳平衡。',
+      knowledgePoint: '随机梯度下降与动量法'
+    },
+    {
+      id: 's5-q22', type: 'fill', chapter: 's5-optimize', difficulty: 2,
+      question: '在深度学习训练中，常用的学习率衰减策略之一是：每经过k个epoch，将学习率乘以一个小于1的因子γ。这种策略称为____衰减。',
+      answer: "阶梯 (Step)",
+      explanation: '阶梯衰减(Step Decay)简单直接：η←γ·η每k步。典型的γ=0.1，k=30epoch。优点是易于调试理解，缺点是衰减时机需要人工设定。',
+      knowledgePoint: '梯度下降法'
+    },
+    {
+      id: 's5-q23', type: 'fill', chapter: 's5-optimize', difficulty: 3,
+      question: '对于强凸函数，梯度下降以____收敛速度收敛（线性收敛），其中收敛因子取决于函数的条件数κ=λmax/λmin。条件数越大，收敛越慢。',
+      answer: "线性 (Linear)",
+      explanation: '强凸函数的梯度下降误差满足∥θₖ-θ*∥≤(1-1/κ)ᵏ∥θ₀-θ*∥，收敛速度为线性的。条件数κ大→Hessian特征值分布广→损失函数曲面呈狭长山谷→梯度下降走Z字形缓慢前进。',
+      knowledgePoint: '优化问题基础'
+    },
+    {
+      id: 's5-q24', type: 'code-analysis', chapter: 's5-optimize', difficulty: 3,
+      question: '以下代码对比了SGD的不同batch size对训练loss下降曲线的影响。为什么batch=1时loss震荡剧烈但下降快，batch=1000时loss平滑但最终精度低？',
+      code: 'for batch_size in [1, 32, 1000]:\n    losses = []\n    for epoch in range(100):\n        for batch in data_loader(batch_size):\n            loss = compute_loss(batch); loss.backward()\n            optimizer.step()\n        losses.append(loss.item())\n# batch=1:  震荡剧烈, 最终loss=0.032\n# batch=32: 适度震荡, 最终loss=0.012\n# batch=1000:非常平滑, 最终loss=0.028',
+      output: '中等batch(32)在训练速度和最终精度间取得最佳平衡',
+      analysisPoints: [
+        'batch=1时每个样本更新一次，梯度噪声极大→loss曲线剧烈震荡，但噪声帮助逃离局部最优',
+        'batch=1000时梯度估计很准但更新频率低（100 epoch仅更新少量次），且缺乏噪声导致收敛到较差的次优解',
+        'batch=32在两者间平衡：足够的更新频率+适中的梯度噪声→兼有快速收敛和良好泛化',
+        '这体现了"随机梯度下降"中"随机"的价值——适量噪声是优化过程中的一种隐式正则化'
+      ],
+      answer: undefined,
+      explanation: '',
+      knowledgePoint: 'undefined'
+    },
+    {
+      id: 's5-q25', type: 'algo-judge', chapter: 's5-optimize', difficulty: 3,
+      question: '关于以下优化算法的适用场景，选出所有正确的陈述：',
+      options: [
+        '当参数维度d极大（如深度学习，d>10⁶）时，牛顿法和BFGS因O(d²)内存需求而不适用，应使用SGD/Adam',
+        '当目标函数计算代价极高（如超参数调优）时，贝叶斯优化比梯度下降更合适',
+        'L-BFGS-B是处理大规模有界约束优化问题的有效方法（scipy中method="L-BFGS-B"）',
+        '共轭梯度法在二次函数上最多d步精确收敛，内存需求与SGD相同为O(d)',
+        'Nelder-Mead单纯形法不需要梯度信息，适合导数难以计算或不可导的函数'
+      ],
+      answer: [0,1,2,3,4],
+      explanation: '所有选项均正确。实际问题中根据维度、可导性、约束条件、计算代价选择合适的优化方法。没有一种方法在所有场景下都是最优的。',
+      knowledgePoint: '优化方法综述'
     }
+
   ],
 
   's6-supervised': [
@@ -480,7 +720,127 @@ var STATCOMP_QUIZ = {
       blanks: ['D_i', 'D_i', 'mean(scores) 并可选报告 std(scores)'],
       explanation: '每折轮流作为验证集，其余作为训练集。最终报告K个score的均值和标准差——均值是泛化性能的估计，标准差反映模型的稳定性。',
       knowledgePoint: '模型评估与验证'
+    },
+    {
+      id: 's6-q16', type: 'single', chapter: 's6-supervised', difficulty: 2,
+      question: '在多元线性回归中，若两个预测变量高度相关（相关系数>0.9），最可能出现什么问题？',
+      options: [
+        '异方差性',
+        '多重共线性（系数估计不稳定）',
+        '自相关',
+        '非线性关系'
+      ],
+      answer: 1,
+      explanation: '多重共线性使XᵀX接近奇异，导致回归系数的方差膨胀（VIF>>1）。系数估计对数据微小变动极其敏感，可能出现符号反转或数量级异常。Ridge回归通过添加λI改善XᵀX的条件数是标准解决方案。',
+      knowledgePoint: '线性回归'
+    },
+    {
+      id: 's6-q17', type: 'single', chapter: 's6-supervised', difficulty: 2,
+      question: '在SVM的软间隔(Soft Margin)分类中，参数C的作用是：',
+      options: [
+        '控制核函数的带宽',
+        '平衡间隔宽度与训练误差（C越大，对误分类的惩罚越重）',
+        '设置支持向量的最大数量',
+        '指定特征空间的维数'
+      ],
+      answer: 1,
+      explanation: 'C→∞时趋向硬间隔（不允许任何训练误差，可能过拟合）；C→0时允许大量误分类（间隔最宽，可能欠拟合）。C通过交叉验证选择。',
+      knowledgePoint: '支持向量机 (SVM)'
+    },
+    {
+      id: 's6-q18', type: 'multi', chapter: 's6-supervised', difficulty: 2,
+      question: '关于ROC曲线和AUC，以下哪些说法是正确的？（多选）',
+      options: [
+        'ROC曲线以假阳性率(FPR)为横轴，真阳性率(TPR)为纵轴',
+        'AUC=1表示完美分类，AUC=0表示完全颠倒的分类',
+        'AUC对类别不平衡不敏感，因此在极端不平衡场景下应同时参考PR曲线',
+        '随机猜测分类器的AUC=0.5',
+        'AUC等于随机正样本得分高于随机负样本得分的概率'
+      ],
+      answer: [0,1,2,3,4],
+      explanation: '所有选项均正确。AUC的统计解释：从正类随机抽一个样本、从负类随机抽一个样本，正样本的预测分数高于负样本的概率=ROC的AUC。这一解释使AUC具有直观的概率含义。',
+      knowledgePoint: '模型评估与验证'
+    },
+    {
+      id: 's6-q19', type: 'multi', chapter: 's6-supervised', difficulty: 3,
+      question: '关于线性回归模型的假设检验，以下哪些是正确的？（多选）',
+      options: [
+        '残差的QQ图偏离对角线表明残差可能不服从正态分布',
+        'Durbin-Watson统计量用于检测残差的自相关性',
+        'Breusch-Pagan检验用于检测异方差性（残差方差不恒定）',
+        '调整R²(Adjusted R²)对增加不显著的自变量有惩罚，因此比普通R²更适合模型比较',
+        'VIF>10通常被认为是存在严重多重共线性的标志'
+      ],
+      answer: [0,1,2,3,4],
+      explanation: '这五个诊断工具覆盖了线性回归的四大核心假设检验。残差诊断是建模后验证的重要步骤——仅看R²是不够的，违反假设可能导致标准误差和p值不可靠。',
+      knowledgePoint: '线性回归'
+    },
+    {
+      id: 's6-q20', type: 'truefalse', chapter: 's6-supervised', difficulty: 1,
+      question: '在训练集上R²=0.99而在测试集上R²=0.55，这表明模型存在严重的过拟合。',
+      options: [
+        '正确',
+        '错误'
+      ],
+      answer: 0,
+      explanation: '正确。训练集与测试集性能的巨大差距是过拟合的典型标志。模型在训练时"记住了"训练数据的噪声而非学习真正的模式，导致泛化能力差。',
+      knowledgePoint: '模型评估与验证'
+    },
+    {
+      id: 's6-q21', type: 'truefalse', chapter: 's6-supervised', difficulty: 2,
+      question: '标准化(Standardization)和归一化(Normalization)对基于距离度量的模型（如SVM、KNN）至关重要，但对树模型（如决策树、随机森林）几乎没有影响。',
+      options: [
+        '正确',
+        '错误'
+      ],
+      answer: 0,
+      explanation: '正确。树模型基于特征值的排序进行分裂，对单调变换（包括标准化/归一化）完全不变。而SVM的RBF核和KNN依赖欧氏距离，特征量纲差异会严重影响结果。',
+      knowledgePoint: '监督学习概述'
+    },
+    {
+      id: 's6-q22', type: 'fill', chapter: 's6-supervised', difficulty: 2,
+      question: 'Ridge回归的损失函数为 $J(\beta) = \|y-X\beta\|^2 + \lambda\|\beta\|^2_2$，其闭式解为$\hat{\beta}_{ridge} = (X^\top X + \_\_\_)^{-1}X^\top y$。',
+      answer: "λI",
+      explanation: '$hat{eta}_{ridge}=(X^TX+lambda I)^{-1}X^Ty$。通过在主对角线上加λ，即使X^TX奇异或接近奇异，求逆也变得数值稳定。这就是Ridge解决多重共线性的核心机制。',
+      knowledgePoint: '正则化：Ridge、Lasso与Elastic Net'
+    },
+    {
+      id: 's6-q23', type: 'fill', chapter: 's6-supervised', difficulty: 2,
+      question: '对于二分类问题，若TP=80, FP=20, FN=10, TN=90，则精确率Precision=____，召回率Recall=____。',
+      answer: "80% (80/100)；88.9% (80/90)",
+      explanation: 'Precision=TP/(TP+FP)=80/100=80%（预测为正的样本中有多少是正确的）。Recall=TP/(TP+FN)=80/90≈88.9%（真实正样本中被找出了多少）。',
+      knowledgePoint: '模型评估与验证'
+    },
+    {
+      id: 's6-q24', type: 'code-analysis', chapter: 's6-supervised', difficulty: 3,
+      question: '以下代码绘制了Ridge和Lasso的系数路径图。为什么随着λ增大，Lasso的系数逐个归零，而Ridge的系数只是逐渐缩小？',
+      code: 'alphas = np.logspace(-3, 3, 100)\nfor alpha in alphas:\n    ridge = Ridge(alpha=alpha).fit(X, y)\n    lasso = Lasso(alpha=alpha).fit(X, y)\n# Ridge: 所有系数平滑衰减，在λ很大时趋于0但不归零\n# Lasso: 系数逐个精确归零，λ越大非零系数越少',
+      output: 'Lasso路径显示特征以不同λ阈值依次归零，Ridge路径所有系数同时衰减',
+      analysisPoints: [
+        '关键差异源于约束区域的几何形状：L1约束是菱形（轴对齐），L2约束是球形',
+        '菱形顶点在坐标轴上——目标函数等高线容易先触及顶点，使某些系数精确归零',
+        '球形表面处处光滑——等高线通常在非轴位置与球相切，系数非零但被均匀压缩',
+        '这种L1产生稀疏解的性质使Lasso自动执行特征选择——λ越大选入的特征越少'
+      ],
+      answer: undefined,
+      explanation: '',
+      knowledgePoint: 'undefined'
+    },
+    {
+      id: 's6-q25', type: 'algo-judge', chapter: 's6-supervised', difficulty: 3,
+      question: '比较Ridge、Lasso和Elastic Net，选出所有正确的陈述：',
+      options: [
+        'Ridge(L2)在多重共线性下表现更好，但不能做特征选择',
+        'Lasso(L1)可以产生稀疏解，但在p>n时最多只能选n个特征',
+        'Elastic Net融合了L1和L2，倾向于选择整组相关特征而非随机选一个',
+        'Ridge总是比Lasso的预测误差更小',
+        '这三种方法都需要对特征进行标准化（否则正则化惩罚不公平）'
+      ],
+      answer: [0,1,2,4],
+      explanation: 'Ridge不一定比Lasso预测更准——取决于真实模型是否稀疏。若真实只有少量特征有效，Lasso更优；若所有特征都有微弱贡献，Ridge可能更好。交叉验证选择。',
+      knowledgePoint: '正则化：Ridge、Lasso与Elastic Net'
     }
+
   ],
 
   's7-tree': [
@@ -617,7 +977,165 @@ var STATCOMP_QUIZ = {
       answer: [0, 1, 2],
       explanation: '随机森林可以通过特征重要性(feature_importances_)评估各特征的贡献。增加树数量有边际递减效应，超过一定数量后性能基本不变。',
       knowledgePoint: '树模型综合对比'
+    },
+    {
+      id: 's7-q14', type: 'single', chapter: 's7-tree', difficulty: 2,
+      question: 'C4.5算法使用信息增益比(Information Gain Ratio)而非信息增益作为分裂准则，主要原因是：',
+      options: [
+        '计算更快',
+        '纠正信息增益对取值多的属性的偏好',
+        '能够处理连续特征',
+        '更容易剪枝'
+      ],
+      answer: 1,
+      explanation: '信息增益倾向于选择取值数目多的属性（如ID列——每个样本唯一值，信息增益最大但完全无用）。信息增益比=信息增益/属性本身的熵，对多值属性施加惩罚。',
+      knowledgePoint: '分裂准则：基尼指数与信息熵'
+    },
+    {
+      id: 's7-q15', type: 'single', chapter: 's7-tree', difficulty: 2,
+      question: '随机森林的OOB(Out-of-Bag)误差估计有什么优势？',
+      options: [
+        '比交叉验证更精确',
+        '不需要单独的验证集，可作为无偏的泛化误差估计',
+        '总是比测试误差更低',
+        '可以替代训练过程'
+      ],
+      answer: 1,
+      explanation: '每个样本约36.8%的概率不在任意单棵树的Bootstrap训练集中。用这些"未见过该样本"的树来预测，得到的OOB误差是真实泛化误差的无偏估计——无需划分验证集。',
+      knowledgePoint: '随机森林'
+    },
+    {
+      id: 's7-q16', type: 'multi', chapter: 's7-tree', difficulty: 2,
+      question: '比较Bagging和Boosting，以下哪些说法正确？（多选）',
+      options: [
+        'Bagging的基学习器并行训练，Boosting的基学习器串行训练',
+        'Bagging主要降低方差，Boosting主要降低偏差',
+        'Bagging对异常值不敏感，Boosting对异常值更敏感',
+        '随机森林属于Bagging家族，AdaBoost和GBDT属于Boosting家族',
+        'Boosting总是比Bagging的准确率更高'
+      ],
+      answer: [0,1,2,3],
+      explanation: 'Boosting并非总是更优——其在噪声数据上可能过度拟合噪声（AdaBoost对异常值敏感，GBDT通过subsample缓解）。选择取决于数据和问题。',
+      knowledgePoint: '树模型综合对比'
+    },
+    {
+      id: 's7-q17', type: 'multi', chapter: 's7-tree', difficulty: 3,
+      question: '随机森林的特征重要性(Feature Importance)可以通过哪些方式计算？（多选）',
+      options: [
+        '基于不纯度减少：统计该特征在所有树的所有分裂中减少的不纯度之和',
+        '基于排列重要度：随机打乱某特征的值，观察OOB误差的上升幅度',
+        '基于系数的绝对值大小',
+        '基于特征在树中出现的深度（越靠近根越重要）',
+        'SHAP值：基于Shapley值的特征贡献分解'
+      ],
+      answer: [0,1,4],
+      explanation: '不纯度减少(默认)简单快速但偏向高基数特征。排列重要度更稳健但计算量大。SHAP提供统一的理论框架。系数绝对值是线性模型的方法，不适用于树。深度不完全可靠。',
+      knowledgePoint: '随机森林'
+    },
+    {
+      id: 's7-q18', type: 'truefalse', chapter: 's7-tree', difficulty: 1,
+      question: 'ID3算法使用信息增益选择分裂属性，且只能处理离散特征。CART使用Gini指数，可处理连续和离散特征。',
+      options: [
+        '正确',
+        '错误'
+      ],
+      answer: 0,
+      explanation: '正确。ID3(1986)是最早的决策树算法之一。CART(1984)使用二叉分裂（连续特征通过找最优切分点实现），更为通用。C4.5(1993)是ID3的改进版。',
+      knowledgePoint: '决策树基础'
+    },
+    {
+      id: 's7-q19', type: 'truefalse', chapter: 's7-tree', difficulty: 2,
+      question: '决策树对训练数据的微小变化非常敏感——增减少量样本可能导致完全不同的分裂结构。这种不稳定性是集成方法（如随机森林）的动机之一。',
+      options: [
+        '正确',
+        '错误'
+      ],
+      answer: 0,
+      explanation: '正确。树的高方差(不稳定性)是高方差的来源——但这也使Bagging特别有效，因为对高方差、低偏差模型的集成平均能大幅降低方差。',
+      knowledgePoint: '决策树基础'
+    },
+    {
+      id: 's7-q20', type: 'fill', chapter: 's7-tree', difficulty: 2,
+      question: '在CART回归树中，叶节点的预测值是落在该节点所有训练样本目标变量的____。分裂准则是最小化分裂后的____。',
+      answer: "均值 (Mean)；均方误差 (MSE)",
+      explanation: '回归树与分类树的核心区别：预测用均值而非多数类，分裂准则用MSE（或MAE）而非Gini/Entropy。其本质是分段常数回归。',
+      knowledgePoint: '决策树基础'
+    },
+    {
+      id: 's7-q21', type: 'fill', chapter: 's7-tree', difficulty: 2,
+      question: '在sklearn的DecisionTreeClassifier中，参数ccp_alpha（cost complexity pruning alpha）越大，剪枝后的树越____（简单/复杂）。alpha=0时对应全树。',
+      answer: "简单",
+      explanation: 'ccp_alpha是成本复杂度剪枝的惩罚参数。目标为Rα(T)=R(T)+α·|T|，α增大惩罚复杂树，产生更少节点、更浅的树。通常通过交叉验证选最优α。',
+      knowledgePoint: '剪枝与过拟合控制'
+    },
+    {
+      id: 's7-q22', type: 'code-analysis', chapter: 's7-tree', difficulty: 3,
+      question: '以下代码对比不同max_depth对决策边界的影响。为什么depth=1产生简单直线分割，depth=10产生极其复杂的锯齿边界？',
+      code: 'for depth in [1, 3, 5, 10]:\n    tree = DecisionTreeClassifier(max_depth=depth)\n    tree.fit(X, y)\n    plot_decision_boundary(tree, X, y)\n# depth=1: 单条水平/垂直线\n# depth=5: 较为平滑的分段边界\n# depth=10: 复杂的锯齿状边界，包围了单个噪声点',
+      output: '随着max_depth增加，决策边界越来越复杂，depth=10时明显过拟合',
+      analysisPoints: [
+        'depth=1时树只有一次分裂（根到两个叶），只能产生一条轴平行的分割线',
+        '每增加一层深度，树可以将一个区域再分成两半——depth=k最多产生2ᵏ个矩形区域',
+        'depth=10时每个叶节点可能只包含1-2个训练样本，决策边界"包裹"了所有噪声点',
+        '高深度完美的训练拟合伴随极差的泛化——这是bias-variance tradeoff的经典体现'
+      ],
+      answer: undefined,
+      explanation: '',
+      knowledgePoint: 'undefined'
+    },
+    {
+      id: 's7-q23', type: 'flowchart', chapter: 's7-tree', difficulty: 2,
+      question: '以下是随机森林的构建流程。请填写空白步骤：',
+      flowchart: {
+        steps: [
+          '输入: 训练数据D, 树的数量B, 每次分裂考虑的特征数m',
+          'For b = 1, 2, ..., B:',
+          '  步骤1: 从D中____（有放回抽样n次）得到训练集D_b',
+          '  步骤2: 在D_b上训练一棵决策树，每次分裂时____随机选择m个特征',
+          '  步骤3: 不剪枝，让树____',
+          '预测: 分类用____，回归用平均',
+          '评估: 使用____样本估计泛化误差'
+        ]
+      },
+      blanks: [
+        'Bootstrap采样',
+        '从全部p个特征中',
+        '完全生长(fully grown)',
+        '多数投票',
+        'OOB (Out-of-Bag)'
+      ],
+      answer: undefined,
+      explanation: '两层随机化（Bootstrap样本+随机特征子集）是随机森林降低方差的核心。不剪枝的深树偏差低但方差高，集成后方差大幅降低。OOB误差是免费的无偏泛化估计。',
+      knowledgePoint: '随机森林'
+    },
+    {
+      id: 's7-q24', type: 'algo-judge', chapter: 's7-tree', difficulty: 3,
+      question: '比较梯度提升树(GBDT)与随机森林(RF)，选出所有正确的陈述：',
+      options: [
+        'RF的树独立并行训练，GBDT的树串行训练（每棵树拟合前一棵的残差）',
+        'GBDT使用弱学习器（浅树，如max_depth=3-6），RF通常使用深树甚至全树',
+        'GBDT对超参数（学习率、树数量）更敏感，需要更仔细的调参',
+        'XGBoost和LightGBM是GBDT的高效实现，增加了正则化和并行化优化',
+        'GBDT总是比RF的泛化误差更低'
+      ],
+      answer: [0,1,2,3],
+      explanation: 'GBDT并非总是优于RF。在中小数据集上RF通常更稳健（不易过拟合），在噪声较多的数据上RF往往表现更好。GBDT在有大量干净数据时优势明显。',
+      knowledgePoint: '树模型综合对比'
+    },
+    {
+      id: 's7-q25', type: 'single', chapter: 's7-tree', difficulty: 2,
+      question: '在梯度提升(Gradient Boosting)中，每棵新树拟合的目标是什么？',
+      options: [
+        '原始目标变量y',
+        '前一轮模型的预测值',
+        '前一轮模型损失函数的负梯度（伪残差）',
+        '训练数据的权重'
+      ],
+      answer: 2,
+      explanation: 'GBDT的核心思想：每棵新树拟合损失函数关于当前模型预测的负梯度——即"残差"方向。对平方损失，负梯度恰好是y-F(x)；对分类的log损失，则是概率残差。',
+      knowledgePoint: '树模型综合对比'
     }
+
   ],
 
   's8-unsupervised': [
@@ -776,6 +1294,150 @@ var STATCOMP_QUIZ = {
       blanks: ['初始簇中心', '距离最近', '更新簇中心', '簇中心'],
       explanation: 'K-means的Lloyd算法保证每轮WCSS单调递减。收敛判断通常使用簇中心的变化量（所有K个中心移动的距离之和<ε）或达到最大迭代次数。',
       knowledgePoint: 'K-means聚类'
+    },
+    {
+      id: 's8-q15', type: 'single', chapter: 's8-unsupervised', difficulty: 2,
+      question: '轮廓系数(Silhouette Score)的取值范围和含义是：',
+      options: [
+        '[0, 1]，越接近1聚类越好',
+        '[-1, 1]，越接近1聚类越好',
+        '[0, ∞)，越小越好',
+        '[-∞, ∞]，需要结合领域知识判断'
+      ],
+      answer: 1,
+      explanation: '轮廓系数s=(b-a)/max(a,b)，其中a是样本到同簇其他点的平均距离，b是到最近异簇的平均距离。s∈[-1,1]，接近1表示簇内紧致且簇间分离良好，接近-1表示样本可能被错分。',
+      knowledgePoint: 'K-means聚类'
+    },
+    {
+      id: 's8-q16', type: 'single', chapter: 's8-unsupervised', difficulty: 2,
+      question: 'DBSCAN相较于K-means的主要优势是什么？',
+      options: [
+        '计算速度更快',
+        '不需要预先指定簇的数量，且能发现任意形状的簇',
+        '总是产生更准确的聚类结果',
+        '对高维数据更有效'
+      ],
+      answer: 1,
+      explanation: 'DBSCAN基于密度连通性，能发现任意形状的簇（K-means假设球形簇），且自动识别噪声点（不属于任何簇）。代价是参数ε和minPts需要调参，且对密度不均的数据效果差。',
+      knowledgePoint: 'K-means聚类'
+    },
+    {
+      id: 's8-q17', type: 'multi', chapter: 's8-unsupervised', difficulty: 3,
+      question: '关于聚类结果的评估，以下哪些说法是正确的？（多选）',
+      options: [
+        '轮廓系数(Silhouette)是内部评估指标，不需要真实标签',
+        '调整兰德指数(ARI)是外部评估指标，需要真实标签',
+        'Davies-Bouldin指数越小表示聚类越好',
+        'Calinski-Harabasz指数越大表示聚类越好',
+        '聚类评估应该同时使用多个指标，因为不同指标衡量不同方面'
+      ],
+      answer: [0,1,2,3,4],
+      explanation: '所有均正确。内部指标仅基于数据本身评估聚类质量（紧致性+分离性），外部指标与真实标签比较。不同指标偏好不同的簇形状和分布，综合使用可避免单一指标的偏见。',
+      knowledgePoint: 'K-means聚类'
+    },
+    {
+      id: 's8-q18', type: 'multi', chapter: 's8-unsupervised', difficulty: 2,
+      question: '关于PCA的数学性质，以下哪些是正确的？（多选）',
+      options: [
+        'PCA等价于对数据中心化矩阵进行SVD分解',
+        '主成分是原始特征的线性组合',
+        'PCA变换后的特征（主成分得分）之间是线性无关的（协方差=0）',
+        'PCA保留了数据的局部邻域结构',
+        '可以通过累计解释方差比例来选择保留的主成分数量'
+      ],
+      answer: [0,1,2,4],
+      explanation: 'PCA是全局线性方法，不保证保留局部邻域结构（这是t-SNE和UMAP的目标）。PCA追求全局方差最大化，可能破坏局部邻居关系。',
+      knowledgePoint: '主成分分析 (PCA)'
+    },
+    {
+      id: 's8-q19', type: 'truefalse', chapter: 's8-unsupervised', difficulty: 2,
+      question: '因子分析(Factor Analysis)和PCA虽然都用于降维，但因子分析假设观测变量由潜在因子和特殊误差共同决定，而PCA仅是数据的线性变换。',
+      options: [
+        '正确',
+        '错误'
+      ],
+      answer: 0,
+      explanation: '正确。因子分析是一个概率生成模型：X=ΛF+ε，包含测量误差项ε。PCA则是确定性的方差最大化变换。因子分析常用于心理学量表构建，PCA常用于数据压缩和可视化。',
+      knowledgePoint: '主成分分析 (PCA)'
+    },
+    {
+      id: 's8-q20', type: 'truefalse', chapter: 's8-unsupervised', difficulty: 2,
+      question: 'UMAP(Uniform Manifold Approximation and Projection)比t-SNE更好地保留了数据的全局结构，且运行速度更快，因此在单细胞RNA测序等高维数据分析中越来越受欢迎。',
+      options: [
+        '正确',
+        '错误'
+      ],
+      answer: 0,
+      explanation: '正确。UMAP基于黎曼几何和拓扑数据分析理论，在保持全局结构方面优于t-SNE。其运行速度比t-SNE快一个数量级以上（基于近似最近邻），且能外推到新数据点。',
+      knowledgePoint: 't-SNE可视化'
+    },
+    {
+      id: 's8-q21', type: 'fill', chapter: 's8-unsupervised', difficulty: 2,
+      question: '在PCA中，协方差矩阵的第k大特征值λ_k等于第k个主成分的____。所有特征值之和等于原始数据的总方差。',
+      answer: "方差 (Variance)",
+      explanation: 'PCA的关键性质：λ_k=Var(PC_k)。因此解释方差比例=λ_k/∑λ_j。碎石图(Scree Plot)将特征值从大到小排列，通常寻找"拐点"确定保留的主成分数量。',
+      knowledgePoint: '主成分分析 (PCA)'
+    },
+    {
+      id: 's8-q22', type: 'fill', chapter: 's8-unsupervised', difficulty: 3,
+      question: '对数据矩阵X(n×p)进行SVD分解：X=UΣV^T。其中U的列是____，Σ的对角元素是____，V的列是主成分方向（载荷向量）。',
+      answer: "左奇异向量（或标准化PC得分）；奇异值（与特征值的关系：λ_k=σ_k²/n）",
+      explanation: 'SVD与PCA的等价关系：XV=UΣ（PC得分矩阵），V的列是特征向量（载荷），σ_k²/n=λ_k（特征值）。SVD数值上更稳定，是PCA实现的首选方法。',
+      knowledgePoint: '主成分分析 (PCA)'
+    },
+    {
+      id: 's8-q23', type: 'code-analysis', chapter: 's8-unsupervised', difficulty: 3,
+      question: '以下代码使用肘部法则确定最优K值。解释：(1)为什么WCSS随K增大单调递减？(2)如何从肘部曲线判断最优K？',
+      code: 'K_range = range(1, 11)\nwcss = []\nfor k in K_range:\n    km = KMeans(n_clusters=k, n_init=10)\n    km.fit(X)\n    wcss.append(km.inertia_)\n# K=1: WCSS=8562  K=3: WCSS=2356  K=5: WCSS=1123  K=10: WCSS=234',
+      output: '肘部在K≈3处出现——之后增加K带来的WCSS下降显著减缓',
+      analysisPoints: [
+        'K=1时所有点在一个簇，WCSS最大。随着K增大，簇变小更专业化→每个点到簇中心的距离减小→WCSS单调下降',
+        '极限K=n时每个点自成簇→WCSS=0——但这毫无意义（完全过拟合）',
+        '肘部(Elbow)是WCSS下降速率明显减弱的点——此后增加K的边际收益很小',
+        'K=3的WCSS(2356)比K=2下降了很多，但K=4仅比K=3略微下降→肘点在K≈3'
+      ],
+      answer: undefined,
+      explanation: '',
+      knowledgePoint: 'undefined'
+    },
+    {
+      id: 's8-q24', type: 'flowchart', chapter: 's8-unsupervised', difficulty: 2,
+      question: '以下是PCA降维的标准流程。请填写空白步骤：',
+      flowchart: {
+        steps: [
+          '输入: 数据矩阵X(n×p), 目标维度k',
+          '步骤1: ____（使每列均值为0）',
+          '步骤2: 计算____矩阵 Σ = X^T X / (n-1)',
+          '步骤3: 对Σ进行特征分解，得到特征值λ₁≥λ₂≥...≥λ_p和对应的特征向量',
+          '步骤4: 取前k个特征向量构成投影矩阵____',
+          '步骤5: 计算主成分得分 Z = X_centered × ____',
+          '输出: 降维后的数据Z (n×k) 及各主成分的解释方差比例'
+        ]
+      },
+      blanks: [
+        '数据中心化 (Center)',
+        '协方差 (Covariance)',
+        'V_k (p×k)',
+        'V_k'
+      ],
+      answer: undefined,
+      explanation: '标准化(使方差=1)在特征量纲不同时也至关重要——避免大方差特征主导PC1。实践中通常同时做centering和scaling。',
+      knowledgePoint: '主成分分析 (PCA)'
+    },
+    {
+      id: 's8-q25', type: 'algo-judge', chapter: 's8-unsupervised', difficulty: 3,
+      question: '比较以下降维方法，选出所有正确的陈述：',
+      options: [
+        'PCA是线性的、确定性的，适合数据预处理和特征提取',
+        't-SNE是非线性的、随机的，适合高维数据的2D/3D可视化但不宜用于特征工程',
+        'UMAP兼顾了全局结构和局部结构，运行速度快于t-SNE，且支持新数据的外推',
+        '自动编码器(Autoencoder)是神经网络的非线性降维方法，可用于生成式建模',
+        '所有降维方法都要求对原始特征进行标准化'
+      ],
+      answer: [0,1,2,3],
+      explanation: '并非所有降维方法都需要标准化——t-SNE和UMAP基于距离度量（受量纲影响需要），但自动编码器可以通过批归一化层自适应调整。PCA对尺度敏感必须标准化。',
+      knowledgePoint: '降维方法综合'
     }
+
   ]
 };
