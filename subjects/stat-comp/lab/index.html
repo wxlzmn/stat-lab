@@ -14,8 +14,8 @@
 <body>
 <main>
   <div style="text-align:center;padding:24px 20px 8px;">
-    <h1 style="color:#1e3a8a;">Code Lab</h1>
-    <p style="color:var(--text-muted);">Interactive algorithm experiments</p>
+    <h1 style="color:#1e3a8a;">代码实验室</h1>
+    <p style="color:var(--text-muted);">交互式算法实验 —— 拖动滑块，实时观察算法行为</p>
   </div>
   <div id="lab-grid" class="home-grid"></div>
 </main>
@@ -24,9 +24,9 @@
 <script>
 (function() {
   var labs = [
-    { id: 's5-optimize', title: 'Gradient Descent', icon: '📉', desc: 'Interactive GD path visualization. Adjust learning rate, starting point, and function type.' },
-    { id: 's6-supervised', title: 'Linear Regression', icon: '🎯', desc: 'OLS, Ridge, and Lasso regression with real-time coefficient updates.' },
-    { id: 's7-tree', title: 'Decision Tree', icon: '🌳', desc: 'Build and visualize decision boundaries step by step.' }
+    { id: 's5-optimize', title: '梯度下降', icon: '📉', desc: '交互式梯度下降路径可视化。调整学习率、起始点和函数类型，观察收敛过程。' },
+    { id: 's6-supervised', title: '线性回归', icon: '🎯', desc: 'OLS、Ridge 和 Lasso 回归对比。拖动滑块调整样本量、噪声和正则化参数。' },
+    { id: 's7-tree', title: '决策树', icon: '🌳', desc: '一步步构建决策边界。切换数据模式，调整树深度，直观理解过拟合。' }
   ];
   var subject = SUBJECT_REGISTRY[1];
 
@@ -39,8 +39,8 @@
         '<h3>' + lab.title + '</h3>' +
         '<p>' + lab.desc + '</p>' +
         '<div class="card-links">' +
-          '<a href="' + lab.id + '.html" class="btn btn-primary">Open Lab</a>' +
-          '<a href="../knowledge/' + lab.id + '.html" class="btn">Knowledge</a>' +
+          '<a href="' + lab.id + '.html" class="btn btn-primary">打开实验</a>' +
+          '<a href="../knowledge/' + lab.id + '.html" class="btn">知识点</a>' +
         '</div>' +
       '</div>';
   }

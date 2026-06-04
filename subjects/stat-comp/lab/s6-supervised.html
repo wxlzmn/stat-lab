@@ -14,39 +14,39 @@
 <body>
 <main class="lab-container">
   <div style="text-align:center;padding:12px 0;">
-    <h2 style="color:#1e3a8a;">Linear Regression Lab</h2>
-    <p style="color:var(--text-muted);font-size:0.9rem;">OLS, Ridge, and Lasso regression with interactive visualization</p>
+    <h2 style="color:#1e3a8a;">线性回归实验</h2>
+    <p style="color:var(--text-muted);font-size:0.9rem;">OLS、Ridge 和 Lasso 回归的交互式对比可视化</p>
   </div>
 
   <div class="lab-layout">
     <div class="lab-editor" style="flex:0.4;">
       <div class="lab-editor-header">
-        <span>Controls</span>
+        <span>控制面板</span>
       </div>
       <div style="padding:20px;color:#e2e8f0;overflow-y:auto;flex:1;">
         <div style="margin-bottom:16px;">
-          <label style="display:block;color:#94a3b8;font-size:0.8rem;margin-bottom:4px;">Regression Type</label>
+          <label style="display:block;color:#94a3b8;font-size:0.8rem;margin-bottom:4px;">回归类型</label>
           <select id="reg-type" style="width:100%;padding:8px;background:#0f172a;color:#e2e8f0;border:1px solid #334155;border-radius:4px;font-size:0.9rem;">
-            <option value="ols">OLS (Ordinary Least Squares)</option>
-            <option value="ridge">Ridge (L2 Regularization)</option>
-            <option value="lasso">Lasso (L1 Regularization)</option>
+            <option value="ols">OLS (普通最小二乘法)</option>
+            <option value="ridge">Ridge (L2 正则化)</option>
+            <option value="lasso">Lasso (L1 正则化)</option>
           </select>
         </div>
         <div style="margin-bottom:16px;" id="alpha-group">
-          <label style="display:block;color:#94a3b8;font-size:0.8rem;margin-bottom:4px;">Regularization α: <span id="alpha-val">1.0</span></label>
+          <label style="display:block;color:#94a3b8;font-size:0.8rem;margin-bottom:4px;">正则化 α: <span id="alpha-val">1.0</span></label>
           <input type="range" id="alpha-slider" min="0.01" max="10" step="0.01" value="1" style="width:100%;accent-color:#3b82f6;">
         </div>
         <div style="margin-bottom:16px;">
-          <label style="display:block;color:#94a3b8;font-size:0.8rem;margin-bottom:4px;">Sample Size: <span id="n-val">30</span></label>
+          <label style="display:block;color:#94a3b8;font-size:0.8rem;margin-bottom:4px;">样本量: <span id="n-val">30</span></label>
           <input type="range" id="n-slider" min="10" max="100" step="5" value="30" style="width:100%;accent-color:#3b82f6;">
         </div>
         <div style="margin-bottom:16px;">
-          <label style="display:block;color:#94a3b8;font-size:0.8rem;margin-bottom:4px;">Noise Level: <span id="noise-val">1.0</span></label>
+          <label style="display:block;color:#94a3b8;font-size:0.8rem;margin-bottom:4px;">噪声水平: <span id="noise-val">1.0</span></label>
           <input type="range" id="noise-slider" min="0.1" max="5" step="0.1" value="1" style="width:100%;accent-color:#3b82f6;">
         </div>
-        <button id="run-btn" class="lab-run-btn" style="width:100%;padding:12px;margin-top:8px;">Regenerate & Fit</button>
+        <button id="run-btn" class="lab-run-btn" style="width:100%;padding:12px;margin-top:8px;">重新生成并拟合</button>
         <div id="coeff-display" style="margin-top:16px;font-size:0.85rem;color:#e2e8f0;line-height:1.6;">
-          <p style="color:#94a3b8;">Fitted coefficients will appear here...</p>
+          <p style="color:#94a3b8;">拟合系数将显示在这里...</p>
         </div>
       </div>
     </div>
@@ -60,7 +60,7 @@
 <script src="../../../shared/js/router.js"></script>
 <script>
 (function() {
-  injectNavbar('lab', 'stat-comp', 's6-supervised', 'Supervised Learning');
+  injectNavbar('lab', 'stat-comp', 's6-supervised', '监督学习');
 
   var canvas = document.getElementById('reg-canvas');
   var ctx = canvas.getContext('2d');
@@ -229,9 +229,9 @@
     var display = document.getElementById('coeff-display');
     if (display) {
       display.innerHTML = '' +
-        '<p><strong>' + regType + ' Results:</strong></p>' +
-        '<p>Intercept β₀ = <strong>' + intercept.toFixed(3) + '</strong></p>' +
-        '<p>Slope β₁ = <strong>' + slope.toFixed(3) + '</strong></p>' +
+        '<p><strong>' + typeNames[regType] + ' 结果：</strong></p>' +
+        '<p>截距 β₀ = <strong>' + intercept.toFixed(3) + '</strong></p>' +
+        '<p>斜率 β₁ = <strong>' + slope.toFixed(3) + '</strong></p>' +
         (r2 !== null ? '<p>R² = <strong>' + r2.toFixed(4) + '</strong></p>' : '');
     }
 

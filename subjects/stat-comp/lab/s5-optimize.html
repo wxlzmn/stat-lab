@@ -14,44 +14,44 @@
 <body>
 <main class="lab-container">
   <div style="text-align:center;padding:12px 0;">
-    <h2 style="color:#1e3a8a;">Gradient Descent Lab</h2>
-    <p style="color:var(--text-muted);font-size:0.9rem;">Interactive visualization of gradient descent optimization</p>
+    <h2 style="color:#1e3a8a;">梯度下降实验</h2>
+    <p style="color:var(--text-muted);font-size:0.9rem;">梯度下降优化算法的交互式可视化</p>
   </div>
 
   <div class="lab-layout">
     <div class="lab-editor" style="flex:0.4;">
       <div class="lab-editor-header">
-        <span>Parameters</span>
+        <span>参数设置</span>
       </div>
       <div style="padding:20px;color:#e2e8f0;overflow-y:auto;flex:1;">
         <div style="margin-bottom:16px;">
-          <label style="display:block;color:#94a3b8;font-size:0.8rem;margin-bottom:4px;">Function Type</label>
+          <label style="display:block;color:#94a3b8;font-size:0.8rem;margin-bottom:4px;">函数类型</label>
           <select id="func-type" style="width:100%;padding:8px;background:#0f172a;color:#e2e8f0;border:1px solid #334155;border-radius:4px;font-size:0.9rem;">
-            <option value="quadratic">Quadratic: f(x,y) = x² + y²</option>
+            <option value="quadratic">二次函数: f(x,y) = x² + y²</option>
             <option value="rosenbrock">Rosenbrock: f(x,y) = (1-x)² + 100(y-x²)²</option>
           </select>
         </div>
         <div style="margin-bottom:16px;">
-          <label style="display:block;color:#94a3b8;font-size:0.8rem;margin-bottom:4px;">Learning Rate: <span id="lr-val">0.1</span></label>
+          <label style="display:block;color:#94a3b8;font-size:0.8rem;margin-bottom:4px;">学习率: <span id="lr-val">0.1</span></label>
           <input type="range" id="lr-slider" min="0.01" max="0.5" step="0.01" value="0.1" style="width:100%;accent-color:#3b82f6;">
         </div>
         <div style="margin-bottom:16px;">
-          <label style="display:block;color:#94a3b8;font-size:0.8rem;margin-bottom:4px;">Iterations: <span id="iter-val">20</span></label>
+          <label style="display:block;color:#94a3b8;font-size:0.8rem;margin-bottom:4px;">迭代次数: <span id="iter-val">20</span></label>
           <input type="range" id="iter-slider" min="5" max="100" step="5" value="20" style="width:100%;accent-color:#3b82f6;">
         </div>
         <div style="margin-bottom:16px;">
-          <label style="display:block;color:#94a3b8;font-size:0.8rem;margin-bottom:4px;">Start X: <span id="sx-val">8.0</span></label>
+          <label style="display:block;color:#94a3b8;font-size:0.8rem;margin-bottom:4px;">初始 X: <span id="sx-val">8.0</span></label>
           <input type="range" id="sx-slider" min="-10" max="10" step="0.5" value="8" style="width:100%;accent-color:#f59e0b;">
         </div>
         <div style="margin-bottom:16px;">
-          <label style="display:block;color:#94a3b8;font-size:0.8rem;margin-bottom:4px;">Start Y: <span id="sy-val">8.0</span></label>
+          <label style="display:block;color:#94a3b8;font-size:0.8rem;margin-bottom:4px;">初始 Y: <span id="sy-val">8.0</span></label>
           <input type="range" id="sy-slider" min="-10" max="10" step="0.5" value="8" style="width:100%;accent-color:#f59e0b;">
         </div>
-        <button id="run-btn" class="lab-run-btn" style="width:100%;padding:12px;margin-top:8px;">Run Gradient Descent</button>
+        <button id="run-btn" class="lab-run-btn" style="width:100%;padding:12px;margin-top:8px;">运行梯度下降</button>
         <div style="margin-top:16px;font-size:0.8rem;color:#94a3b8;line-height:1.6;">
-          <p><strong>Gradient Descent Algorithm:</strong></p>
+          <p><strong>梯度下降算法：</strong></p>
           <p>θ<sub>t+1</sub> = θ<sub>t</sub> - η · ∇f(θ<sub>t</sub>)</p>
-          <p style="margin-top:8px;">Observe how the learning rate η affects convergence. Too large → divergence. Too small → slow convergence.</p>
+          <p style="margin-top:8px;">观察学习率 η 如何影响收敛：太大 → 发散；太小 → 收敛缓慢。</p>
         </div>
       </div>
     </div>
@@ -66,7 +66,7 @@
 <script src="../../../shared/js/viz-gd.js"></script>
 <script>
 (function() {
-  injectNavbar('lab', 'stat-comp', 's5-optimize', 'Optimization Methods');
+  injectNavbar('lab', 'stat-comp', 's5-optimize', '优化方法');
 
   var canvas = document.getElementById('gd-canvas');
   var runBtn = document.getElementById('run-btn');

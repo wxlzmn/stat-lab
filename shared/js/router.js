@@ -133,6 +133,10 @@ function switchSubject(subjectId) {
     depth = '../../../../';
   } else if (path.indexOf('/subjects/') !== -1) {
     depth = '../../../';
+  } else if (path.indexOf('/dashboard/') !== -1 || path.indexOf('/exam/') !== -1 ||
+             path.indexOf('/search/') !== -1 || path.indexOf('/flashcards/') !== -1 ||
+             path.indexOf('/errors/') !== -1 || path.indexOf('/login/') !== -1) {
+    depth = '../';
   } else {
     depth = '';
   }

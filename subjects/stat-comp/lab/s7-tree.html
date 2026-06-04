@@ -14,39 +14,39 @@
 <body>
 <main class="lab-container">
   <div style="text-align:center;padding:12px 0;">
-    <h2 style="color:#1e3a8a;">Decision Tree Lab</h2>
-    <p style="color:var(--text-muted);font-size:0.9rem;">Interactive decision boundary visualization for classification trees</p>
+    <h2 style="color:#1e3a8a;">决策树实验</h2>
+    <p style="color:var(--text-muted);font-size:0.9rem;">分类树决策边界的交互式可视化</p>
   </div>
 
   <div class="lab-layout">
     <div class="lab-editor" style="flex:0.4;">
       <div class="lab-editor-header">
-        <span>Parameters</span>
+        <span>参数设置</span>
       </div>
       <div style="padding:20px;color:#e2e8f0;overflow-y:auto;flex:1;">
         <div style="margin-bottom:16px;">
-          <label style="display:block;color:#94a3b8;font-size:0.8rem;margin-bottom:4px;">Max Depth: <span id="depth-val">3</span></label>
+          <label style="display:block;color:#94a3b8;font-size:0.8rem;margin-bottom:4px;">最大深度: <span id="depth-val">3</span></label>
           <input type="range" id="depth-slider" min="1" max="6" step="1" value="3" style="width:100%;accent-color:#3b82f6;">
         </div>
         <div style="margin-bottom:16px;">
-          <label style="display:block;color:#94a3b8;font-size:0.8rem;margin-bottom:4px;">Sample Size: <span id="n-val">50</span></label>
+          <label style="display:block;color:#94a3b8;font-size:0.8rem;margin-bottom:4px;">样本量: <span id="n-val">50</span></label>
           <input type="range" id="n-slider" min="20" max="150" step="10" value="50" style="width:100%;accent-color:#3b82f6;">
         </div>
         <div style="margin-bottom:16px;">
-          <label style="display:block;color:#94a3b8;font-size:0.8rem;margin-bottom:4px;">Data Pattern</label>
+          <label style="display:block;color:#94a3b8;font-size:0.8rem;margin-bottom:4px;">数据模式</label>
           <select id="pattern" style="width:100%;padding:8px;background:#0f172a;color:#e2e8f0;border:1px solid #334155;border-radius:4px;font-size:0.9rem;">
-            <option value="quadrants">Two Clusters (Quadrants)</option>
-            <option value="circle">Circle-in-Circle</option>
-            <option value="stripes">Horizontal Stripes</option>
+            <option value="quadrants">两簇 (四象限)</option>
+            <option value="circle">同心圆</option>
+            <option value="stripes">水平条纹</option>
           </select>
         </div>
-        <button id="run-btn" class="lab-run-btn" style="width:100%;padding:12px;margin-top:8px;">Regenerate & Build Tree</button>
+        <button id="run-btn" class="lab-run-btn" style="width:100%;padding:12px;margin-top:8px;">重新生成并构建树</button>
         <div id="tree-info" style="margin-top:16px;font-size:0.8rem;color:#94a3b8;line-height:1.6;">
-          <p><strong>Decision Tree Algorithm (CART):</strong></p>
-          <p>1. Select best feature and split point (minimize Gini impurity)</p>
-          <p>2. Partition data into left/right child nodes</p>
-          <p>3. Recurse until max depth or pure node</p>
-          <p style="margin-top:8px;">Observe how deeper trees create more complex decision boundaries (overfitting risk!).</p>
+          <p><strong>决策树算法 (CART)：</strong></p>
+          <p>1. 选择最佳特征和分割点（最小化 Gini 不纯度）</p>
+          <p>2. 将数据划分到左/右子节点</p>
+          <p>3. 递归直到最大深度或节点纯净</p>
+          <p style="margin-top:8px;">观察更深的树如何产生更复杂的决策边界（过拟合风险！）</p>
         </div>
       </div>
     </div>
@@ -61,7 +61,7 @@
 <script src="../../../shared/js/viz-tree.js"></script>
 <script>
 (function() {
-  injectNavbar('lab', 'stat-comp', 's7-tree', 'Tree Models');
+  injectNavbar('lab', 'stat-comp', 's7-tree', '树模型');
 
   function run() {
     var config = {
