@@ -1,189 +1,175 @@
-var GDVisualizer = {
-  init: function(canvasId, config) {
-    var canvas = document.getElementById(canvasId);
+/**
+ * GDVisualizer — 梯度下降 2D 可视化
+ * 用法: GDVisualizer.init('canvas-id', { function, learningRate, iterations, startX, startY })
+ */
+var GDVisualizer = (function() {
+  'use strict';
+
+  var canvas, ctx, w, h;
+  var margin = { left: 70, bottom: 50, top: 20, right: 20 };
+
+  function f_quadratic(x, y) { return x * x + y * y; }
+  function grad_quadratic(x, y) { return [2 * x, 2 * y]; }
+
+  function f_rosenbrock(x, y) {
+    return Math.pow(1 - x, 2) + 100 * Math.pow(y - x * x, 2);
+  }
+  function grad_rosenbrock(x, y) {
+    var dx = -2 * (1 - x) - 400 * x * (y - x * x);
+    var dy = 200 * (y - x * x);
+    return [dx, dy];
+  }
+
+  function init(canvasId, config) {
+    config = config || {};
+    canvas = document.getElementById(canvasId);
     if (!canvas) return;
-    var ctx = canvas.getContext('2d');
-    var w = canvas.width, h = canvas.height;
-    var lr = config.learningRate || 0.1;
-    var iterations = config.iterations || 20;
-    var startX = config.startX || 8;
-    var startY = config.startY || 8;
+    ctx = canvas.getContext('2d');
+    w = canvas.width;
+    h = canvas.height;
+
     var funcType = config.function || 'quadratic';
+    var lr = config.learningRate || 0.1;
+    var iters = config.iterations || 20;
+    var sx = config.startX || 8;
+    var sy = config.startY || 8;
 
+    var f, grad, bounds;
+    if (funcType === 'rosenbrock') {
+      f = f_rosenbrock; grad = grad_rosenbrock;
+      bounds = { xMin: -2, xMax: 2, yMin: -1, yMax: 5 };
+    } else {
+      f = f_quadratic; grad = grad_quadratic;
+      var lim = Math.max(Math.abs(sx), Math.abs(sy)) + 2;
+      bounds = { xMin: -lim, xMax: lim, yMin: -lim, yMax: lim };
+    }
+
+    var path = [];
+    var x = sx, y = sy;
+    for (var i = 0; i <= iters; i++) {
+      path.push({ x: x, y: y, f: f(x, y) });
+      var g = grad(x, y);
+      x = x - lr * g[0];
+      y = y - lr * g[1];
+    }
+    draw(funcType, bounds, path, lr);
+  }
+
+  function draw(funcType, bounds, path, lr) {
     ctx.clearRect(0, 0, w, h);
-    this.drawContour(ctx, w, h, funcType);
-    this.drawPath(ctx, w, h, startX, startY, lr, iterations, funcType);
-  },
+    var pw = w - margin.left - margin.right;
+    var ph = h - margin.top - margin.bottom;
+    var xMin = bounds.xMin, xMax = bounds.xMax;
+    var yMin = bounds.yMin, yMax = bounds.yMax;
 
-  drawContour: function(ctx, w, h, funcType) {
-    var cx = w / 2, cy = h / 2, scale = 20;
+    function toX(val) { return margin.left + (val - xMin) / (xMax - xMin) * pw; }
+    function toY(val) { return margin.top + (1 - (val - yMin) / (yMax - yMin)) * ph; }
 
-    // Draw grid
-    ctx.strokeStyle = '#f1f5f9';
-    ctx.lineWidth = 0.5;
-    for (var gx = 0; gx < w; gx += 40) {
-      ctx.beginPath(); ctx.moveTo(gx, 0); ctx.lineTo(gx, h); ctx.stroke();
-    }
-    for (var gy = 0; gy < h; gy += 40) {
-      ctx.beginPath(); ctx.moveTo(0, gy); ctx.lineTo(w, gy); ctx.stroke();
-    }
-
-    // Draw contour ellipses for quadratic (z = x^2 + y^2)
-    if (funcType === 'quadratic') {
-      for (var r = 1; r < 12; r++) {
-        ctx.beginPath();
-        ctx.ellipse(cx, cy, r * scale, r * scale, 0, 0, Math.PI * 2);
-        ctx.strokeStyle = r % 3 === 0 ? '#cbd5e1' : '#e2e8f0';
-        ctx.lineWidth = r % 3 === 0 ? 1 : 0.5;
-        ctx.stroke();
+    // Heatmap
+    var grid = 50;
+    var values = [];
+    var fMin = Infinity, fMax = -Infinity;
+    for (var gi = 0; gi <= grid; gi++) {
+      for (var gj = 0; gj <= grid; gj++) {
+        var cx = xMin + (xMax - xMin) * gi / grid;
+        var cy = yMin + (yMax - yMin) * gj / grid;
+        var fVal = funcType === 'rosenbrock' ?
+          Math.pow(1 - cx, 2) + 100 * Math.pow(cy - cx * cx, 2) :
+          cx * cx + cy * cy;
+        if (fVal < fMin) fMin = fVal;
+        if (fVal > fMax) fMax = fVal;
+        values.push({ x: cx, y: cy, f: fVal });
       }
-    } else if (funcType === 'rosenbrock') {
-      // Rosenbrock: banana-shaped contours (simplified)
-      for (var r = 1; r < 10; r++) {
-        ctx.beginPath();
-        var ry = r * scale * 0.7;
-        ctx.ellipse(cx + 40, cy, r * scale * 0.5, ry, -0.3, 0, Math.PI * 2);
-        ctx.strokeStyle = r % 3 === 0 ? '#cbd5e1' : '#e2e8f0';
-        ctx.lineWidth = r % 3 === 0 ? 1 : 0.5;
-        ctx.stroke();
-      }
+    }
+
+    var cellW = pw / grid, cellH = ph / grid;
+    for (var vi = 0; vi < values.length; vi++) {
+      var v = values[vi];
+      var t = (v.f - fMin) / (fMax - fMin + 1e-10);
+      var r = Math.floor(30 + 200 * t);
+      var g = Math.floor(30 + 200 * (1 - t));
+      var b = Math.floor(60 + 180 * (1 - t));
+      ctx.fillStyle = 'rgb(' + r + ',' + g + ',' + b + ')';
+      ctx.fillRect(toX(v.x) - cellW / 2, toY(v.y) - cellH / 2, cellW + 1, cellH + 1);
     }
 
     // Axes
+    ctx.strokeStyle = '#94a3b8'; ctx.lineWidth = 1.5;
     ctx.beginPath();
-    ctx.moveTo(cx, 0); ctx.lineTo(cx, h);
-    ctx.moveTo(0, cy); ctx.lineTo(w, cy);
-    ctx.strokeStyle = '#94a3b8';
-    ctx.lineWidth = 1.5;
+    var ax0 = toY(0);
+    if (ax0 > margin.top && ax0 < margin.top + ph)
+      { ctx.moveTo(margin.left, ax0); ctx.lineTo(margin.left + pw, ax0); }
+    var ay0 = toX(0);
+    if (ay0 > margin.left && ay0 < margin.left + pw)
+      { ctx.moveTo(ay0, margin.top); ctx.lineTo(ay0, margin.top + ph); }
     ctx.stroke();
 
-    // Axis labels
-    ctx.fillStyle = '#64748b';
-    ctx.font = '11px sans-serif';
-    ctx.fillText('θ₁', w - 20, cy - 8);
-    ctx.fillText('θ₂', cx + 6, 16);
-  },
+    ctx.lineWidth = 2; ctx.strokeStyle = '#475569';
+    ctx.beginPath();
+    ctx.moveTo(margin.left, margin.top); ctx.lineTo(margin.left, margin.top + ph);
+    ctx.moveTo(margin.left, margin.top + ph); ctx.lineTo(margin.left + pw, margin.top + ph);
+    ctx.stroke();
 
-  drawPath: function(ctx, w, h, startX, startY, lr, iters, funcType) {
-    var cx = w / 2, cy = h / 2, scale = 20;
-    var points = [{x: startX, y: startY}];
-    var px = startX, py = startY;
-
-    for (var i = 0; i < iters; i++) {
-      var gx, gy;
-      if (funcType === 'rosenbrock') {
-        // Rosenbrock: f(x,y) = (1-x)^2 + 100*(y-x^2)^2
-        gx = -2 * (1 - px) - 400 * px * (py - px * px);
-        gy = 200 * (py - px * px);
-      } else {
-        // Quadratic: f(x,y) = x^2 + y^2
-        gx = 2 * px;
-        gy = 2 * py;
-      }
-      px = px - lr * gx;
-      py = py - lr * gy;
-      // Clamp for display
-      px = Math.max(-12, Math.min(12, px));
-      py = Math.max(-12, Math.min(12, py));
-      points.push({x: px, y: py});
-
-      // Early stop if converged
-      if (Math.abs(gx) < 0.001 && Math.abs(gy) < 0.001) break;
+    // Ticks
+    ctx.fillStyle = '#64748b'; ctx.font = '11px sans-serif';
+    ctx.textAlign = 'center';
+    var xStep = (xMax - xMin) > 10 ? 2 : 1;
+    for (var tx = Math.ceil(xMin); tx <= xMax; tx += xStep) {
+      ctx.fillText(tx, toX(tx), margin.top + ph + 16);
+      ctx.beginPath(); ctx.moveTo(toX(tx), margin.top + ph); ctx.lineTo(toX(tx), margin.top + ph + 4); ctx.stroke();
+    }
+    ctx.textAlign = 'right';
+    var yStep = (yMax - yMin) > 10 ? 2 : 1;
+    for (var ty = Math.ceil(yMin); ty <= yMax; ty += yStep) {
+      ctx.fillText(ty, margin.left - 6, toY(ty) + 4);
+      ctx.beginPath(); ctx.moveTo(margin.left - 4, toY(ty)); ctx.lineTo(margin.left, toY(ty)); ctx.stroke();
     }
 
-    // Draw path line with gradient color
-    for (var j = 1; j < points.length; j++) {
-      var sx = cx + points[j-1].x * scale;
-      var sy = cy + points[j-1].y * scale;
-      var ex = cx + points[j].x * scale;
-      var ey = cy + points[j].y * scale;
+    ctx.textAlign = 'center';
+    ctx.fillText('x', margin.left + pw / 2, margin.top + ph + 38);
+    ctx.save();
+    ctx.translate(12, margin.top + ph / 2);
+    ctx.rotate(-Math.PI / 2);
+    ctx.fillText('y', 0, 0);
+    ctx.restore();
 
-      ctx.beginPath();
-      ctx.moveTo(sx, sy);
-      ctx.lineTo(ex, ey);
-
-      // Color gradient: amber → blue as it converges
-      var progress = j / points.length;
-      var r = Math.round(245 - progress * 186);
-      var gVal = Math.round(158 - progress * 99);
-      var b = Math.round(11 + progress * 235);
-      ctx.strokeStyle = 'rgb(' + r + ',' + gVal + ',' + b + ')';
-      ctx.lineWidth = 2.5;
-      ctx.stroke();
+    // Path
+    for (var pi = 0; pi < path.length; pi++) {
+      var p = path[pi];
+      var r = pi === 0 ? 5 : pi === path.length - 1 ? 5 : 3;
+      ctx.beginPath(); ctx.arc(toX(p.x), toY(p.y), r, 0, Math.PI * 2);
+      ctx.fillStyle = pi === 0 ? '#f59e0b' : pi === path.length - 1 ? '#22c55e' : '#ef4444';
+      ctx.fill();
+      ctx.strokeStyle = '#fff'; ctx.lineWidth = 1; ctx.stroke();
     }
 
-    // Start marker
-    var sx0 = cx + startX * scale;
-    var sy0 = cy + startY * scale;
-    this.drawDot(ctx, sx0, sy0, '#f59e0b', 'Start (' + startX.toFixed(1) + ',' + startY.toFixed(1) + ')');
-
-    // End marker
-    var lastP = points[points.length - 1];
-    var ex0 = cx + lastP.x * scale;
-    var ey0 = cy + lastP.y * scale;
-    this.drawDot(ctx, ex0, ey0, '#22c55e', 'End (' + lastP.x.toFixed(2) + ',' + lastP.y.toFixed(2) + ')');
+    ctx.strokeStyle = '#fff'; ctx.lineWidth = 2;
+    ctx.setLineDash([4, 3]);
+    ctx.beginPath();
+    ctx.moveTo(toX(path[0].x), toY(path[0].y));
+    for (var pj = 1; pj < path.length; pj++)
+      ctx.lineTo(toX(path[pj].x), toY(path[pj].y));
+    ctx.stroke();
+    ctx.setLineDash([]);
 
     // Legend
-    ctx.fillStyle = '#1e293b';
-    ctx.font = 'bold 12px sans-serif';
-    ctx.fillText('lr=' + lr + ', iters=' + (points.length - 1), 12, h - 12);
-    ctx.fillText('● Start', 12, 20);
-    ctx.fillText('● End', 12, 36);
-    ctx.fillStyle = '#f59e0b';
-    ctx.fillText('●', 3, 21);
-    ctx.fillStyle = '#22c55e';
-    ctx.fillText('●', 3, 37);
-  },
-
-  drawDot: function(ctx, x, y, color, label) {
-    // Outer glow
-    ctx.beginPath();
-    ctx.arc(x, y, 8, 0, Math.PI * 2);
-    ctx.fillStyle = color;
-    ctx.globalAlpha = 0.3;
-    ctx.fill();
-    ctx.globalAlpha = 1;
-
-    // Inner dot
-    ctx.beginPath();
-    ctx.arc(x, y, 5, 0, Math.PI * 2);
-    ctx.fillStyle = color;
-    ctx.fill();
-    ctx.strokeStyle = '#fff';
-    ctx.lineWidth = 2;
-    ctx.stroke();
-
-    // Label
-    ctx.fillStyle = '#1e293b';
-    ctx.font = 'bold 11px sans-serif';
-    var labelX = x + 12;
-    var labelY = y + 4;
-    if (labelX + ctx.measureText(label).width > ctx.canvas.width - 10) {
-      labelX = x - ctx.measureText(label).width - 12;
-    }
-    ctx.fillText(label, labelX, labelY);
+    var lx = margin.left + pw - 180, ly = margin.top + 8;
+    ctx.fillStyle = '#f59e0b'; ctx.fillRect(lx, ly, 10, 10);
+    ctx.fillStyle = '#1e293b'; ctx.textAlign = 'left';
+    ctx.fillText('Start  (' + path[0].x.toFixed(1) + ', ' + path[0].y.toFixed(1) + ')', lx + 14, ly + 9);
+    ly += 16;
+    ctx.strokeStyle = '#ef4444'; ctx.lineWidth = 1.5;
+    ctx.beginPath(); ctx.moveTo(lx + 1, ly + 5); ctx.lineTo(lx + 9, ly + 5); ctx.stroke();
+    ctx.fillText('Path (' + (path.length - 1) + ' steps)', lx + 14, ly + 9);
+    ly += 16;
+    var last = path[path.length - 1];
+    ctx.fillStyle = '#22c55e'; ctx.fillRect(lx, ly, 10, 10);
+    ctx.fillText('End    (' + last.x.toFixed(3) + ', ' + last.y.toFixed(3) + ')', lx + 14, ly + 9);
+    ly += 16;
+    ctx.fillText('f(x,y) = ' + last.f.toFixed(4), lx + 14, ly + 9);
+    ly += 16;
+    ctx.fillText('η = ' + lr, lx + 14, ly + 9);
   }
-};
 
-// Auto-initialize visualization blocks when DOM is ready
-(function() {
-  if (typeof document !== 'undefined') {
-    var initViz = function() {
-      var containers = document.querySelectorAll('.viz-container[data-algo="gradient-descent"]');
-      for (var i = 0; i < containers.length; i++) {
-        var canvas = containers[i].querySelector('canvas');
-        if (canvas) {
-          var config = {};
-          try { config = JSON.parse(containers[i].getAttribute('data-config') || '{}'); } catch(e) {}
-          GDVisualizer.init(canvas.id, config);
-        }
-      }
-    };
-
-    if (document.readyState === 'loading') {
-      document.addEventListener('DOMContentLoaded', function() { setTimeout(initViz, 200); });
-    } else {
-      setTimeout(initViz, 200);
-    }
-  }
+  return { init: init };
 })();
