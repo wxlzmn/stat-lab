@@ -53,12 +53,15 @@ function toggleMobileMenu() {
 function injectNavbar(pageType, subjectId, chapterId, chapterTitle) {
   var rootPageTypes = { home:1, dashboard:1, exam:1, errors:1, search:1, flashcards:1, login:1 };
   var deepPageTypes = { knowledge:1, quiz:1, lab:1 };
+  var subjPageTypes = { 'subject-home':1 };  // subjects/<id>/index.html — 2 levels deep
   // home is at true root (index.html), other root-type pages are one level deep
   var depth;
   if (pageType === 'home') {
     depth = '';
   } else if (rootPageTypes[pageType]) {
     depth = '../';
+  } else if (subjPageTypes[pageType]) {
+    depth = '../../';
   } else if (deepPageTypes[pageType]) {
     depth = '../../../../';
   } else {
@@ -179,6 +182,7 @@ function toggleTheme() {
 }
 
 (function() {
+  try {
   // Check localStorage first, then fall back to subject detection
   var saved = localStorage.getItem('statlab_theme');
   if (saved === 'warm' || saved === 'academic') {
@@ -195,6 +199,7 @@ function toggleTheme() {
     autoTheme = 'warm';
   }
   applyTheme(autoTheme);
+  } catch(e) { console.warn('Theme init failed:', e); }
 })();
 
 function renderKnowledgePage(subjectId, chapterId) {
