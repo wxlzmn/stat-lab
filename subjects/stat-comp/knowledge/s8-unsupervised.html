@@ -24,6 +24,7 @@
 <script src="../../../shared/js/pyodide-runtime.js"></script>
 <script src="../data/knowledge.js"></script>
 <script src="../../../shared/js/router.js"></script>
+<script src="../../../shared/js/annotations.js"></script>
 <script src="../../../shared/vendor/katex.min.js"></script>
 <script src="../../../shared/vendor/auto-render.min.js"></script>
 <script>
@@ -32,6 +33,9 @@ var CHAPTER_ID = 's8-unsupervised';
   if (typeof PyodideRuntime !== 'undefined') PyodideRuntime.init();
   injectNavbar('knowledge', 'stat-comp', CHAPTER_ID);
   renderKnowledgePage('stat-comp', CHAPTER_ID);
+  if (typeof AnnotationSystem !== 'undefined') {
+    AnnotationSystem.init('subjects/stat-comp/knowledge/s8-unsupervised/', '#content-area');
+  }
 })();
 </script>
 </body>

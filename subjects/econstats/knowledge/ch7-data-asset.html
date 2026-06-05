@@ -24,6 +24,7 @@
 <script src="../data/cases.js"></script>
 <script src="../data/glossary.js"></script>
 <script src="../../../shared/js/router.js"></script>
+<script src="../../../shared/js/annotations.js"></script>
 <script src="../../../shared/vendor/katex.min.js"></script>
 <script src="../../../shared/vendor/auto-render.min.js"></script>
 <script>
@@ -31,6 +32,9 @@ var CHAPTER_ID = 'ch7-data-asset';
 (function() {
   injectNavbar('knowledge', 'econstats', CHAPTER_ID);
   renderKnowledgePage('econstats', CHAPTER_ID);
+  if (typeof AnnotationSystem !== 'undefined') {
+    AnnotationSystem.init('subjects/econstats/knowledge/ch7-data-asset/', '#content-area');
+  }
 })();
 </script>
 </body>
