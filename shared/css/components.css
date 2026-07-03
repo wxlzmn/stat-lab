@@ -230,6 +230,10 @@
   color: #fff;
 }
 
+.subject-card {
+  animation-delay: calc(var(--i, 0) * 100ms);
+}
+
 /* ===== Module Card ===== */
 .module-card {
   background: var(--bg-card);
