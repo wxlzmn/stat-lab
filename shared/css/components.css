@@ -136,13 +136,13 @@
   background: var(--bg-card);
   border: 1px solid var(--border);
   border-radius: var(--radius);
-  padding: 32px 28px;
+  padding: 36px 28px;
   box-shadow: var(--shadow-sm);
   text-align: center;
   transition: transform var(--transition-base), box-shadow var(--transition-base), border-color var(--transition-fast);
   position: relative;
   overflow: hidden;
-  animation: fadeSlideIn 0.35s ease-out both;
+  animation: fadeSlideIn 0.4s ease-out both;
 }
 
 .subject-card::before {
@@ -151,30 +151,36 @@
   top: 0;
   left: 0;
   right: 0;
-  height: 2px;
+  height: 3px;
   background: linear-gradient(90deg, var(--subject-color), var(--subject-color-deep));
-  opacity: 0;
-  transition: opacity var(--transition-fast);
+  opacity: 0.6;
+  transition: opacity var(--transition-fast), height var(--transition-fast);
 }
 
 .subject-card:hover {
-  transform: translateY(-3px);
-  box-shadow: var(--shadow-hover);
+  transform: translateY(-6px);
+  box-shadow: 0 12px 28px rgba(0, 0, 0, 0.1), 0 4px 12px rgba(0, 0, 0, 0.06);
   border-color: var(--subject-color);
 }
 
 .subject-card:hover::before {
   opacity: 1;
+  height: 4px;
 }
 
 .subject-card .card-icon {
-  font-size: 2.8rem;
+  font-size: 4rem;
   display: block;
   margin-bottom: 16px;
+  transition: transform var(--transition-base);
+}
+
+.subject-card:hover .card-icon {
+  transform: scale(1.1);
 }
 
 .subject-card h3 {
-  font-size: 1.35rem;
+  font-size: 1.75rem;
   color: var(--text-primary);
   margin-bottom: 8px;
   font-weight: 700;
@@ -182,45 +188,45 @@
 
 .subject-card p {
   color: var(--text-secondary);
-  margin-bottom: 18px;
-  font-size: 0.9rem;
+  margin-bottom: 14px;
+  font-size: 0.95rem;
   line-height: 1.65;
 }
 
 .subject-card .card-meta {
-  font-size: 0.8rem;
+  font-size: 0.82rem;
   color: var(--text-muted);
-  margin-bottom: 18px;
+  margin-bottom: 20px;
 }
 
 .subject-card .card-meta span {
   display: inline-block;
-  padding: 3px 10px;
-  border-radius: 4px;
+  padding: 4px 12px;
+  border-radius: 6px;
   background: var(--accent-soft);
   color: var(--accent);
-  margin: 2px 3px;
-  font-size: 0.75rem;
+  margin: 3px 4px;
+  font-size: 0.78rem;
   font-weight: 600;
   border: 1px solid var(--accent-border);
 }
 
 .subject-card .enter-btn {
   display: inline-block;
-  padding: 10px 32px;
+  padding: 12px 36px;
   background: var(--accent);
   color: #fff;
   border-radius: var(--radius-sm);
   font-weight: 600;
-  font-size: 0.9rem;
+  font-size: 0.95rem;
   text-decoration: none;
   transition: background var(--transition-fast), transform var(--transition-fast), box-shadow var(--transition-fast);
 }
 
 .subject-card .enter-btn:hover {
   background: var(--accent-hover);
-  transform: scale(1.03);
-  box-shadow: 0 2px 8px rgba(59, 130, 246, 0.3);
+  transform: scale(1.05);
+  box-shadow: 0 4px 16px rgba(59, 130, 246, 0.35);
   color: #fff;
 }
 

@@ -176,12 +176,15 @@
     var subj = SUBJECT_REGISTRY[i];
     var toolNames = { knowledge: '知识点', quiz: '测验', calculators: '计算器', lab: '实验' };
     var toolsHtml = subj.tools.map(function(t) { return '<span>' + (toolNames[t] || t) + '</span>'; }).join(' ');
+    var chapterCount = subj.chapters.length;
+    var questionCount = subj.id === 'econstats' ? '125题' : '100+题';
     var desc = subj.id === 'econstats' ? 'GDP核算、价格指数、产业统计、住户调查' : '模拟仿真、优化方法、机器学习、数据可视化';
     cardsHtml += '' +
       '<div class="subject-card" style="--i:' + i + ';border-color:var(--border);border-top:2px solid ' + subj.color + ';">' +
         '<span class="card-icon">' + subj.icon + '</span>' +
         '<h3 style="color:var(--text-primary);">' + subj.name + '</h3>' +
-        '<p>' + subj.chapters.length + ' 章节 · ' + desc + '</p>' +
+        '<p>' + desc + '</p>' +
+        '<div style="font-size:0.82rem;color:var(--text-muted);margin-bottom:10px;">' + chapterCount + ' 章节 · ' + questionCount + '</div>' +
         '<div class="card-meta">' + toolsHtml + '</div>' +
         '<a href="subjects/' + subj.id + '/index.html" class="enter-btn" style="background:var(--accent);">进入 →</a>' +
       '</div>';
