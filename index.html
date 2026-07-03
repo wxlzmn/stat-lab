@@ -59,27 +59,25 @@
 
   .hero-subtitle {
     font-size: 1.25rem;
-    color: #94a3b8;
+    color: #cbd5e1;
     opacity: 0;
     animation: fadeIn 0.8s ease-out 0.5s forwards;
     margin-bottom: 20px;
   }
 
-  @keyframes fadeIn {
-    to { opacity: 1; }
-  }
-
   .hero-divider {
-    width: 0;
+    width: 80px;
     height: 3px;
     background: linear-gradient(90deg, #3b82f6, #8b5cf6);
     border-radius: 2px;
     margin: 0 auto;
-    animation: expandWidth 1s ease-out 0.8s forwards;
+    transform: scaleX(0);
+    transform-origin: center;
+    animation: expandDivider 1s ease-out 0.8s forwards;
   }
 
-  @keyframes expandWidth {
-    to { width: 80px; }
+  @keyframes expandDivider {
+    to { transform: scaleX(1); }
   }
 
   </style>
@@ -135,7 +133,6 @@
   function animateCount(el) {
     var target = parseInt(el.getAttribute('data-target'));
     var duration = 1500;
-    var start = 0;
     var startTime = null;
 
     function step(timestamp) {
