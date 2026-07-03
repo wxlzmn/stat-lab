@@ -10,26 +10,106 @@
 <link rel="stylesheet" href="shared/css/pages.css">
 <link rel="stylesheet" href="shared/css/responsive.css">
 <style>
-  .home-hero { text-align: center; padding: 48px 20px 12px; position: relative; z-index: 1; }
-  .home-hero h1 { font-size: 2.2rem; color: var(--text-primary); margin-bottom: 8px; letter-spacing: -0.02em; }
-  .home-hero p { color: var(--text-secondary); font-size: 1rem; }
-  .home-hero .hero-divider { width: 48px; height: 2px; background: linear-gradient(90deg, var(--accent), var(--accent-hover)); border-radius: 1px; margin: 16px auto 12px; }
+  .hero-section {
+    position: relative;
+    width: 100%;
+    min-height: 420px;
+    background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    overflow: hidden;
+    padding: 40px 20px;
+  }
+
+  .hero-canvas {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 0;
+  }
+
+  .hero-content {
+    position: relative;
+    z-index: 1;
+  }
+
+  .hero-title {
+    font-family: var(--font-display);
+    font-size: 3.5rem;
+    font-weight: 800;
+    background: linear-gradient(135deg, #60a5fa, #a78bfa, #60a5fa);
+    background-size: 200% 200%;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    animation: shimmer 4s ease-in-out infinite;
+    margin-bottom: 12px;
+    letter-spacing: -0.03em;
+  }
+
+  @keyframes shimmer {
+    0%, 100% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+  }
+
+  .hero-subtitle {
+    font-size: 1.25rem;
+    color: #94a3b8;
+    opacity: 0;
+    animation: fadeIn 0.8s ease-out 0.5s forwards;
+    margin-bottom: 20px;
+  }
+
+  @keyframes fadeIn {
+    to { opacity: 1; }
+  }
+
+  .hero-divider {
+    width: 0;
+    height: 3px;
+    background: linear-gradient(90deg, #3b82f6, #8b5cf6);
+    border-radius: 2px;
+    margin: 0 auto;
+    animation: expandWidth 1s ease-out 0.8s forwards;
+  }
+
+  @keyframes expandWidth {
+    to { width: 80px; }
+  }
+
   .subject-card { animation-delay: calc(var(--i, 0) * 80ms); }
 </style>
 </head>
 <body>
 <main>
-  <div class="home-hero">
-    <h1>Stat-Lab</h1>
-    <p>统计学习平台 · 经济统计学 + 统计计算</p>
-    <div class="hero-divider"></div>
+  <div class="hero-section">
+    <canvas class="hero-canvas" id="particle-canvas"></canvas>
+    <div class="hero-content">
+      <h1 class="hero-title">Stat-Lab</h1>
+      <p class="hero-subtitle">统计学习平台 · 经济统计学 + 统计计算</p>
+      <div class="hero-divider"></div>
+    </div>
   </div>
   <div id="subject-cards" class="home-grid"></div>
 </main>
+<script src="shared/js/particle-network.js"></script>
 <script src="shared/js/storage.js"></script>
 <script src="shared/js/router.js"></script>
 <script>
 (function() {
+  // Initialize particle network
+  var canvas = document.getElementById('particle-canvas');
+  if (canvas) {
+    var parent = canvas.parentElement;
+    ParticleNetwork.init(canvas, parent.offsetWidth, parent.offsetHeight);
+  }
+
+  // ... rest of existing card rendering code unchanged ...
   var cardsHtml = '';
   for (var i = 0; i < SUBJECT_REGISTRY.length; i++) {
     var subj = SUBJECT_REGISTRY[i];
