@@ -95,6 +95,26 @@
       <div class="hero-divider"></div>
     </div>
   </div>
+  <div class="stats-bar" id="stats-bar">
+    <div class="stats-container">
+      <div class="stat-item">
+        <span class="stat-number" data-target="13">0</span>
+        <span class="stat-label">章节</span>
+      </div>
+      <div class="stat-item">
+        <span class="stat-number" data-target="250">0</span>
+        <span class="stat-label">题库</span>
+      </div>
+      <div class="stat-item">
+        <span class="stat-number" data-target="100">0</span>
+        <span class="stat-label">知识点</span>
+      </div>
+      <div class="stat-item">
+        <span class="stat-number" data-target="2">0</span>
+        <span class="stat-label">学科</span>
+      </div>
+    </div>
+  </div>
   <div id="subject-cards" class="home-grid"></div>
 </main>
 <script src="shared/js/particle-network.js"></script>
@@ -107,6 +127,47 @@
   if (canvas) {
     var parent = canvas.parentElement;
     ParticleNetwork.init(canvas, parent.offsetWidth, parent.offsetHeight);
+  }
+
+  // Stats counter animation
+  var statNumbers = document.querySelectorAll('.stat-number');
+  var counted = false;
+
+  function animateCount(el) {
+    var target = parseInt(el.getAttribute('data-target'));
+    var duration = 1500;
+    var start = 0;
+    var startTime = null;
+
+    function step(timestamp) {
+      if (!startTime) startTime = timestamp;
+      var progress = Math.min((timestamp - startTime) / duration, 1);
+      // Ease out cubic
+      var eased = 1 - Math.pow(1 - progress, 3);
+      el.textContent = Math.floor(eased * target);
+      if (progress < 1) {
+        requestAnimationFrame(step);
+      } else {
+        el.textContent = target + '+';
+      }
+    }
+
+    requestAnimationFrame(step);
+  }
+
+  // Trigger when stats bar enters viewport
+  if (typeof IntersectionObserver !== 'undefined') {
+    var statsBar = document.getElementById('stats-bar');
+    if (statsBar) {
+      var observer = new IntersectionObserver(function(entries) {
+        if (entries[0].isIntersecting && !counted) {
+          counted = true;
+          statNumbers.forEach(function(el) { animateCount(el); });
+          observer.disconnect();
+        }
+      }, { threshold: 0.5 });
+      observer.observe(statsBar);
+    }
   }
 
   // ... rest of existing card rendering code unchanged ...
