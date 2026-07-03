@@ -227,7 +227,7 @@ function renderKnowledgePage(subjectId, chapterId) {
         return '' +
           '<div class="content-block" id="section-' + i + '">' +
             '<h2>' + section.title + '</h2>' +
-            '<div style="margin-bottom:8px;">' + (section.keyPoints || []).map(function(kp) { return '<span class="tag">' + kp + '</span>'; }).join(' ') + '</div>' +
+            '<div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:18px;">' + (section.keyPoints || []).map(function(kp) { return '<span class="tag" style="font-size:0.85rem;padding:5px 14px;">' + kp + '</span>'; }).join('') + '</div>' +
             (section.content || []).map(function(block) { return renderContentBlock(block, subjectId); }).join('') +
           '</div>';
       }).join('');
@@ -255,11 +255,11 @@ function renderKnowledgePage(subjectId, chapterId) {
 
 function renderContentBlock(block, subjectId) {
   switch (block.type) {
-    case 'text': return '<div style="font-size:0.9rem;line-height:1.85;color:var(--text-body);margin:10px 0;">' + block.body + '</div>';
-    case 'formula': return '<div class="formula-block">' + (block.label ? '<div class="formula-label">' + block.label + '</div>' : '') + '<div>$$' + block.latex + '$$</div>' + (block.note ? '<div style="font-size:0.8rem;color:var(--text-muted);margin-top:6px;">' + block.note + '</div>' : '') + '</div>';
+    case 'text': return '<div style="font-size:1rem;line-height:1.9;color:var(--text-body);margin:12px 0;">' + block.body + '</div>';
+    case 'formula': return '<div class="formula-block">' + (block.label ? '<div class="formula-label">' + block.label + '</div>' : '') + '<div>$$' + block.latex + '$$</div>' + (block.note ? '<div style="font-size:0.9rem;color:var(--text-muted);margin-top:10px;">' + block.note + '</div>' : '') + '</div>';
     case 'highlight': return '<div class="highlight-box ' + (block.level || 'important') + '">' + block.body + '</div>';
     case 'comparison': return '<div style="margin:12px 0;">' + (block.title ? '<div style="font-weight:700;margin-bottom:6px;color:var(--text-primary);">' + block.title + '</div>' : '') + '<table class="comparison-table"><tbody>' + (block.rows || []).map(function(row, ri) { return '<tr>' + row.map(function(cell, ci) { return ri === 0 ? '<th>' + cell + '</th>' : '<td>' + cell + '</td>'; }).join('') + '</tr>'; }).join('') + '</tbody></table></div>';
-    case 'code': return '<div class="code-block">' + (block.language ? '<span class="code-lang">' + block.language + '</span>' : '') + (block.explain ? '<div class="code-explain">' + block.explain + '</div>' : '') + '<pre class="code-editor" contenteditable="true" spellcheck="false">' + (block.body || '') + '</pre>' + '<button class="code-run-btn" onclick="runCodeBlock(this)">&#9654; 运行</button>' + '<div class="code-live-output"></div>' + (block.caption ? '<div style="font-size:0.76rem;color:#64748b;margin-top:6px;padding:0 16px 12px;">' + block.caption + '</div>' : '') + '</div>';
+    case 'code': return '<div class="code-block">' + (block.language ? '<span class="code-lang">' + block.language + '</span>' : '') + (block.explain ? '<div class="code-explain">' + block.explain + '</div>' : '') + '<pre class="code-editor" contenteditable="true" spellcheck="false">' + (block.body || '') + '</pre>' + '<button class="code-run-btn" onclick="runCodeBlock(this)">&#9654; 运行</button>' + '<div class="code-live-output"></div>' + (block.caption ? '<div style="font-size:0.85rem;color:#64748b;margin-top:6px;padding:0 16px 12px;">' + block.caption + '</div>' : '') + '</div>';
     case 'case': {
       var caseData = null;
       var casesVar = subjectId === 'econstats' ? 'ECOSTATS_CASES' : null;
@@ -273,33 +273,33 @@ function renderContentBlock(block, subjectId) {
       if (!caseData) return '<div style="color:var(--warning);padding:16px;">未找到案例：' + (block.caseId || '未指定') + '</div>';
       return '<div style="border:1px solid var(--warning-border);border-radius:var(--radius);padding:18px;margin:16px 0;background:var(--warning-soft);">' +
         '<div style="font-weight:700;color:var(--text-primary);margin-bottom:8px;font-size:0.95rem;">' + caseData.title + '</div>' +
-        '<div style="font-size:0.82rem;color:var(--text-secondary);margin-bottom:8px;"><strong>背景：</strong> ' + caseData.background + '</div>' +
-        '<div style="margin:10px 0;"><strong>问题：</strong><ol>' + (caseData.questions || []).map(function(q) { return '<li style="font-size:0.85rem;margin:3px 0;">' + q + '</li>'; }).join('') + '</ol></div>' +
-        '<details style="margin-top:10px;"><summary style="cursor:pointer;color:var(--accent);font-weight:600;font-size:0.88rem;">分析与结论</summary>' +
-        '<div style="margin-top:8px;font-size:0.85rem;line-height:1.65;color:var(--text-body);"><strong>分析：</strong> ' + caseData.analysis + '</div>' +
-        '<div style="margin-top:6px;font-size:0.85rem;line-height:1.65;color:var(--text-body);"><strong>结论：</strong> ' + caseData.conclusion + '</div>' +
+        '<div style="font-size:0.92rem;color:var(--text-secondary);margin-bottom:8px;"><strong>背景：</strong> ' + caseData.background + '</div>' +
+        '<div style="margin:10px 0;"><strong>问题：</strong><ol>' + (caseData.questions || []).map(function(q) { return '<li style="font-size:0.95rem;margin:3px 0;">' + q + '</li>'; }).join('') + '</ol></div>' +
+        '<details style="margin-top:10px;"><summary style="cursor:pointer;color:var(--accent);font-weight:600;font-size:0.95rem;">分析与结论</summary>' +
+        '<div style="margin-top:8px;font-size:0.95rem;line-height:1.65;color:var(--text-body);"><strong>分析：</strong> ' + caseData.analysis + '</div>' +
+        '<div style="margin-top:6px;font-size:0.95rem;line-height:1.65;color:var(--text-body);"><strong>结论：</strong> ' + caseData.conclusion + '</div>' +
         '</details></div>';
     }
     case 'timeline': return '<div style="position:relative;padding:10px 0 10px 28px;border-left:2px solid var(--accent);margin:16px 0;">' + (block.events || []).map(function(ev) {
       return '<div style="position:relative;margin-bottom:14px;">' +
         '<div style="position:absolute;left:-33px;top:4px;width:10px;height:10px;background:var(--accent);border-radius:50%;border:2px solid #fff;box-shadow:0 0 0 2px var(--accent);"></div>' +
-        '<div style="font-weight:700;color:var(--text-primary);font-size:0.82rem;">' + (ev.year || '') + '</div>' +
-        '<div style="font-size:0.85rem;color:var(--text-body);">' + (ev.text || '') + '</div>' +
+        '<div style="font-weight:700;color:var(--text-primary);font-size:0.9rem;">' + (ev.year || '') + '</div>' +
+        '<div style="font-size:0.95rem;color:var(--text-body);">' + (ev.text || '') + '</div>' +
         '</div>';
     }).join('') + '</div>';
     case 'glossary': {
       var glosVar = subjectId === 'econstats' ? 'ECOSTATS_GLOSSARY' : null;
       if (!glosVar || typeof window[glosVar] === 'undefined' || !block.chapter || !block.terms) return '';
       var terms = block.terms.map(function(tid) { var chapTerms = window[glosVar][block.chapter] || []; var found = chapTerms.filter(function(t) { return t.id === tid; }); return found.length > 0 ? found[0] : null; }).filter(function(t) { return t !== null; });
-      return '<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:10px;margin:12px 0;">' + terms.map(function(t) {
-        return '<div style="border:1px solid var(--border);border-radius:var(--radius-sm);padding:12px;background:var(--bg-card);">';
+      return '<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:12px;margin:12px 0;">' + terms.map(function(t) {
+        return '<div style="border:1px solid var(--border);border-radius:var(--radius-sm);padding:14px;background:var(--bg-card);">';
       }).join('') + terms.map(function(t) {
-        return '<div style="font-weight:600;color:var(--text-primary);">' + t.term + (t.english ? ' <span style="font-size:0.72rem;color:var(--text-muted);font-weight:400;">' + t.english + '</span>' : '') + '</div>' +
-          '<div style="font-size:0.8rem;color:var(--text-body);line-height:1.55;margin-top:3px;">' + t.definition + '</div>' +
-          (t.formula ? '<div style="margin-top:5px;font-size:0.78rem;color:var(--accent);">$$' + t.formula + '$$</div>' : '');
+        return '<div style="font-weight:600;color:var(--text-primary);">' + t.term + (t.english ? ' <span style="font-size:0.82rem;color:var(--text-muted);font-weight:400;">' + t.english + '</span>' : '') + '</div>' +
+          '<div style="font-size:0.95rem;color:var(--text-body);line-height:1.55;margin-top:3px;">' + t.definition + '</div>' +
+          (t.formula ? '<div style="margin-top:5px;font-size:0.88rem;color:var(--accent);">$$' + t.formula + '$$</div>' : '');
       }).join('') + '</div>';
     }
-    case 'visualization': return '<div class="viz-container" id="viz-' + (block.algo || 'default') + '" data-algo="' + (block.algo || '') + '"><canvas id="viz-canvas-' + (block.algo || 'default') + '" width="600" height="400"></canvas>' + (block.caption ? '<div style="font-size:0.76rem;color:var(--text-muted);margin-top:6px;">' + block.caption + '</div>' : '') + '</div>';
+    case 'visualization': return '<div class="viz-container" id="viz-' + (block.algo || 'default') + '" data-algo="' + (block.algo || '') + '"><canvas id="viz-canvas-' + (block.algo || 'default') + '" width="600" height="400"></canvas>' + (block.caption ? '<div style="font-size:0.85rem;color:var(--text-muted);margin-top:6px;">' + block.caption + '</div>' : '') + '</div>';
     default: return '';
   }
 }
