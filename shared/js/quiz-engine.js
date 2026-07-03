@@ -21,7 +21,7 @@ var QuizEngine = {
     } catch(e) {
       console.error('QuizEngine.init failed:', e.message);
       var c = document.getElementById('quiz-container');
-      if (c) c.innerHTML = '<div style="text-align:center;padding:64px;color:#dc2626;">测验加载失败：' + e.message + '</div>';
+      if (c) c.innerHTML = '<div style="text-align:center;padding:64px;color:var(--danger);">测验加载失败：' + e.message + '</div>';
     }
   },
 
@@ -202,7 +202,7 @@ var QuizEngine = {
       var typeLabel = typeLabels[q.type] || q.type;
       var diffStars = '';
       for (var s = 0; s < (q.difficulty || 1); s++) diffStars += '⭐';
-      var diffBg = q.difficulty === 1 ? '#f0fdf4' : q.difficulty === 2 ? '#fef3c7' : '#fef2f2';
+      var diffBg = q.difficulty === 1 ? 'var(--success-soft)' : q.difficulty === 2 ? 'var(--warning-soft)' : 'var(--danger-soft)';
 
       var self = this;
       container.innerHTML = '' +
@@ -222,10 +222,10 @@ var QuizEngine = {
             var isCurrent2 = i === idx;
             var isSubmitted2 = self.state.submitted[self.state.questions[i].id];
             var isQCorrect2 = isSubmitted2 ? self.checkAnswer(self.state.questions[i], self.state.answers[self.state.questions[i].id]) : null;
-            var dotStyle = 'width:28px;height:28px;border-radius:50%;border:2px solid #fde68a;display:flex;align-items:center;justify-content:center;font-size:0.7rem;cursor:pointer;background:#fff;';
+            var dotStyle = 'width:28px;height:28px;border-radius:50%;border:2px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:0.7rem;cursor:pointer;background:var(--bg-card);';
             if (isCurrent2) dotStyle += 'border-color:var(--accent);background:var(--accent-soft);font-weight:700;';
-            if (isSubmitted2 && isQCorrect2) dotStyle += 'border-color:#22c55e;background:#f0fdf4;';
-            if (isSubmitted2 && isQCorrect2 === false) dotStyle += 'border-color:#dc2626;background:#fef2f2;';
+            if (isSubmitted2 && isQCorrect2) dotStyle += 'border-color:var(--success);background:var(--success-soft);';
+            if (isSubmitted2 && isQCorrect2 === false) dotStyle += 'border-color:var(--danger);background:var(--danger-soft);';
             return '<div style="' + dotStyle + '" onclick="QuizEngine.jumpToQuestion(' + i + ')" title="Q' + (i+1) + '">' + (i + 1) + '</div>';
           }).join('') +
         '</div>';
@@ -241,7 +241,7 @@ var QuizEngine = {
     } catch(e2) {
       console.error('QuizEngine.render failed:', e2.message);
       var c2 = document.getElementById('quiz-container');
-      if (c2) c2.innerHTML = '<div style="text-align:center;padding:64px;color:#dc2626;">渲染失败：' + e2.message + '</div>';
+      if (c2) c2.innerHTML = '<div style="text-align:center;padding:64px;color:var(--danger);">渲染失败：' + e2.message + '</div>';
     }
   },
 
@@ -263,11 +263,11 @@ var QuizEngine = {
 
       return '' +
         '<input type="text" id="fill-answer" placeholder="' + placeholder + '"' +
-        '  style="width:100%;padding:10px 14px;border:2px solid #fde68a;border-radius:8px;font-size:0.95rem;background:#fffbeb;"' +
+        '  style="width:100%;padding:10px 14px;border:1px solid var(--border-solid);border-radius:var(--radius-sm);font-size:0.95rem;background:var(--bg-input);' +
         '  ' + (submitted ? 'disabled' : '') + '' +
         '  oninput="QuizEngine.selectAnswer(\'' + q.id + '\', this.value)"' +
         '  value="' + (selected || '') + '">' +
-        (submitted ? '<div style="margin-top:10px;padding:10px;background:#fef3c7;border-radius:6px;font-size:0.9rem;">' +
+        (submitted ? '<div style="margin-top:10px;padding:10px;background:var(--warning-soft);border-radius:6px;font-size:0.9rem;">' +
           '答案：<strong>' + (q.type === 'calc' ? q.answer + '（容差：±' + (q.tolerance || 0.01) + '）' : (Array.isArray(q.answer) ? q.answer.join(' / ') : q.answer)) + '</strong>' +
           (isCorrect ? ' ✅' : ' ❌') +
         '</div>' : '');
@@ -285,7 +285,7 @@ var QuizEngine = {
           cls += ' selected';
         }
         return '<div class="' + cls + '" onclick="QuizEngine.toggleMulti(\'' + q.id + '\', ' + i + ')" style="display:flex;align-items:center;gap:8px;">' +
-          '<span style="width:18px;height:18px;border:2px solid ' + (isSelected ? 'var(--accent)' : '#d4c8a0') + ';border-radius:3px;display:flex;align-items:center;justify-content:center;font-size:10px;flex-shrink:0;">' + (isSelected ? '✓' : '') + '</span>' +
+          '<span style="width:18px;height:18px;border:2px solid ' + (isSelected ? 'var(--accent)' : 'var(--border-solid)') + ';border-radius:3px;display:flex;align-items:center;justify-content:center;font-size:10px;flex-shrink:0;">' + (isSelected ? '✓' : '') + '</span>' +
           opt +
         '</div>';
       }).join('');
@@ -301,7 +301,7 @@ var QuizEngine = {
         cls += ' selected';
       }
       return '<div class="' + cls + '" onclick="QuizEngine.selectAnswer(\'' + q.id + '\', ' + i + ')" style="display:flex;align-items:center;gap:8px;">' +
-        '<span style="width:18px;height:18px;border:2px solid ' + (i === selected && !submitted ? 'var(--accent)' : '#d4c8a0') + ';border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:10px;flex-shrink:0;">' + (i === selected && !submitted ? '●' : '') + '</span>' +
+        '<span style="width:18px;height:18px;border:2px solid ' + (i === selected && !submitted ? 'var(--accent)' : 'var(--border-solid)') + ';border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:10px;flex-shrink:0;">' + (i === selected && !submitted ? '●' : '') + '</span>' +
         opt +
       '</div>';
     }).join('');
@@ -311,8 +311,8 @@ var QuizEngine = {
     if (submitted) {
       var isLast = this.state.currentIndex >= this.state.questions.length - 1;
       return '' +
-        '<div style="margin-top:16px;padding:14px;background:' + (isCorrect ? '#f0fdf4' : '#fef2f2') + ';border-radius:8px;font-size:0.88rem;line-height:1.6;">' +
-          '<div style="font-weight:700;color:' + (isCorrect ? '#16a34a' : '#dc2626') + ';margin-bottom:4px;">' +
+        '<div style="margin-top:16px;padding:14px;background:' + (isCorrect ? 'var(--success-soft)' : 'var(--danger-soft)') + ';border-radius:8px;font-size:0.88rem;line-height:1.6;">' +
+          '<div style="font-weight:700;color:' + (isCorrect ? 'var(--success)' : 'var(--danger)') + ';margin-bottom:4px;">' +
             (isCorrect ? '✅ 正确！' : '❌ 错误') +
           '</div>' +
           '<div style="color:var(--text-body);">' + q.explanation + '</div>' +
@@ -348,10 +348,10 @@ var QuizEngine = {
         '<p style="color:var(--text-secondary);margin:8px 0;font-size:1rem;">' +
           '共 ' + score.total + ' 题 · 已提交 ' + score.submitted + ' · 正确率 <strong>' + pct + '%</strong>' +
         '</p>' +
-        (pct >= 90 ? '<p style="color:#16a34a;">🏆 太棒了！你已经掌握了本章内容！</p>' :
-          pct >= 75 ? '<p style="color:#f59e0b;">🎉 不错！回顾错题可以进一步提升。</p>' :
-          pct >= 60 ? '<p style="color:#f97316;">👍 还行，复习一下知识点再试试。</p>' :
-          '<p style="color:#dc2626;">📚 别灰心！回顾知识点后重新挑战！</p>') +
+        (pct >= 90 ? '<p style="color:var(--success);">太棒了！你已经掌握了本章内容！</p>' :
+          pct >= 75 ? '<p style="color:var(--warning);">不错！回顾错题可以进一步提升。</p>' :
+          pct >= 60 ? '<p style="color:#f97316;">还行，复习一下知识点再试试。</p>' :
+          '<p style="color:var(--danger);">别灰心！回顾知识点后重新挑战！</p>') +
         '<div style="margin-top:24px;display:flex;gap:12px;justify-content:center;flex-wrap:wrap;">' +
           '<button class="btn" onclick="location.reload()">🔄 重做</button>' +
           '<a href="../../errors/index.html" class="btn btn-primary">📝 错题本</a>' +
@@ -389,7 +389,7 @@ function renderFlowchartQuestion(q, submitted) {
             var answerText = (blanks[bi] !== undefined) ? blanks[bi] : '';
             html += ' ';
             if (submitted) {
-              html += '<span class="flow-blank" style="display:inline-block;min-width:100px;padding:4px 12px;border:2px solid #22c55e;border-radius:6px;background:#f0fdf4;color:#166534;font-weight:600;">' + answerText + '</span>';
+              html += '<span class="flow-blank" style="display:inline-block;min-width:100px;padding:4px 12px;border:2px solid var(--success);border-radius:6px;background:var(--success-soft);color:var(--success);font-weight:600;">' + answerText + '</span>';
             } else {
               html += '<input type="text" class="flow-blank-input" data-qid="' + q.id + '" data-bidx="' + bi +
                 '" placeholder="?" oninput="QuizEngine.selectFlowBlank(\'' + q.id + '\',' + bi + ',this.value)"' +
@@ -418,7 +418,7 @@ function renderFlowchartQuestion(q, submitted) {
           (isLast ? '' : '<div class="flow-arrow">↓</div>');
       }
     }).join('') +
-    (submitted ? '<div style="margin-top:12px;padding:10px;background:#fef3c7;border-radius:6px;font-size:0.9rem;">答案：' + blanks.map(function(b, i) {
+    (submitted ? '<div style="margin-top:12px;padding:10px;background:var(--warning-soft);border-radius:6px;font-size:0.9rem;">答案：' + blanks.map(function(b, i) {
       return '[' + (i+1) + '] ' + (typeof b === 'string' ? b : (Array.isArray(b.answer) ? b.answer.join(' / ') : b.answer));
     }).join('; ') + '</div>' : '') +
     '</div>';
@@ -433,14 +433,14 @@ function renderCodeAnalysisQuestion(q, submitted, selected, isCorrect) {
     html += '<div style="padding:10px 14px;background:#0f172a;border-radius:6px;color:#a5f3fc;font-size:0.82rem;margin-bottom:12px;font-family:var(--font-mono);">输出：' + q.output + '</div>';
   }
   html += '<textarea id="code-analysis-answer" placeholder="解释代码为何产生该输出..." ' +
-    'style="width:100%;min-height:100px;padding:10px 14px;border:2px solid #fde68a;border-radius:8px;font-size:0.95rem;background:#fffbeb;resize:vertical;"' +
+    'style="width:100%;min-height:100px;padding:10px 14px;border:1px solid var(--border-solid);border-radius:var(--radius-sm);font-size:0.95rem;background:var(--bg-input);resize:vertical;"' +
     (submitted ? ' disabled' : '') +
     ' oninput="QuizEngine.selectAnswer(\'' + q.id + '\', this.value)">' + (selected || '') + '</textarea>';
 
   if (submitted) {
-    html += '<div style="margin-top:10px;padding:10px;background:#fef3c7;border-radius:6px;font-size:0.9rem;">' +
+    html += '<div style="margin-top:10px;padding:10px;background:var(--warning-soft);border-radius:6px;font-size:0.9rem;">' +
       '<strong>关键点：</strong> ' + (q.analysisPoints || []).join('; ') + '</div>' +
-      '<div style="margin-top:6px;padding:10px;background:' + (isCorrect ? '#f0fdf4' : '#fef2f2') + ';border-radius:6px;font-size:0.88rem;">' +
+      '<div style="margin-top:6px;padding:10px;background:' + (isCorrect ? 'var(--success-soft)' : 'var(--danger-soft)') + ';border-radius:6px;font-size:0.88rem;">' +
       (isCorrect ? '✅ 分析正确！' : '❌ 分析有待改进，请回顾上方关键点。') + '</div>';
   }
   return html;
@@ -458,7 +458,7 @@ function renderAlgoJudgeQuestion(q, submitted, selected, isCorrect) {
       cls += ' selected';
     }
     return '<div class="' + cls + '" onclick="QuizEngine.toggleMulti(\'' + q.id + '\', ' + i + ')" style="display:flex;align-items:center;gap:8px;">' +
-      '<span style="width:18px;height:18px;border:2px solid ' + (isSelected ? 'var(--accent)' : '#d4c8a0') + ';border-radius:3px;display:flex;align-items:center;justify-content:center;font-size:10px;flex-shrink:0;">' + (isSelected ? '✓' : '') + '</span>' +
+      '<span style="width:18px;height:18px;border:2px solid ' + (isSelected ? 'var(--accent)' : 'var(--border-solid)') + ';border-radius:3px;display:flex;align-items:center;justify-content:center;font-size:10px;flex-shrink:0;">' + (isSelected ? '✓' : '') + '</span>' +
       opt +
     '</div>';
   }).join('');

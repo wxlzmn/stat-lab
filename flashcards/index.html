@@ -2,11 +2,10 @@
 <html lang="zh-CN">
 <head>
   <meta charset="UTF-8">
-  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🃏</text></svg>">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🃏</text></svg>">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>闪卡复习 - Stat-Lab</title>
   <link rel="stylesheet" href="../shared/css/variables-warm.css">
-  <link rel="stylesheet" href="../shared/css/variables-academic.css">
   <link rel="stylesheet" href="../shared/css/base.css">
   <link rel="stylesheet" href="../shared/css/components.css">
   <link rel="stylesheet" href="../shared/css/pages.css">
@@ -14,24 +13,24 @@
   <link rel="stylesheet" href="../shared/vendor/katex.min.css">
   <style>
     .filter-bar { text-align:center; margin-bottom:20px; display:flex; gap:10px; justify-content:center; flex-wrap:wrap; }
-    .filter-bar select { padding:8px 16px; border:2px solid #fde68a; border-radius:20px; background:#fffbeb; font-size:0.9rem; color:var(--text-primary); cursor:pointer; }
-    .filter-bar select:focus { outline:none; border-color:var(--accent); }
+    .filter-bar select { padding:8px 16px; border:1px solid var(--border-solid); border-radius:var(--radius-sm); background:var(--bg-input); font-size:0.9rem; color:var(--text-primary); cursor:pointer; }
+    .filter-bar select:focus { outline:none; border-color:var(--accent); box-shadow:0 0 0 3px rgba(59,130,246,0.1); }
   </style>
 </head>
 <body>
 
   <main style="max-width:700px;margin:0 auto;padding:24px;">
     <div style="text-align:center;margin-bottom:20px;">
-      <h2 style="font-family:var(--font-display);font-size:1.5rem;color:var(--text-primary);">🃏 闪卡复习</h2>
+      <h2 style="font-family:var(--font-display);font-size:1.5rem;color:var(--text-primary);">闪卡复习</h2>
       <p style="color:var(--text-secondary);font-size:0.85rem;">温习经济统计术语与公式 · 点击卡片翻转查看</p>
     </div>
 
     <div class="filter-bar">
       <select id="subject-filter" onchange="changeFilter()">
-        <option value="all">📚 全部学科</option>
+        <option value="all">全部学科</option>
       </select>
       <select id="chapter-filter" onchange="changeFilter()">
-        <option value="all">📖 全部章节</option>
+        <option value="all">全部章节</option>
       </select>
     </div>
 
@@ -52,7 +51,7 @@
     function populateSubjectFilter() {
       var sel = document.getElementById('subject-filter');
       if (typeof SUBJECT_REGISTRY === 'undefined') return;
-      var html = '<option value="all">📚 全部学科</option>';
+      var html = '<option value="all">全部学科</option>';
       for (var i = 0; i < SUBJECT_REGISTRY.length; i++) {
         var s = SUBJECT_REGISTRY[i];
         html += '<option value="' + s.id + '">' + s.icon + ' ' + s.name + '</option>';
@@ -64,7 +63,6 @@
       var sel = document.getElementById('chapter-filter');
       var chapters = [];
       if (subjectId === 'all') {
-        // Merge chapters from all subjects
         if (typeof SUBJECT_REGISTRY !== 'undefined') {
           for (var s = 0; s < SUBJECT_REGISTRY.length; s++) {
             chapters = chapters.concat(SUBJECT_REGISTRY[s].chapters);
@@ -80,7 +78,7 @@
           }
         }
       }
-      var html = '<option value="all">📖 全部章节</option>';
+      var html = '<option value="all">全部章节</option>';
       for (var c = 0; c < chapters.length; c++) {
         html += '<option value="' + chapters[c].id + '">' + chapters[c].icon + ' ' + chapters[c].title + '</option>';
       }
@@ -94,12 +92,10 @@
       FlashcardEngine.init(chapter, subject);
     }
 
-    // Initialize
     populateSubjectFilter();
     populateChapterFilter('all');
     FlashcardEngine.init('all', 'all');
 
-    // Also update chapters when subject changes
     document.getElementById('subject-filter').addEventListener('change', function() {
       populateChapterFilter(this.value);
     });

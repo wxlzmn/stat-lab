@@ -39,15 +39,15 @@ var FlashcardEngine = {
         if (t.formula) {
           if (typeof katex !== 'undefined') {
             try {
-              formulaHtml = '<br><br><span style="color:#92400e;display:block;text-align:center;">' +
+              formulaHtml = '<br><br><span style="color:var(--text-muted);display:block;text-align:center;">' +
                 katex.renderToString(t.formula, { displayMode: true, throwOnError: false }) +
                 '</span>';
             } catch(e) {
-              formulaHtml = '<br><br><span style="color:#92400e;">' + t.formula + '</span>';
+              formulaHtml = '<br><br><span style="color:var(--text-muted);">' + t.formula + '</span>';
             }
           } else {
             // Fallback: use $$ delimiters, auto-render will handle later
-            formulaHtml = '<br><br><span style="color:#92400e;">$$' + t.formula + '$$</span>';
+            formulaHtml = '<br><br><span style="color:var(--text-muted);">$$' + t.formula + '$$</span>';
           }
         }
         self.cards.push({
@@ -116,7 +116,7 @@ var FlashcardEngine = {
       '</div>' +
       '<div class="flashcard" ' +
         'onclick="FlashcardEngine.flip()" ' +
-        'style="min-height:200px;background:var(--bg-card);border:2px dashed ' + (card.mastered ? '#22c55e' : 'var(--border-dashed)') + ';border-radius:16px;padding:32px 24px;text-align:center;cursor:pointer;transition:all 0.3s;box-shadow:var(--shadow);user-select:none;' + (this.flipped ? 'background:#fffdf5;' : '') + '">' +
+        'style="min-height:200px;background:var(--bg-card);border:1px solid ' + (card.mastered ? 'var(--success)' : 'var(--border)') + ';border-radius:var(--radius);padding:32px 24px;text-align:center;cursor:pointer;transition:all 0.3s;box-shadow:var(--shadow-sm);user-select:none;' + (this.flipped ? 'background:var(--bg-page);' : '') + '">' +
         '<div style="font-size:1.3rem;font-weight:700;color:var(--text-primary);line-height:1.6;">' +
           (this.flipped ? card.back : card.front) + masteredIcon +
         '</div>' +
@@ -126,7 +126,7 @@ var FlashcardEngine = {
       '</div>' +
       '<div style="display:flex;gap:10px;justify-content:center;margin-top:16px;flex-wrap:wrap;">' +
         '<button class="btn" onclick="FlashcardEngine.prev()" ' + (this.currentIndex === 0 ? 'disabled' : '') + '>← 上一张</button>' +
-        '<button class="btn" onclick="FlashcardEngine.markMastered()" style="background:' + (card.mastered ? '#fef3c7' : '#f0fdf4') + ';color:' + (card.mastered ? '#92400e' : '#16a34a') + ';">' + (card.mastered ? '🔄 取消标记' : '✅ 已掌握') + '</button>' +
+        '<button class="btn" onclick="FlashcardEngine.markMastered()" style="background:' + (card.mastered ? 'var(--warning-soft)' : 'var(--success-soft)') + ';color:' + (card.mastered ? 'var(--warning)' : 'var(--success)') + ';">' + (card.mastered ? '取消标记' : '已掌握') + '</button>' +
         '<button class="btn" onclick="FlashcardEngine.next()" ' + (this.currentIndex >= this.cards.length - 1 ? 'disabled' : '') + '>下一张 →</button>' +
       '</div>' +
       '<div style="text-align:center;margin-top:8px;">' +

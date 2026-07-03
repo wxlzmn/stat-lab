@@ -119,7 +119,7 @@ var ExamEngine = {
     this.questions.forEach(function(q, idx) {
       var selected = self.userAnswers[idx];
       var typeLabel = ({single:'单选题', multi:'多选题', truefalse:'判断题', fill:'填空题', short:'简答题', calc:'计算题'})[q.type] || q.type;
-      html += '<div style="background:var(--bg-card);border:1px solid #fde68a;border-radius:8px;padding:16px;margin-bottom:14px;" id="exam-q-' + idx + '">' +
+      html += '<div style="background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius);padding:16px;margin-bottom:14px;" id="exam-q-' + idx + '">' +
         '<div style="font-weight:600;color:var(--text-primary);margin-bottom:10px;">' + (idx + 1) + '. ' + q.question + ' <span class="tag">' + typeLabel + '</span></div>' +
         renderExamOptions(q, idx, selected, self) +
         '</div>';
@@ -145,7 +145,7 @@ var ExamEngine = {
     this.questions.forEach(function(q, idx) {
       var userAns = self.userAnswers[idx];
       var isCorrect = QuizEngine.checkAnswer(q, userAns);
-      html += '<div style="background:var(--bg-card);border:1px solid ' + (isCorrect ? '#22c55e' : '#dc2626') + ';border-radius:8px;padding:14px;margin-bottom:8px;">' +
+      html += '<div style="background:var(--bg-card);border:1px solid ' + (isCorrect ? 'var(--success)' : 'var(--danger)') + ';border-radius:var(--radius);padding:14px;margin-bottom:8px;">' +
         '<div style="font-weight:600;color:var(--text-primary);">' + (idx + 1) + '. ' + q.question + ' ' + (isCorrect ? '✅' : '❌') + '</div>' +
         '<div style="font-size:0.82rem;color:var(--text-secondary);margin-top:6px;">你的答案: <strong>' +
           (userAns !== undefined ? formatAnswer(q, userAns) : '未作答') + '</strong></div>' +
@@ -171,22 +171,22 @@ function renderExamOptions(q, idx, selected, engine) {
   if (q.type === 'fill' || q.type === 'short' || q.type === 'calc') {
     var ph = q.type === 'calc' ? '输入数值...' : q.type === 'short' ? '输入关键词...' : '输入答案...';
     return '<input type="text" placeholder="' + ph + '"' +
-      ' style="width:100%;padding:8px 12px;border:2px solid #fde68a;border-radius:6px;background:#fffbeb;font-size:0.9rem;"' +
+      ' style="width:100%;padding:8px 12px;border:1px solid var(--border-solid);border-radius:var(--radius-sm);background:var(--bg-input);font-size:0.9rem;"' +
       ' oninput="ExamEngine.selectAnswer(' + idx + ', this.value)"' +
       ' value="' + (selected || '') + '">';
   }
   if (q.type === 'multi') {
     return (q.options || []).map(function(opt, oi) {
       var isSel = (selected || []).indexOf(oi) !== -1;
-      return '<div style="padding:8px 12px;margin:4px 0;border:2px dashed ' + (isSel ? 'var(--accent)' : '#fde68a') + ';border-radius:6px;cursor:pointer;background:' + (isSel ? 'var(--accent-soft)' : '#fff') + ';" onclick="ExamEngine.toggleMultiAnswer(' + idx + ',' + oi + ')">' +
-        '<span style="display:inline-block;width:20px;height:20px;border:2px solid ' + (isSel ? 'var(--accent)' : '#d4c8a0') + ';border-radius:3px;text-align:center;font-size:11px;margin-right:8px;vertical-align:middle;">' + (isSel ? '✓' : '') + '</span>' + opt +
+      return '<div style="padding:8px 12px;margin:4px 0;border:1px solid ' + (isSel ? 'var(--accent)' : 'var(--border)') + ';border-radius:var(--radius-sm);cursor:pointer;background:' + (isSel ? 'var(--accent-soft)' : 'var(--bg-card)') + ';" onclick="ExamEngine.toggleMultiAnswer(' + idx + ',' + oi + ')">' +
+        '<span style="display:inline-block;width:20px;height:20px;border:1px solid ' + (isSel ? 'var(--accent)' : 'var(--border-solid)') + ';border-radius:3px;text-align:center;font-size:11px;margin-right:8px;vertical-align:middle;">' + (isSel ? '✓' : '') + '</span>' + opt +
         '</div>';
     }).join('');
   }
   return (q.options || []).map(function(opt, oi) {
     var isSel = selected === oi;
-    return '<div style="padding:8px 12px;margin:4px 0;border:2px dashed ' + (isSel ? 'var(--accent)' : '#fde68a') + ';border-radius:6px;cursor:pointer;background:' + (isSel ? 'var(--accent-soft)' : '#fff') + ';" onclick="ExamEngine.selectAnswer(' + idx + ',' + oi + ')">' +
-      '<span style="display:inline-block;width:20px;height:20px;border:2px solid ' + (isSel ? 'var(--accent)' : '#d4c8a0') + ';border-radius:50%;text-align:center;font-size:10px;margin-right:8px;vertical-align:middle;">' + (isSel ? '●' : '') + '</span>' + opt +
+    return '<div style="padding:8px 12px;margin:4px 0;border:1px solid ' + (isSel ? 'var(--accent)' : 'var(--border)') + ';border-radius:var(--radius-sm);cursor:pointer;background:' + (isSel ? 'var(--accent-soft)' : 'var(--bg-card)') + ';" onclick="ExamEngine.selectAnswer(' + idx + ',' + oi + ')">' +
+      '<span style="display:inline-block;width:20px;height:20px;border:1px solid ' + (isSel ? 'var(--accent)' : 'var(--border-solid)') + ';border-radius:50%;text-align:center;font-size:10px;margin-right:8px;vertical-align:middle;">' + (isSel ? '●' : '') + '</span>' + opt +
       '</div>';
   }).join('');
 }

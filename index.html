@@ -5,18 +5,24 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Stat-Lab · 统计学习平台</title>
 <link rel="stylesheet" href="shared/css/variables-warm.css">
-<link rel="stylesheet" href="shared/css/variables-academic.css">
 <link rel="stylesheet" href="shared/css/base.css">
 <link rel="stylesheet" href="shared/css/components.css">
 <link rel="stylesheet" href="shared/css/pages.css">
 <link rel="stylesheet" href="shared/css/responsive.css">
+<style>
+  .home-hero { text-align: center; padding: 48px 20px 12px; position: relative; z-index: 1; }
+  .home-hero h1 { font-size: 2.2rem; color: var(--text-primary); margin-bottom: 8px; letter-spacing: -0.02em; }
+  .home-hero p { color: var(--text-secondary); font-size: 1rem; }
+  .home-hero .hero-divider { width: 48px; height: 2px; background: linear-gradient(90deg, var(--accent), var(--accent-hover)); border-radius: 1px; margin: 16px auto 12px; }
+  .subject-card { animation-delay: calc(var(--i, 0) * 80ms); }
+</style>
 </head>
 <body>
 <main>
-  <div style="text-align:center;padding:32px 20px 8px;">
-    <h1 style="font-size:2rem;color:var(--text-primary);">🖥️ Stat-Lab</h1>
-    <p style="color:var(--text-muted);font-size:1rem;">统计学习平台 · 经济统计学 + 统计计算
-    <button class="theme-toggle-btn" onclick="toggleTheme()" title="切换配色主题">🎨 切换配色</button></p>
+  <div class="home-hero">
+    <h1>Stat-Lab</h1>
+    <p>统计学习平台 · 经济统计学 + 统计计算</p>
+    <div class="hero-divider"></div>
   </div>
   <div id="subject-cards" class="home-grid"></div>
 </main>
@@ -31,12 +37,12 @@
     var toolsHtml = subj.tools.map(function(t) { return '<span>' + (toolNames[t] || t) + '</span>'; }).join(' ');
     var desc = subj.id === 'econstats' ? 'GDP核算、价格指数、产业统计、住户调查' : '模拟仿真、优化方法、机器学习、数据可视化';
     cardsHtml += '' +
-      '<div class="subject-card" style="border-color:' + subj.color + ';">' +
+      '<div class="subject-card" style="--i:' + i + ';border-color:var(--border);border-top:2px solid ' + subj.color + ';">' +
         '<span class="card-icon">' + subj.icon + '</span>' +
-        '<h3>' + subj.name + '</h3>' +
+        '<h3 style="color:var(--text-primary);">' + subj.name + '</h3>' +
         '<p>' + subj.chapters.length + ' 章节 · ' + desc + '</p>' +
         '<div class="card-meta">' + toolsHtml + '</div>' +
-        '<a href="subjects/' + subj.id + '/index.html" class="enter-btn" style="background:' + subj.color + ';">进入 →</a>' +
+        '<a href="subjects/' + subj.id + '/index.html" class="enter-btn" style="background:var(--accent);">进入 →</a>' +
       '</div>';
   }
   document.getElementById('subject-cards').innerHTML = cardsHtml;

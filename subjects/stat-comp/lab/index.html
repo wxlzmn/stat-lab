@@ -5,7 +5,6 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>实验 - Stat-Lab</title>
 <link rel="stylesheet" href="../../../shared/css/variables-warm.css">
-<link rel="stylesheet" href="../../../shared/css/variables-academic.css">
 <link rel="stylesheet" href="../../../shared/css/base.css">
 <link rel="stylesheet" href="../../../shared/css/components.css">
 <link rel="stylesheet" href="../../../shared/css/pages.css">
@@ -13,8 +12,8 @@
 </head>
 <body>
 <main>
-  <div style="text-align:center;padding:24px 20px 8px;">
-    <h1 style="color:#1e3a8a;">代码实验室</h1>
+  <div style="text-align:center;padding:32px 20px 8px;">
+    <h1 style="color:var(--text-primary);">代码实验室</h1>
     <p style="color:var(--text-muted);">交互式算法实验 —— 拖动滑块，实时观察算法行为</p>
   </div>
   <div id="lab-grid" class="home-grid"></div>
@@ -34,7 +33,7 @@
   for (var i = 0; i < labs.length; i++) {
     var lab = labs[i];
     cardsHtml += '' +
-      '<div class="module-card">' +
+      '<div class="module-card" style="border-top:2px solid ' + subject.color + ';">' +
         '<span class="card-icon">' + lab.icon + '</span>' +
         '<h3>' + lab.title + '</h3>' +
         '<p>' + lab.desc + '</p>' +

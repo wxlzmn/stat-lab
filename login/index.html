@@ -2,11 +2,10 @@
 <html lang="zh-CN">
 <head>
   <meta charset="UTF-8">
-  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>📊</text></svg>">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>📊</text></svg>">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>登录 - Stat-Lab</title>
   <link rel="stylesheet" href="../shared/css/variables-warm.css">
-  <link rel="stylesheet" href="../shared/css/variables-academic.css">
   <link rel="stylesheet" href="../shared/css/base.css">
   <link rel="stylesheet" href="../shared/css/components.css">
   <link rel="stylesheet" href="../shared/css/pages.css">
@@ -18,12 +17,11 @@
       align-items: center;
       justify-content: center;
       padding: 24px;
-      margin-top: var(--navbar-height);
     }
     .auth-card {
       background: var(--bg-card);
-      border: 2px dashed var(--border-dashed);
-      border-radius: 16px;
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
       padding: 40px 36px;
       width: 100%;
       max-width: 420px;
@@ -42,9 +40,7 @@
       font-size: 0.85rem;
       margin-bottom: 28px;
     }
-    .form-group {
-      margin-bottom: 18px;
-    }
+    .form-group { margin-bottom: 18px; }
     .form-group label {
       display: block;
       font-size: 0.82rem;
@@ -55,39 +51,38 @@
     .form-group input {
       width: 100%;
       padding: 10px 14px;
-      border: 2px solid #fde68a;
-      border-radius: 8px;
+      border: 1px solid var(--border-solid);
+      border-radius: var(--radius-sm);
       font-size: 0.95rem;
-      background: #fffbeb;
+      background: var(--bg-input);
       color: var(--text-primary);
       outline: none;
-      transition: border-color 0.2s, box-shadow 0.2s;
+      transition: border-color var(--transition-fast), box-shadow var(--transition-fast);
       box-sizing: border-box;
     }
     .form-group input:focus {
       border-color: var(--accent);
-      box-shadow: 0 0 0 3px rgba(245, 158, 11, 0.12);
+      box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
     }
     .btn-auth {
       width: 100%;
       padding: 12px;
       border: none;
-      border-radius: 8px;
+      border-radius: var(--radius-sm);
       font-size: 1rem;
       font-weight: 600;
       cursor: pointer;
       background: var(--accent);
       color: #fff;
-      transition: all 0.2s;
+      transition: background var(--transition-fast), box-shadow var(--transition-fast);
     }
     .btn-auth:hover {
-      filter: brightness(1.08);
-      box-shadow: 0 4px 12px rgba(245, 158, 11, 0.3);
+      background: var(--accent-hover);
+      box-shadow: 0 2px 8px rgba(59, 130, 246, 0.3);
     }
     .btn-auth:disabled {
       opacity: 0.6;
       cursor: default;
-      filter: none;
       box-shadow: none;
     }
     .auth-switch {
@@ -102,38 +97,36 @@
       cursor: pointer;
       text-decoration: none;
     }
-    .auth-switch a:hover {
-      text-decoration: underline;
-    }
+    .auth-switch a:hover { text-decoration: underline; }
     .auth-msg {
       text-align: center;
       padding: 10px;
-      border-radius: 8px;
+      border-radius: var(--radius-sm);
       font-size: 0.82rem;
       margin-bottom: 16px;
       display: none;
     }
     .auth-msg.error {
       display: block;
-      background: #fef2f2;
-      color: #dc2626;
-      border: 1px solid #fecaca;
+      background: var(--danger-soft);
+      color: var(--danger);
+      border: 1px solid var(--danger-border);
     }
     .auth-msg.success {
       display: block;
-      background: #f0fdf4;
-      color: #16a34a;
-      border: 1px solid #bbf7d0;
+      background: var(--success-soft);
+      color: var(--success);
+      border: 1px solid var(--success-border);
     }
     .auth-card .mode-indicator {
       text-align: center;
       font-size: 0.72rem;
-      color: var(--text-secondary);
+      color: var(--text-muted);
       margin-top: 16px;
       padding: 8px;
-      background: #fffdf5;
-      border-radius: 6px;
-      border: 1px dashed #fde68a;
+      background: var(--accent-soft);
+      border-radius: var(--radius-sm);
+      border: 1px solid var(--accent-border);
     }
   </style>
 </head>
@@ -141,25 +134,24 @@
 
   <div class="auth-wrapper">
     <div class="auth-card">
-      <h2 id="auth-title">🔐 登录</h2>
+      <h2 id="auth-title">登录</h2>
       <p class="subtitle" id="auth-subtitle">同步学习进度到云端</p>
 
       <div id="auth-msg" class="auth-msg"></div>
 
       <form id="auth-form" onsubmit="return false;">
-        <!-- 注册模式才显示 -->
         <div class="form-group" id="email-group" style="display:none;">
-          <label for="email">📧 邮箱</label>
+          <label for="email">邮箱</label>
           <input type="email" id="email" placeholder="your@email.com" autocomplete="email">
         </div>
 
         <div class="form-group">
-          <label for="username">👤 用户名</label>
+          <label for="username">用户名</label>
           <input type="text" id="username" placeholder="输入用户名" autocomplete="username" required>
         </div>
 
         <div class="form-group">
-          <label for="password">🔒 密码</label>
+          <label for="password">密码</label>
           <input type="password" id="password" placeholder="输入密码（至少6位）" autocomplete="current-password" required minlength="6">
         </div>
 
@@ -172,7 +164,7 @@
       </div>
 
       <div class="mode-indicator">
-        ⚡ 当前为离线模式 · 数据保存在本地浏览器
+        离线模式 · 数据保存在本地浏览器
       </div>
     </div>
   </div>
@@ -198,7 +190,7 @@
         submitBtn.textContent = '注 册';
         switchText.textContent = '已有账号？';
         switchLink.textContent = '去登录';
-        title.textContent = '✨ 注册';
+        title.textContent = '注册';
         subtitle.textContent = '创建账号，同步学习数据';
         document.getElementById('email').required = true;
       } else {
@@ -206,7 +198,7 @@
         submitBtn.textContent = '登 录';
         switchText.textContent = '还没有账号？';
         switchLink.textContent = '立即注册';
-        title.textContent = '🔐 登录';
+        title.textContent = '登录';
         subtitle.textContent = '同步学习进度到云端';
         document.getElementById('email').required = false;
       }
@@ -248,7 +240,6 @@
       submitBtn.textContent = isRegisterMode ? '注册中...' : '登录中...';
       hideMessage();
 
-      // 离线模式：本地存储用户信息，直接登录
       setTimeout(function () {
         var userData = { username: username, loggedIn: true, mode: 'offline' };
         if (isRegisterMode) userData.email = email;
@@ -265,7 +256,6 @@
       }, 600);
     });
 
-    // 检查是否已登录（离线模式）
     (function () {
       var savedUser = null;
       try {
@@ -281,7 +271,6 @@
       }
     })();
 
-    // Enter 键提交
     document.addEventListener('keydown', function (e) {
       if (e.key === 'Enter') {
         document.getElementById('auth-submit').click();

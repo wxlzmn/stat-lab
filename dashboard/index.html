@@ -2,30 +2,22 @@
 <html lang="zh-CN">
 <head>
   <meta charset="UTF-8">
-  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>📊</text></svg>">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>📊</text></svg>">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>学习仪表盘 - Stat-Lab</title>
   <link rel="stylesheet" href="../shared/css/variables-warm.css">
-  <link rel="stylesheet" href="../shared/css/variables-academic.css">
   <link rel="stylesheet" href="../shared/css/base.css">
   <link rel="stylesheet" href="../shared/css/components.css">
   <link rel="stylesheet" href="../shared/css/pages.css">
   <link rel="stylesheet" href="../shared/css/responsive.css">
   <style>
-    .dash-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(200px,1fr)); gap:16px; margin-bottom:24px; }
-    .dash-card { background:var(--bg-card); border:2px dashed var(--border-dashed); border-radius:var(--radius); padding:20px; text-align:center; box-shadow:var(--shadow); }
-    .dash-card .number { font-family:var(--font-display); font-size:2.2rem; color:var(--accent); font-weight:700; }
-    .dash-card .label { font-size:0.82rem; color:var(--text-secondary); margin-top:4px; }
-    .chapter-ring { display:inline-block; margin:10px 14px; text-align:center; }
-    .chapter-ring svg { width:80px; height:80px; }
-    .chapter-ring .ring-label { font-size:0.72rem; color:var(--text-secondary); margin-top:2px; }
-    .error-mini { padding:10px 14px; border-left:3px solid var(--warning); background:#fef2f2; border-radius:0 8px 8px 0; margin-bottom:8px; font-size:0.85rem; cursor:pointer; }
-    .heatmap { display:flex; gap:4px; flex-wrap:wrap; justify-content:center; }
-    .heatmap .day { width:32px; height:32px; border-radius:4px; background:#f5f0e0; position:relative; }
-    .heatmap .day.studied { background:#f59e0b; opacity:0.75; }
+    .dash-section { background:var(--bg-card); border:1px solid var(--border); border-radius:var(--radius); padding:24px; margin-bottom:20px; box-shadow:var(--shadow-sm); transition:border-color var(--transition-fast), box-shadow var(--transition-fast); }
+    .dash-section:hover { border-color:var(--border-solid); box-shadow:var(--shadow); }
+    .error-mini { padding:10px 14px; border-left:3px solid var(--warning); background:var(--warning-soft); border-radius:0 var(--radius-sm) var(--radius-sm) 0; margin-bottom:8px; font-size:0.84rem; cursor:pointer; transition:background var(--transition-fast); }
+    .error-mini:hover { background:var(--warning-border); }
+    .heatmap .day { width:32px; height:32px; border-radius:4px; background:var(--border); position:relative; }
+    .heatmap .day.studied { background:var(--accent); opacity:0.75; }
     .heatmap .day .day-label { position:absolute; bottom:-18px; left:50%; transform:translateX(-50%); font-size:0.6rem; color:var(--text-secondary); }
-    .section-title { font-family:var(--font-display); color:var(--text-primary); margin-bottom:14px; }
-    .subject-section { margin-bottom:8px; }
   </style>
 </head>
 <body>
@@ -45,7 +37,8 @@
 
       // Header
       html += '<div style="text-align:center;margin-bottom:28px;">' +
-        '<h2 style="font-family:var(--font-display);font-size:1.5rem;color:var(--text-primary);margin:0;">📊 学习仪表盘</h2>' +
+        '<h2 style="font-family:var(--font-display);font-size:1.5rem;color:var(--text-primary);margin:0;">学习仪表盘</h2>' +
+        '<p style="color:var(--text-muted);font-size:0.88rem;margin-top:4px;">追踪你的学习进度与成果</p>' +
         '</div>';
 
       // Overview cards
@@ -59,8 +52,8 @@
       // Chapter progress rings - grouped by subject
       for (var s = 0; s < SUBJECT_REGISTRY.length; s++) {
         var subject = SUBJECT_REGISTRY[s];
-        html += '<div style="background:var(--bg-card);border:2px dashed var(--border-dashed);border-radius:var(--radius);padding:20px;margin-bottom:20px;box-shadow:var(--shadow);">' +
-          '<h3 class="section-title" style="border-left:4px solid ' + subject.color + ';padding-left:10px;">' + subject.icon + ' ' + subject.name + '</h3>' +
+        html += '<div class="dash-section">' +
+          '<h3 class="section-title" style="border-left:3px solid ' + subject.color + ';padding-left:10px;">' + subject.icon + ' ' + subject.name + '</h3>' +
           '<div style="display:flex;flex-wrap:wrap;justify-content:center;">';
 
         for (var c = 0; c < subject.chapters.length; c++) {
@@ -69,7 +62,7 @@
           var comp = progress.completed || 0;
           var tot = Math.max(progress.total || 50, comp || 1);
           var pct = comp > 0 ? Math.round((progress.correct || 0) / comp * 100) : 0;
-          var color = pct >= 80 ? '#22c55e' : pct >= 60 ? '#f59e0b' : '#dc2626';
+          var color = pct >= 80 ? '#10b981' : pct >= 60 ? '#f59e0b' : '#ef4444';
           var circ = 2 * Math.PI * 32;
           var dashoff = circ * (1 - comp / tot);
           if (dashoff < 0) dashoff = 0;
@@ -86,10 +79,10 @@
 
       // Heatmap (7-day)
       var heatmap = EcoStore.getHeatmap(7);
-      html += '<div style="background:var(--bg-card);border:2px dashed var(--border-dashed);border-radius:var(--radius);padding:20px;margin-bottom:20px;box-shadow:var(--shadow);text-align:center;">' +
-        '<h3 class="section-title">📅 近7天学习记录</h3>' +
+      html += '<div class="dash-section" style="text-align:center;">' +
+        '<h3 class="section-title">近7天学习记录</h3>' +
+        '<div style="padding-top:16px;">' +
         '<div class="heatmap">';
-      var heatDates = Object.keys(heatmap).sort();
       for (var d = 0; d < 7; d++) {
         var date = new Date();
         date.setDate(date.getDate() - (6 - d));
@@ -102,10 +95,10 @@
       html += '</div></div>';
 
       // Recent errors - cross-subject
-      html += '<div style="background:var(--bg-card);border:2px dashed var(--border-dashed);border-radius:var(--radius);padding:20px;box-shadow:var(--shadow);">' +
-        '<h3 class="section-title">❌ 最近错题</h3>';
+      html += '<div class="dash-section">' +
+        '<h3 class="section-title">最近错题</h3>';
       if (totalErrors === 0) {
-        html += '<p style="color:var(--text-secondary);text-align:center;">暂无错题，继续保持！🎉</p>';
+        html += '<p style="color:var(--text-secondary);text-align:center;padding:16px 0;">暂无错题，继续保持！</p>';
       } else {
         var allErrors = [];
         for (var se = 0; se < SUBJECT_REGISTRY.length; se++) {
@@ -132,7 +125,7 @@
           html += '<a href="../subjects/' + item.subjectId + '/quiz/' + item.chapterId + '.html" style="text-decoration:none;color:inherit;">' +
             '<div class="error-mini">' +
               '<span style="font-weight:600;">' + item.question.question.substring(0, 50) + '...</span>' +
-              '<span style="color:#78716c;font-size:0.75rem;display:block;">' + (chName || item.chapterId) + ' · ' + (item.question.knowledgePoint || '') + '</span>' +
+              '<span style="color:var(--text-muted);font-size:0.72rem;display:block;margin-top:2px;">' + (chName || item.chapterId) + ' · ' + (item.question.knowledgePoint || '') + '</span>' +
             '</div></a>';
         });
       }

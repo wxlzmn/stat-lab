@@ -1,29 +1,27 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
-  <meta charset="UTF-8">
-  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>📊</text></svg>">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>计算器 - Stat-Lab</title>
-  <link rel="stylesheet" href="../../../shared/css/variables-warm.css">
-  <link rel="stylesheet" href="../../../shared/css/variables-academic.css">
-  <link rel="stylesheet" href="../../../shared/css/base.css">
-  <link rel="stylesheet" href="../../../shared/css/components.css">
-  <link rel="stylesheet" href="../../../shared/css/pages.css">
-  <link rel="stylesheet" href="../../../shared/css/responsive.css">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>计算器 - Stat-Lab</title>
+<link rel="stylesheet" href="../../../shared/css/variables-warm.css">
+<link rel="stylesheet" href="../../../shared/css/base.css">
+<link rel="stylesheet" href="../../../shared/css/components.css">
+<link rel="stylesheet" href="../../../shared/css/pages.css">
+<link rel="stylesheet" href="../../../shared/css/responsive.css">
 </head>
 <body>
 
   <main class="calc-container">
     <div style="text-align:center;margin-bottom:28px;">
-      <h2 style="font-family:var(--font-display);color:var(--text-primary);font-size:1.5rem;">🧮 经济统计计算器</h2>
+      <h2 style="font-family:var(--font-display);color:var(--text-primary);font-size:1.5rem;">经济统计计算器</h2>
       <p style="color:var(--text-secondary);font-size:0.9rem;">6 个工具 — 输入数据，即时出结果</p>
     </div>
 
     <!-- Calc 1: Laspeyres Price Index -->
     <div class="calc-card">
-      <h3>📐 拉氏价格指数</h3>
-      <p style="font-size:0.8rem;color:var(--text-secondary);margin-bottom:14px;">L<sub>p</sub> = Σ(p₁q₀) / Σ(p₀q₀) × 100 &nbsp;|&nbsp; 基期数量权重</p>
+      <h3>拉氏价格指数</h3>
+      <p style="font-size:0.8rem;color:var(--text-muted);margin-bottom:14px;">L<sub>p</sub> = Σ(p₁q₀) / Σ(p₀q₀) × 100 &nbsp;|&nbsp; 基期数量权重</p>
       <div id="laspeyres-rows">
         <div class="calc-input-group">
           <label>商品 1</label>
@@ -39,8 +37,8 @@
 
     <!-- Calc 2: Paasche Price Index -->
     <div class="calc-card">
-      <h3>📐 帕氏价格指数</h3>
-      <p style="font-size:0.8rem;color:var(--text-secondary);margin-bottom:14px;">P<sub>p</sub> = Σ(p₁q₁) / Σ(p₀q₁) × 100 &nbsp;|&nbsp; 当期数量权重</p>
+      <h3>帕氏价格指数</h3>
+      <p style="font-size:0.8rem;color:var(--text-muted);margin-bottom:14px;">P<sub>p</sub> = Σ(p₁q₁) / Σ(p₀q₁) × 100 &nbsp;|&nbsp; 当期数量权重</p>
       <div id="paasche-rows">
         <div class="calc-input-group">
           <label>商品 1</label>
@@ -56,8 +54,8 @@
 
     <!-- Calc 3: GDP Deflator -->
     <div class="calc-card">
-      <h3>📊 GDP平减指数</h3>
-      <p style="font-size:0.8rem;color:var(--text-secondary);margin-bottom:14px;">GDP平减指数 = 名义GDP / 实际GDP × 100</p>
+      <h3>GDP平减指数</h3>
+      <p style="font-size:0.8rem;color:var(--text-muted);margin-bottom:14px;">GDP平减指数 = 名义GDP / 实际GDP × 100</p>
       <div class="calc-input-group">
         <label>名义GDP</label>
         <input type="number" id="nominal-gdp" placeholder="例如：120（万亿元）" step="any" style="width:200px;">
@@ -72,10 +70,10 @@
 
     <!-- Calc 4: GDP Nominal/Real Converter -->
     <div class="calc-card">
-      <h3>🔄 名义/实际GDP换算器</h3>
+      <h3>名义/实际GDP换算器</h3>
       <div class="calc-input-group">
         <label>换算方向</label>
-        <select id="gdp-direction" style="padding:8px 12px;border:2px solid #fde68a;border-radius:6px;background:#fffbeb;font-size:0.9rem;">
+        <select id="gdp-direction" style="padding:8px 12px;border:1px solid var(--border-solid);border-radius:var(--radius-sm);background:var(--bg-input);font-size:0.9rem;">
           <option value="toReal">名义GDP → 实际GDP</option>
           <option value="toNominal">实际GDP → 名义GDP</option>
         </select>
@@ -94,10 +92,10 @@
 
     <!-- Calc 5: Growth Rate Calculator -->
     <div class="calc-card">
-      <h3>📈 增长率计算器</h3>
+      <h3>增长率计算器</h3>
       <div class="calc-input-group">
         <label>类型</label>
-        <select id="growth-type" style="padding:8px 12px;border:2px solid #fde68a;border-radius:6px;background:#fffbeb;font-size:0.9rem;">
+        <select id="growth-type" style="padding:8px 12px;border:1px solid var(--border-solid);border-radius:var(--radius-sm);background:var(--bg-input);font-size:0.9rem;">
           <option value="yoy">同比/周期增长率</option>
           <option value="cagr">年均复合增长率(CAGR)</option>
         </select>
@@ -132,8 +130,8 @@
 
     <!-- Calc 6: PPP Converter -->
     <div class="calc-card">
-      <h3>💱 购买力平价换算器</h3>
-      <p style="font-size:0.8rem;color:var(--text-secondary);margin-bottom:14px;">使用购买力平价(PPP)进行货币换算</p>
+      <h3>购买力平价换算器</h3>
+      <p style="font-size:0.8rem;color:var(--text-muted);margin-bottom:14px;">使用购买力平价(PPP)进行货币换算</p>
       <div class="calc-input-group">
         <label>金额</label>
         <input type="number" id="ppp-amount" placeholder="金额" step="any" style="width:200px;">
@@ -183,7 +181,7 @@
       var r = CalcEngine.laspeyresPrice(p1s, p0s, q0s);
       showCalcResult('laspeyres-result', r
         ? '拉氏价格指数 = <strong>' + r.index.toFixed(2) + '</strong><br><small>Σp₁q₀ = ' + r.numerator.toFixed(2) + ' &nbsp;|&nbsp; Σp₀q₀ = ' + r.denominator.toFixed(2) + '</small><br><small>价格水平变动 ' + (r.index - 100).toFixed(1) + '%</small>'
-        : '⚠️ 请输入有效的价格和数量数据');
+        : '请输入有效的价格和数量数据');
     }
 
     function calcPaasche() {
@@ -193,20 +191,20 @@
       var r = CalcEngine.paaschePrice(p1s, p0s, q1s);
       showCalcResult('paasche-result', r
         ? '帕氏价格指数 = <strong>' + r.index.toFixed(2) + '</strong><br><small>Σp₁q₁ = ' + r.numerator.toFixed(2) + ' &nbsp;|&nbsp; Σp₀q₁ = ' + r.denominator.toFixed(2) + '</small><br><small>价格水平变动 ' + (r.index - 100).toFixed(1) + '%</small>'
-        : '⚠️ 请输入有效的价格和数量数据');
+        : '请输入有效的价格和数量数据');
     }
 
     function calcDeflator() {
       var nominal = parseFloat(document.getElementById('nominal-gdp').value);
       var real = parseFloat(document.getElementById('real-gdp').value);
       if (isNaN(nominal) || isNaN(real) || real === 0) {
-        showCalcResult('deflator-result', '⚠️ 请输入有效的名义GDP和实际GDP（实际GDP不能为0）');
+        showCalcResult('deflator-result', '请输入有效的名义GDP和实际GDP（实际GDP不能为0）');
         return;
       }
       var r = CalcEngine.gdpDeflator(nominal, real);
       showCalcResult('deflator-result', r
         ? 'GDP平减指数 = <strong>' + r.index.toFixed(2) + '</strong><br><small>相对基期，整体价格水平变动 ' + (r.index - 100).toFixed(1) + '%</small>'
-        : '⚠️ 计算出错');
+        : '计算出错');
     }
 
     function calcGDPConvert() {
@@ -214,19 +212,19 @@
       var input = parseFloat(document.getElementById('gdp-input').value);
       var deflator = parseFloat(document.getElementById('gdp-deflator-input').value);
       if (isNaN(input) || isNaN(deflator) || deflator === 0) {
-        showCalcResult('gdpconvert-result', '⚠️ 请输入有效数值（平减指数不能为0）');
+        showCalcResult('gdpconvert-result', '请输入有效数值（平减指数不能为0）');
         return;
       }
       if (dir === 'toReal') {
         var r = CalcEngine.nominalToReal(input, deflator);
         showCalcResult('gdpconvert-result', r
           ? '实际GDP = <strong>' + r.realGDP.toFixed(2) + '</strong><br><small>' + r.nominalGDP + ' / ' + r.deflator + ' × 100</small>'
-          : '⚠️ 计算出错');
+          : '计算出错');
       } else {
         var r2 = CalcEngine.realToNominal(input, deflator);
         showCalcResult('gdpconvert-result', r2
           ? '名义GDP = <strong>' + r2.nominalGDP.toFixed(2) + '</strong><br><small>' + r2.realGDP + ' × ' + r2.deflator + ' / 100</small>'
-          : '⚠️ 计算出错');
+          : '计算出错');
       }
     }
 
@@ -236,25 +234,25 @@
         var cur = parseFloat(document.getElementById('yoy-current').value);
         var prev = parseFloat(document.getElementById('yoy-prev').value);
         if (isNaN(cur) || isNaN(prev) || prev === 0) {
-          showCalcResult('growth-result', '⚠️ 请输入有效数值（上期数值不能为0）');
+          showCalcResult('growth-result', '请输入有效数值（上期数值不能为0）');
           return;
         }
         var r = CalcEngine.growthRate(cur, prev);
         showCalcResult('growth-result', r
           ? '增长率 = <strong>' + r.rate.toFixed(2) + '%</strong><br><small>(' + r.current + ' - ' + r.previous + ') / ' + r.previous + ' × 100%</small>'
-          : '⚠️ 计算出错');
+          : '计算出错');
       } else {
         var finalVal = parseFloat(document.getElementById('cagr-final').value);
         var initial = parseFloat(document.getElementById('cagr-initial').value);
         var years = parseFloat(document.getElementById('cagr-years').value);
         if (isNaN(finalVal) || isNaN(initial) || isNaN(years) || initial <= 0 || years <= 0) {
-          showCalcResult('growth-result', '⚠️ 请输入有效数值（期初>0，年数>0）');
+          showCalcResult('growth-result', '请输入有效数值（期初>0，年数>0）');
           return;
         }
         var r2 = CalcEngine.cagr(finalVal, initial, years);
         showCalcResult('growth-result', r2
           ? 'CAGR = <strong>' + r2.rate.toFixed(2) + '%</strong><br><small>(' + finalVal + '/' + initial + ')^(1/' + years + ') - 1</small>'
-          : '⚠️ 计算出错');
+          : '计算出错');
       }
     }
 
@@ -262,16 +260,15 @@
       var amt = parseFloat(document.getElementById('ppp-amount').value);
       var rate = parseFloat(document.getElementById('ppp-rate').value);
       if (isNaN(amt) || isNaN(rate) || rate === 0) {
-        showCalcResult('ppp-result', '⚠️ 请输入有效数值（汇率不能为0）');
+        showCalcResult('ppp-result', '请输入有效数值（汇率不能为0）');
         return;
       }
       var r = CalcEngine.pppConvert(amt, rate);
       showCalcResult('ppp-result', r
         ? '换算结果 = <strong>' + r.converted.toFixed(2) + '</strong><br><small>' + r.original + ' / ' + r.rate + ' = ' + r.converted.toFixed(2) + '</small>'
-        : '⚠️ 计算出错');
+        : '计算出错');
     }
 
-    // Toggle growth type
     document.getElementById('growth-type').addEventListener('change', function() {
       document.getElementById('growth-yoy').style.display = this.value === 'yoy' ? 'block' : 'none';
       document.getElementById('growth-cagr').style.display = this.value === 'cagr' ? 'block' : 'none';

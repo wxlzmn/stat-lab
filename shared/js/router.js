@@ -1,7 +1,7 @@
 var SUBJECT_REGISTRY = [
   {
     id: 'econstats', name: '经济统计学', icon: '📈',
-    color: '#f59e0b', colorDeep: '#d97706', colorLight: '#fef3c7', colorText: '#92400e',
+    color: '#f59e0b', colorDeep: '#d97706', colorLight: '#fffbeb', colorText: '#92400e',
     chapters: [
       { id: 'ch1-gdp', title: 'GDP及相关指标', icon: '📈' },
       { id: 'ch2-enterprise', title: '企业统计', icon: '🏭' },
@@ -16,7 +16,7 @@ var SUBJECT_REGISTRY = [
   },
   {
     id: 'stat-comp', name: '统计计算', icon: '💻',
-    color: '#3b82f6', colorDeep: '#1d4ed8', colorLight: '#dbeafe', colorText: '#1e3a8a',
+    color: '#3b82f6', colorDeep: '#1d4ed8', colorLight: '#eff6ff', colorText: '#1e3a8a',
     chapters: [
       { id: 's4-dist', title: '分布、随机数与似然推断', icon: '🎲' },
       { id: 's5-optimize', title: '优化方法', icon: '📉' },
@@ -51,10 +51,10 @@ function toggleMobileMenu() {
 }
 
 function injectNavbar(pageType, subjectId, chapterId, chapterTitle) {
-  var rootPageTypes = { home:1, dashboard:1, exam:1, errors:1, search:1, flashcards:1, login:1 };
-  var deepPageTypes = { knowledge:1, quiz:1, lab:1 };
-  var subjPageTypes = { 'subject-home':1 };  // subjects/<id>/index.html — 2 levels deep
-  // home is at true root (index.html), other root-type pages are one level deep
+  var rootPageTypes = { home: 1, dashboard: 1, exam: 1, errors: 1, search: 1, flashcards: 1, login: 1 };
+  var deepPageTypes = { knowledge: 1, quiz: 1, lab: 1 };
+  var subjPageTypes = { 'subject-home': 1 };
+
   var depth;
   if (pageType === 'home') {
     depth = '';
@@ -67,6 +67,7 @@ function injectNavbar(pageType, subjectId, chapterId, chapterTitle) {
   } else {
     depth = '../../../../';
   }
+
   var subject = null;
   if (subjectId) {
     for (var i = 0; i < SUBJECT_REGISTRY.length; i++) {
@@ -77,11 +78,11 @@ function injectNavbar(pageType, subjectId, chapterId, chapterTitle) {
   var nav = document.createElement('nav');
   nav.className = 'navbar';
 
-  var brandHtml = '<a href="' + depth + 'index.html" class="brand" style="font-family:var(--font-display);font-size:1.15rem;font-weight:700;color:var(--text-primary);text-decoration:none;">🖥️ Stat-Lab</a>';
+  var brandHtml = '<a href="' + depth + 'index.html" class="brand">Stat-Lab</a>';
 
   var selectorHtml = '';
   if (subject && pageType !== 'home') {
-    selectorHtml = '<select class="subject-selector" onchange="switchSubject(this.value)" style="margin-left:8px;">';
+    selectorHtml = '<select class="subject-selector" onchange="switchSubject(this.value)" aria-label="切换学科">';
     for (var s = 0; s < SUBJECT_REGISTRY.length; s++) {
       var subj = SUBJECT_REGISTRY[s];
       selectorHtml += '<option value="' + subj.id + '"' + (subj.id === subject.id ? ' selected' : '') + '>' + subj.icon + ' ' + subj.name + '</option>';
@@ -91,20 +92,20 @@ function injectNavbar(pageType, subjectId, chapterId, chapterTitle) {
 
   var chapterLinksHtml = '';
   if (subject && pageType !== 'home') {
-    chapterLinksHtml = '<span style="color:var(--border);margin:0 4px;">|</span>';
+    chapterLinksHtml = '';
     for (var c = 0; c < subject.chapters.length; c++) {
       var ch = subject.chapters[c];
       var chUrl = depth + 'subjects/' + subject.id + '/knowledge/' + ch.id + '.html';
-      chapterLinksHtml += '<a href="' + chUrl + '" style="padding:4px 10px;font-size:0.82rem;">' + ch.icon + ' ' + ch.title + '</a>';
+      chapterLinksHtml += '<a href="' + chUrl + '" title="' + ch.title + '">' + ch.icon + '</a>';
     }
   }
 
   var toolsHtml = '' +
-    '<a href="' + depth + 'search/index.html">🔍 搜索</a>' +
-    '<a href="' + depth + 'dashboard/index.html">📊 仪表盘</a>' +
-    '<a href="' + depth + 'exam/index.html">📝 考试</a>' +
-    '<a href="' + depth + 'flashcards/index.html">🃏 卡片</a>' +
-    '<a href="' + depth + 'errors/index.html" id="error-nav-link">❌ 错题</a>';
+    '<a href="' + depth + 'search/index.html">搜索</a>' +
+    '<a href="' + depth + 'dashboard/index.html">仪表盘</a>' +
+    '<a href="' + depth + 'exam/index.html">考试</a>' +
+    '<a href="' + depth + 'flashcards/index.html">闪卡</a>' +
+    '<a href="' + depth + 'errors/index.html" id="error-nav-link">错题</a>';
 
   nav.innerHTML = '' +
     '<button class="hamburger-btn" onclick="toggleMobileMenu()" aria-label="Menu">' +
@@ -124,6 +125,17 @@ function injectNavbar(pageType, subjectId, chapterId, chapterTitle) {
   }
 
   updateErrorBadge();
+
+  // Scroll shadow for navbar
+  window.addEventListener('scroll', function() {
+    if (nav) {
+      if (window.scrollY > 4) {
+        nav.classList.add('scrolled');
+      } else {
+        nav.classList.remove('scrolled');
+      }
+    }
+  }, { passive: true });
 }
 
 function switchSubject(subjectId) {
@@ -154,7 +166,7 @@ function renderBreadcrumb(subject, chapterId, chapterTitle, pageType) {
   var bc = document.createElement('div');
   bc.className = 'breadcrumb';
   bc.innerHTML = '' +
-    '<a href="' + depth + 'index.html">🏠 首页</a>' +
+    '<a href="' + depth + 'index.html">首页</a>' +
     '<span class="sep">/</span>' +
     '<a href="' + depth + 'subjects/' + subject.id + '/index.html">' + subject.icon + ' ' + subject.name + '</a>' +
     '<span class="sep">/</span>' +
@@ -170,39 +182,27 @@ function updateErrorBadge() {
   var link = document.getElementById('error-nav-link');
   if (link && typeof EcoStore !== 'undefined') {
     var count = EcoStore.getAllErrorCount();
-    if (count > 0) link.innerHTML = '❌ 错题 <span style="background:var(--warning);color:#fff;border-radius:10px;padding:1px 6px;font-size:0.7rem;margin-left:2px;">' + count + '</span>';
+    if (count > 0) link.innerHTML = '错题 <span style="background:var(--danger);color:#fff;border-radius:4px;padding:1px 6px;font-size:0.7rem;margin-left:4px;min-width:18px;display:inline-block;text-align:center;">' + count + '</span>';
   }
 }
 
 function applyTheme(theme) {
-  document.body.setAttribute('data-theme', theme);
+  document.documentElement.setAttribute('data-theme', theme);
   localStorage.setItem('statlab_theme', theme);
 }
 
 function toggleTheme() {
-  var current = document.body.getAttribute('data-theme') || 'warm';
+  var current = document.documentElement.getAttribute('data-theme') || 'linear';
   var next = current === 'warm' ? 'academic' : 'warm';
   applyTheme(next);
 }
 
 (function() {
   try {
-  // Check localStorage first, then fall back to subject detection
-  var saved = localStorage.getItem('statlab_theme');
-  if (saved === 'warm' || saved === 'academic') {
-    applyTheme(saved);
-    return;
-  }
-  var subjId = getCurrentSubjectId();
-  var autoTheme;
-  if (subjId === 'stat-comp') {
-    autoTheme = 'academic';
-  } else if (subjId === 'econstats') {
-    autoTheme = 'warm';
-  } else {
-    autoTheme = 'warm';
-  }
-  applyTheme(autoTheme);
+    // Single theme — no toggle needed
+    // Just ensure no stale theme attribute exists
+    document.documentElement.removeAttribute('data-theme');
+    localStorage.removeItem('statlab_theme');
   } catch(e) { console.warn('Theme init failed:', e); }
 })();
 
@@ -232,6 +232,12 @@ function renderKnowledgePage(subjectId, chapterId) {
           '</div>';
       }).join('');
 
+      // Staggered animation for content blocks
+      var blocks = content.querySelectorAll('.content-block');
+      blocks.forEach(function(block, i) {
+        block.style.animationDelay = (i * 60) + 'ms';
+      });
+
       var nav = document.createElement('div');
       nav.style.cssText = 'display:flex;gap:8px;margin-top:24px;justify-content:space-between;';
       nav.innerHTML = '' +
@@ -249,11 +255,11 @@ function renderKnowledgePage(subjectId, chapterId) {
 
 function renderContentBlock(block, subjectId) {
   switch (block.type) {
-    case 'text': return '<div style="font-size:0.93rem;line-height:1.9;color:var(--text-body);margin:10px 0;">' + block.body + '</div>';
-    case 'formula': return '<div class="formula-block">' + (block.label ? '<div class="formula-label">' + block.label + '</div>' : '') + '<div>$$' + block.latex + '$$</div>' + (block.note ? '<div style="font-size:0.82rem;color:#78716c;margin-top:4px;">' + block.note + '</div>' : '') + '</div>';
+    case 'text': return '<div style="font-size:0.9rem;line-height:1.85;color:var(--text-body);margin:10px 0;">' + block.body + '</div>';
+    case 'formula': return '<div class="formula-block">' + (block.label ? '<div class="formula-label">' + block.label + '</div>' : '') + '<div>$$' + block.latex + '$$</div>' + (block.note ? '<div style="font-size:0.8rem;color:var(--text-muted);margin-top:6px;">' + block.note + '</div>' : '') + '</div>';
     case 'highlight': return '<div class="highlight-box ' + (block.level || 'important') + '">' + block.body + '</div>';
     case 'comparison': return '<div style="margin:12px 0;">' + (block.title ? '<div style="font-weight:700;margin-bottom:6px;color:var(--text-primary);">' + block.title + '</div>' : '') + '<table class="comparison-table"><tbody>' + (block.rows || []).map(function(row, ri) { return '<tr>' + row.map(function(cell, ci) { return ri === 0 ? '<th>' + cell + '</th>' : '<td>' + cell + '</td>'; }).join('') + '</tr>'; }).join('') + '</tbody></table></div>';
-    case 'code': return '<div class="code-block">' + (block.language ? '<span class="code-lang">' + block.language + '</span>' : '') + (block.explain ? '<div class="code-explain">' + block.explain + '</div>' : '') + '<pre class="code-editor" contenteditable="true" spellcheck="false">' + (block.body || '') + '</pre>' + '<button class="code-run-btn" onclick="runCodeBlock(this)">&#9654; 运行</button>' + '<div class="code-live-output"></div>' + (block.caption ? '<div style="font-size:0.78rem;color:#94a3b8;margin-top:6px;">' + block.caption + '</div>' : '') + '</div>';
+    case 'code': return '<div class="code-block">' + (block.language ? '<span class="code-lang">' + block.language + '</span>' : '') + (block.explain ? '<div class="code-explain">' + block.explain + '</div>' : '') + '<pre class="code-editor" contenteditable="true" spellcheck="false">' + (block.body || '') + '</pre>' + '<button class="code-run-btn" onclick="runCodeBlock(this)">&#9654; 运行</button>' + '<div class="code-live-output"></div>' + (block.caption ? '<div style="font-size:0.76rem;color:#64748b;margin-top:6px;padding:0 16px 12px;">' + block.caption + '</div>' : '') + '</div>';
     case 'case': {
       var caseData = null;
       var casesVar = subjectId === 'econstats' ? 'ECOSTATS_CASES' : null;
@@ -265,16 +271,35 @@ function renderContentBlock(block, subjectId) {
         }
       }
       if (!caseData) return '<div style="color:var(--warning);padding:16px;">未找到案例：' + (block.caseId || '未指定') + '</div>';
-      return '<div style="border:2px solid #f59e0b;border-radius:12px;padding:20px;margin:16px 0;background:#fffdf5;">' + '<div style="font-weight:700;color:#92400e;margin-bottom:10px;font-size:1rem;">' + caseData.title + '</div>' + '<div style="font-size:0.85rem;color:#78716c;margin-bottom:8px;"><strong>背景：</strong> ' + caseData.background + '</div>' + '<div style="margin:12px 0;"><strong>问题：</strong><ol>' + (caseData.questions || []).map(function(q) { return '<li style="font-size:0.88rem;margin:4px 0;">' + q + '</li>'; }).join('') + '</ol></div>' + '<details style="margin-top:12px;"><summary style="cursor:pointer;color:var(--accent);font-weight:600;">分析与结论</summary>' + '<div style="margin-top:8px;font-size:0.88rem;line-height:1.7;color:var(--text-body);"><strong>分析：</strong> ' + caseData.analysis + '</div>' + '<div style="margin-top:8px;font-size:0.88rem;line-height:1.7;color:var(--text-body);"><strong>结论：</strong> ' + caseData.conclusion + '</div>' + '</details></div>';
+      return '<div style="border:1px solid var(--warning-border);border-radius:var(--radius);padding:18px;margin:16px 0;background:var(--warning-soft);">' +
+        '<div style="font-weight:700;color:var(--text-primary);margin-bottom:8px;font-size:0.95rem;">' + caseData.title + '</div>' +
+        '<div style="font-size:0.82rem;color:var(--text-secondary);margin-bottom:8px;"><strong>背景：</strong> ' + caseData.background + '</div>' +
+        '<div style="margin:10px 0;"><strong>问题：</strong><ol>' + (caseData.questions || []).map(function(q) { return '<li style="font-size:0.85rem;margin:3px 0;">' + q + '</li>'; }).join('') + '</ol></div>' +
+        '<details style="margin-top:10px;"><summary style="cursor:pointer;color:var(--accent);font-weight:600;font-size:0.88rem;">分析与结论</summary>' +
+        '<div style="margin-top:8px;font-size:0.85rem;line-height:1.65;color:var(--text-body);"><strong>分析：</strong> ' + caseData.analysis + '</div>' +
+        '<div style="margin-top:6px;font-size:0.85rem;line-height:1.65;color:var(--text-body);"><strong>结论：</strong> ' + caseData.conclusion + '</div>' +
+        '</details></div>';
     }
-    case 'timeline': return '<div style="position:relative;padding:10px 0 10px 30px;border-left:3px solid #f59e0b;margin:16px 0;">' + (block.events || []).map(function(ev) { return '<div style="position:relative;margin-bottom:16px;"><div style="position:absolute;left:-37px;top:4px;width:12px;height:12px;background:#f59e0b;border-radius:50%;border:3px solid #fff;box-shadow:0 0 0 2px #f59e0b;"></div><div style="font-weight:700;color:#92400e;font-size:0.85rem;">' + (ev.year || '') + '</div><div style="font-size:0.88rem;color:var(--text-body);">' + (ev.text || '') + '</div></div>'; }).join('') + '</div>';
+    case 'timeline': return '<div style="position:relative;padding:10px 0 10px 28px;border-left:2px solid var(--accent);margin:16px 0;">' + (block.events || []).map(function(ev) {
+      return '<div style="position:relative;margin-bottom:14px;">' +
+        '<div style="position:absolute;left:-33px;top:4px;width:10px;height:10px;background:var(--accent);border-radius:50%;border:2px solid #fff;box-shadow:0 0 0 2px var(--accent);"></div>' +
+        '<div style="font-weight:700;color:var(--text-primary);font-size:0.82rem;">' + (ev.year || '') + '</div>' +
+        '<div style="font-size:0.85rem;color:var(--text-body);">' + (ev.text || '') + '</div>' +
+        '</div>';
+    }).join('') + '</div>';
     case 'glossary': {
       var glosVar = subjectId === 'econstats' ? 'ECOSTATS_GLOSSARY' : null;
       if (!glosVar || typeof window[glosVar] === 'undefined' || !block.chapter || !block.terms) return '';
       var terms = block.terms.map(function(tid) { var chapTerms = window[glosVar][block.chapter] || []; var found = chapTerms.filter(function(t) { return t.id === tid; }); return found.length > 0 ? found[0] : null; }).filter(function(t) { return t !== null; });
-      return '<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:10px;margin:12px 0;">' + terms.map(function(t) { return '<div style="border:1px dashed #fde68a;border-radius:8px;padding:12px;background:#fffdf5;"><div style="font-weight:700;color:var(--text-primary);">' + t.term + (t.english ? ' <span style="font-size:0.75rem;color:#78716c;">' + t.english + '</span>' : '') + '</div><div style="font-size:0.82rem;color:var(--text-body);line-height:1.6;margin-top:4px;">' + t.definition + '</div>' + (t.formula ? '<div style="margin-top:6px;font-size:0.8rem;color:#92400e;">$$' + t.formula + '$$</div>' : '') + '</div>'; }).join('') + '</div>';
+      return '<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:10px;margin:12px 0;">' + terms.map(function(t) {
+        return '<div style="border:1px solid var(--border);border-radius:var(--radius-sm);padding:12px;background:var(--bg-card);">';
+      }).join('') + terms.map(function(t) {
+        return '<div style="font-weight:600;color:var(--text-primary);">' + t.term + (t.english ? ' <span style="font-size:0.72rem;color:var(--text-muted);font-weight:400;">' + t.english + '</span>' : '') + '</div>' +
+          '<div style="font-size:0.8rem;color:var(--text-body);line-height:1.55;margin-top:3px;">' + t.definition + '</div>' +
+          (t.formula ? '<div style="margin-top:5px;font-size:0.78rem;color:var(--accent);">$$' + t.formula + '$$</div>' : '');
+      }).join('') + '</div>';
     }
-    case 'visualization': return '<div class="viz-container" id="viz-' + (block.algo || 'default') + '" data-algo="' + (block.algo || '') + '"><canvas id="viz-canvas-' + (block.algo || 'default') + '" width="600" height="400"></canvas>' + (block.caption ? '<div style="font-size:0.78rem;color:var(--text-muted);margin-top:6px;">' + block.caption + '</div>' : '') + '</div>';
+    case 'visualization': return '<div class="viz-container" id="viz-' + (block.algo || 'default') + '" data-algo="' + (block.algo || '') + '"><canvas id="viz-canvas-' + (block.algo || 'default') + '" width="600" height="400"></canvas>' + (block.caption ? '<div style="font-size:0.76rem;color:var(--text-muted);margin-top:6px;">' + block.caption + '</div>' : '') + '</div>';
     default: return '';
   }
 }
@@ -291,13 +316,13 @@ function initTocHighlight() {
         if (active) active.classList.add('active');
       }
     });
-  }, { rootMargin: '-20% 0px -70% 0px' });
+  }, { rootMargin: '-15% 0px -65% 0px' });
   document.querySelectorAll('.content-block').forEach(function(b) { observer.observe(b); });
 }
 
 function showError(msg) {
   var el = document.getElementById('content-area');
-  if (el) el.innerHTML = '<div style="text-align:center;padding:64px;color:var(--warning);">' + msg + '</div>';
+  if (el) el.innerHTML = '<div style="text-align:center;padding:64px;color:var(--danger);">' + msg + '</div>';
 }
 
 /** HTML 转义——防止 XSS */
@@ -314,33 +339,28 @@ function runCodeBlock(btn) {
   if (!editor || !output) return;
   var code = editor.textContent || '';
 
-  // Pyodide 未就绪——提示用户等待
   if (typeof PyodideRuntime === 'undefined') {
     output.style.display = 'block';
-    output.innerHTML = '<div class="error">❌ Pyodide 运行时未加载。请刷新页面后重试。</div>';
+    output.innerHTML = '<div class="error">Pyodide 运行时未加载。请刷新页面后重试。</div>';
     return;
   }
   if (!PyodideRuntime.isReady()) {
-    // 加载已经停止（之前失败过）——显示错误并提供重试
     if (!PyodideRuntime.isLoading()) {
       var errMsg = PyodideRuntime.getError ? PyodideRuntime.getError() : null;
       output.style.display = 'block';
       output.innerHTML = '<div class="error">' +
-        '❌ Pyodide 加载失败' + (errMsg ? '：' + escapeHtml(errMsg) : '——可能是网络连接问题') +
-        '<br><br><button class="code-run-btn" onclick="var b=this.closest(\'.code-block\').querySelector(\'.code-run-btn\');PyodideRuntime.init();runCodeBlock(b);" style="display:inline-block;width:auto;padding:6px 16px;">🔄 点击重试</button>' +
+        'Pyodide 加载失败' + (errMsg ? '：' + escapeHtml(errMsg) : '') +
+        '<br><br><button class="code-run-btn" onclick="var b=this.closest(\'.code-block\').querySelector(\'.code-run-btn\');PyodideRuntime.init();runCodeBlock(b);" style="display:inline-block;width:auto;padding:6px 16px;margin-top:8px;">重试</button>' +
         '</div>';
       return;
     }
-    // 正在加载中——显示等待消息 + 超时检测
     output.style.display = 'block';
-    output.innerHTML = '<div class="loading">Pyodide 正在加载中（首次约需 10-30 秒，取决于网络速度），请稍候...</div>';
-    // 注册就绪回调，就绪后自动运行（★ 加 isReady 二次检查——回调可能因失败触发）
+    output.innerHTML = '<div class="loading">Pyodide 正在加载中，请稍候...</div>';
     PyodideRuntime.onReady(function() {
       if (!PyodideRuntime.isReady()) return;
-      output.innerHTML = '<div class="loading">Pyodide 就绪！正在执行...</div>';
+      output.innerHTML = '<div class="loading">就绪！正在执行...</div>';
       runCodeBlock(btn);
     });
-    // ★ 30 秒超时：如果还没就绪，显示错误并提供重试
     var startTime = Date.now();
     var checkInterval = setInterval(function() {
       if (PyodideRuntime.isReady()) { clearInterval(checkInterval); return; }
@@ -349,8 +369,8 @@ function runCodeBlock(btn) {
         if (!PyodideRuntime.isReady()) {
           var eMsg = PyodideRuntime.getError ? PyodideRuntime.getError() : null;
           output.innerHTML = '<div class="error">' +
-            '⏰ Pyodide 加载超时' + (eMsg ? '：' + escapeHtml(eMsg) : '——jsDelivr CDN 可能在您的网络环境下不可达') +
-            '<br><br><button class="code-run-btn" onclick="var b=this.closest(\'.code-block\').querySelector(\'.code-run-btn\');PyodideRuntime.init();runCodeBlock(b);" style="display:inline-block;width:auto;padding:6px 16px;">🔄 点击重试</button>' +
+            'Pyodide 加载超时' + (eMsg ? '：' + escapeHtml(eMsg) : '') +
+            '<br><br><button class="code-run-btn" onclick="var b=this.closest(\'.code-block\').querySelector(\'.code-run-btn\');PyodideRuntime.init();runCodeBlock(b);" style="display:inline-block;width:auto;padding:6px 16px;margin-top:8px;">重试</button>' +
             '</div>';
         }
       }
@@ -358,20 +378,15 @@ function runCodeBlock(btn) {
     return;
   }
 
-  // Pyodide 已就绪——执行代码
   btn.disabled = true;
   btn.classList.add('loading');
-  btn.innerHTML = '⏳ 执行中...';
+  btn.innerHTML = '执行中...';
   output.style.display = 'block';
   output.innerHTML = '';
 
   PyodideRuntime.run(code, {
-    onStdout: function(text) {
-      // 流式输出（可选——等批量一起显示更简洁）
-    },
-    onStderr: function(text) {
-      // 流式 stderr
-    }
+    onStdout: function(text) {},
+    onStderr: function(text) {}
   }).then(function(res) {
     var html = '';
     if (res.stdout) {
@@ -391,7 +406,7 @@ function runCodeBlock(btn) {
     var hasVisual = res.images && res.images.length > 0;
     var hasOutput = res.stdout || res.stderr;
     if (!html) {
-      html = '<span style="color:#94a3b8;">（代码执行完成——无 print 输出和图形。你可以修改上方代码后再次运行）</span>';
+      html = '<span style="color:#64748b;">（代码执行完成——无 print 输出和图形。你可以修改上方代码后再次运行）</span>';
     }
     output.innerHTML = html;
     output.scrollTop = output.scrollHeight;
