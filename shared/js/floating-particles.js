@@ -7,41 +7,47 @@ var FloatingParticles = {
   isMobile: false,
 
   init: function(container) {
-    this.canvas = document.createElement('canvas');
-    this.canvas.style.cssText = 'position:absolute;top:0;left:0;width:100%;height:100%;pointer-events:none;z-index:0;opacity:0.4;';
-    container.style.position = 'relative';
-    container.appendChild(this.canvas);
-    this.ctx = this.canvas.getContext('2d');
-    this.isMobile = window.innerWidth < 768;
-
-    var count = this.isMobile ? 15 : 30;
-    var w = container.offsetWidth;
-    var h = container.offsetHeight;
-    this.canvas.width = w;
-    this.canvas.height = h;
-
-    this.particles = [];
-    for (var i = 0; i < count; i++) {
-      this.particles.push({
-        x: Math.random() * w,
-        y: Math.random() * h,
-        vx: (Math.random() - 0.5) * 0.3,
-        vy: (Math.random() - 0.5) * 0.3 - 0.1,
-        radius: Math.random() * 1.5 + 0.5,
-        opacity: Math.random() * 0.4 + 0.1,
-        drift: Math.random() * 0.002 - 0.001
-      });
-    }
-
-    this.animate();
-
     var self = this;
-    window.addEventListener('resize', function() {
-      var cw = container.offsetWidth;
-      var ch = container.offsetHeight;
-      self.canvas.width = cw;
-      self.canvas.height = ch;
-    });
+    // Defer to ensure container has correct dimensions
+    setTimeout(function() {
+      self.canvas = document.createElement('canvas');
+      self.canvas.style.cssText = 'position:absolute;top:0;left:0;width:100%;height:100%;pointer-events:none;z-index:0;opacity:0.4;';
+      container.style.position = 'relative';
+      container.appendChild(self.canvas);
+      self.ctx = self.canvas.getContext('2d');
+      self.isMobile = window.innerWidth < 768;
+
+      var count = self.isMobile ? 15 : 30;
+      var w = container.offsetWidth;
+      var h = container.offsetHeight;
+      if (w === 0 || h === 0) return; // container not ready
+      self.canvas.width = w;
+      self.canvas.height = h;
+
+      self.particles = [];
+      for (var i = 0; i < count; i++) {
+        self.particles.push({
+          x: Math.random() * w,
+          y: Math.random() * h,
+          vx: (Math.random() - 0.5) * 0.3,
+          vy: (Math.random() - 0.5) * 0.3 - 0.1,
+          radius: Math.random() * 1.5 + 0.5,
+          opacity: Math.random() * 0.4 + 0.1,
+          drift: Math.random() * 0.002 - 0.001
+        });
+      }
+
+      self.animate();
+
+      window.addEventListener('resize', function() {
+        var cw = container.offsetWidth;
+        var ch = container.offsetHeight;
+        if (cw > 0 && ch > 0) {
+          self.canvas.width = cw;
+          self.canvas.height = ch;
+        }
+      });
+    }, 50);
   },
 
   animate: function() {
