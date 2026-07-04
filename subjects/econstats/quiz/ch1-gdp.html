@@ -12,10 +12,11 @@
   <link rel="stylesheet" href="../../../shared/vendor/katex.min.css">
 </head>
 <body>
-<main><div id="quiz-container" class="quiz-container"></div></main>
+<main style="position:relative;"><div id="quiz-container" class="quiz-container"></div></main>
 <script src="../../../shared/js/storage.js"></script>
 <script src="../../../shared/js/router.js"></script>
 <script src="../../../shared/js/annotations.js"></script>
+<script src="../../../shared/js/floating-particles.js"></script>
 <script src="../data/quiz.js"></script>
 <script src="../../../shared/vendor/katex.min.js"></script>
 <script src="../../../shared/vendor/auto-render.min.js"></script>
@@ -26,6 +27,8 @@ var CHAPTER_ID = 'ch1-gdp';
   injectNavbar('quiz', 'econstats', CHAPTER_ID);
   var questions = window.ECOSTATS_QUIZ ? (window.ECOSTATS_QUIZ[CHAPTER_ID] || []) : [];
   QuizEngine.init('econstats', CHAPTER_ID, questions);
+  var main = document.querySelector('main');
+  if (main) FloatingParticles.init(main);
   if (typeof AnnotationSystem !== 'undefined') {
     AnnotationSystem.init('subjects/econstats/quiz/ch1-gdp/', '#quiz-container');
   }

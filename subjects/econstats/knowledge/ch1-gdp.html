@@ -13,11 +13,12 @@
 </head>
 <body>
 <main>
-  <div class="knowledge-layout">
+  <div class="knowledge-layout" id="knowledge-layout">
     <aside class="sidebar" id="toc-sidebar"></aside>
     <div class="content-area" id="content-area"></div>
   </div>
 </main>
+<script src="../../../shared/js/floating-particles.js"></script>
 <script src="../../../shared/js/storage.js"></script>
 <script src="../data/knowledge.js"></script>
 <script src="../data/cases.js"></script>
@@ -31,6 +32,9 @@ var CHAPTER_ID = 'ch1-gdp';
 (function() {
   injectNavbar('knowledge', 'econstats', CHAPTER_ID);
   renderKnowledgePage('econstats', CHAPTER_ID);
+  // Floating particles in content area
+  var layout = document.getElementById('knowledge-layout');
+  if (layout) FloatingParticles.init(layout);
   if (typeof AnnotationSystem !== 'undefined') {
     AnnotationSystem.init('subjects/econstats/knowledge/ch1-gdp/', '#content-area');
   }

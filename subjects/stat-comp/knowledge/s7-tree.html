@@ -13,12 +13,13 @@
 </head>
 <body>
 <main>
-  <div class="knowledge-layout">
+  <div class="knowledge-layout" id="knowledge-layout">
     <aside class="sidebar" id="toc-sidebar"></aside>
     <div class="content-area" id="content-area"></div>
   </div>
 </main>
 <script src="https://fastly.jsdelivr.net/pyodide/v0.26.1/full/pyodide.js"></script>
+<script src="../../../shared/js/floating-particles.js"></script>
 <script src="../../../shared/js/storage.js"></script>
 <script src="../../../shared/js/pyodide-runtime.js"></script>
 <script src="../data/knowledge.js"></script>
@@ -32,6 +33,8 @@ var CHAPTER_ID = 's7-tree';
   if (typeof PyodideRuntime !== 'undefined') PyodideRuntime.init();
   injectNavbar('knowledge', 'stat-comp', CHAPTER_ID);
   renderKnowledgePage('stat-comp', CHAPTER_ID);
+  var layout = document.getElementById('knowledge-layout');
+  if (layout) FloatingParticles.init(layout);
   if (typeof AnnotationSystem !== 'undefined') {
     AnnotationSystem.init('subjects/stat-comp/knowledge/s7-tree/', '#content-area');
   }
