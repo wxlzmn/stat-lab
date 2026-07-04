@@ -11,7 +11,7 @@ var FloatingParticles = {
     // Defer to ensure container has correct dimensions
     setTimeout(function() {
       self.canvas = document.createElement('canvas');
-      self.canvas.style.cssText = 'position:absolute;top:0;left:0;width:100%;height:100%;pointer-events:none;z-index:0;opacity:0.4;';
+      self.canvas.style.cssText = 'position:absolute;top:0;left:0;width:100%;height:100%;pointer-events:none;z-index:0;opacity:0.3;';
       container.style.position = 'relative';
       container.appendChild(self.canvas);
       self.ctx = self.canvas.getContext('2d');
@@ -20,7 +20,7 @@ var FloatingParticles = {
       var count = self.isMobile ? 15 : 30;
       var w = container.offsetWidth;
       var h = container.offsetHeight;
-      if (w === 0 || h === 0) return; // container not ready
+      if (w === 0 || h === 0) return;
       self.canvas.width = w;
       self.canvas.height = h;
 
@@ -47,7 +47,7 @@ var FloatingParticles = {
           self.canvas.height = ch;
         }
       });
-    }, 50);
+    }, 200);
   },
 
   animate: function() {
@@ -75,7 +75,8 @@ var FloatingParticles = {
       ctx.fill();
     }
 
-    this.animationId = requestAnimationFrame(this.animate.bind(this));
+    var self = this;
+    self.animationId = requestAnimationFrame(function() { self.animate(); });
   },
 
   destroy: function() {
