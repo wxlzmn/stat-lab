@@ -385,7 +385,24 @@ function renderGlossaryPanel(subjectId, chapterId) {
         '<div class="glossary-def">' + escapeHtml(t.definition) + '</div>' +
       '</div>';
     }).join('') +
-    (terms.length > 3 ? '<div style="text-align:center;margin-top:8px;"><a href="glossary/' + chapterId + '.html" class="related-link"><span class="link-icon">›</span>查看全部术语</a></div>' : '');
+    (terms.length > 3 ? '<div style="text-align:center;margin-top:8px;"><a href="#" class="related-link" id="show-all-glossary"><span class="link-icon">›</span>查看全部术语</a></div>' : '');
+
+  // Click handler: scroll to glossary section in content
+  var link = document.getElementById('show-all-glossary');
+  if (link) {
+    link.addEventListener('click', function(e) {
+      e.preventDefault();
+      var contentBlocks = document.querySelectorAll('.content-block');
+      for (var i = 0; i < contentBlocks.length; i++) {
+        var block = contentBlocks[i];
+        var html = block.innerHTML || '';
+        if (html.indexOf('glossary-item') !== -1 || html.indexOf('术语速查') !== -1) {
+          block.scrollIntoView({ behavior: 'smooth', block: 'center' });
+          break;
+        }
+      }
+    });
+  }
 }
 
 function renderRelatedPanel(subjectId, chapterId) {
