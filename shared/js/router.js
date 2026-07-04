@@ -332,22 +332,6 @@ function renderKnowledgeRightPanel(subjectId, chapterId) {
     '<div class="panel-section" id="panel-related"></div>';
   container.appendChild(panel);
 
-  // Event delegation for glossary scroll link
-  panel.addEventListener('click', function(e) {
-    var link = e.target.closest('[data-scroll-glossary]');
-    if (link) {
-      e.preventDefault();
-      var contentBlocks = document.querySelectorAll('.content-block');
-      for (var i = 0; i < contentBlocks.length; i++) {
-        var html = contentBlocks[i].innerHTML || '';
-        if (html.indexOf('glossary-item') !== -1) {
-          contentBlocks[i].scrollIntoView({ behavior: 'smooth', block: 'center' });
-          break;
-        }
-      }
-    }
-  });
-
   // Progress ring
   renderProgressPanel(subjectId, chapterId);
   // Glossary quick ref
@@ -391,17 +375,36 @@ function renderGlossaryPanel(subjectId, chapterId) {
   var glosVar = subjectId === 'econstats' ? 'ECOSTATS_GLOSSARY' : null;
   if (!glosVar || typeof window[glosVar] === 'undefined') return;
 
-  var terms = (window[glosVar][chapterId] || []).slice(0, 5);
+  var terms = window[glosVar][chapterId] || [];
   if (terms.length === 0) return;
 
-  el.innerHTML = '<div class="panel-section-title">术语速查</div>' +
-    terms.map(function(t) {
-      return '<div class="glossary-item" title="' + escapeHtml(t.definition) + '">' +
-        '<div class="glossary-term">' + escapeHtml(t.term) + (t.english ? ' <span style="font-size:0.75rem;color:var(--text-muted);">' + escapeHtml(t.english) + '</span>' : '') + '</div>' +
-        '<div class="glossary-def">' + escapeHtml(t.definition) + '</div>' +
+  el.innerHTML = '<div class="panel-section-title">术语速查 (' + terms.length + ')</div>' +
+    terms.map(function(t, i) {
+      return '<div class="glossary-accordion">' +
+        '<div class="glossary-accordion-toggle" data-glossary-idx="' + i + '">' +
+          '<span class="glossary-term">' + escapeHtml(t.term) + (t.english ? ' <span style="font-size:0.75rem;color:var(--text-muted);font-weight:400;">' + escapeHtml(t.english) + '</span>' : '') + '</span>' +
+          '<span class="glossary-arrow" style="float:right;font-size:0.7rem;color:var(--text-muted);transition:transform 0.2s;">▶</span>' +
+        '</div>' +
+        '<div class="glossary-accordion-body" style="display:none;padding:8px 10px 10px;font-size:0.82rem;color:var(--text-body);line-height:1.6;">' +
+          escapeHtml(t.definition) +
+          (t.formula ? '<div style="margin-top:6px;font-size:0.85rem;color:var(--accent);white-space:pre-wrap;">' + escapeHtml(t.formula) + '</div>' : '') +
+        '</div>' +
       '</div>';
-    }).join('') +
-    (terms.length > 3 ? '<div style="text-align:center;margin-top:8px;"><a href="#" class="related-link" data-scroll-glossary><span class="link-icon">›</span>查看全部术语</a></div>' : '');
+    }).join('');
+
+  // Accordion toggle
+  el.addEventListener('click', function(e) {
+    var toggle = e.target.closest('.glossary-accordion-toggle');
+    if (!toggle) return;
+    var idx = toggle.getAttribute('data-glossary-idx');
+    var body = el.querySelector('.glossary-accordion-body[data-idx="' + idx + '"]');
+    var arrow = toggle.querySelector('.glossary-arrow');
+    if (body) {
+      var isOpen = body.style.display === 'block';
+      body.style.display = isOpen ? 'none' : 'block';
+      if (arrow) arrow.style.transform = isOpen ? '' : 'rotate(90deg)';
+    }
+  });
 }
 
 function renderRelatedPanel(subjectId, chapterId) {

@@ -170,6 +170,35 @@
   overflow: hidden;
 }
 
+/* Glossary accordion */
+.glossary-accordion {
+  border-bottom: 1px solid var(--border);
+}
+
+.glossary-accordion:last-child {
+  border-bottom: none;
+}
+
+.glossary-accordion-toggle {
+  padding: 8px 10px;
+  font-size: 0.82rem;
+  cursor: pointer;
+  transition: background var(--transition-fast);
+  display: flex;
+  align-items: center;
+}
+
+.glossary-accordion-toggle:hover {
+  background: var(--accent-soft);
+}
+
+.glossary-accordion-body {
+  padding: 4px 10px 10px 10px;
+  font-size: 0.82rem;
+  color: var(--text-body);
+  line-height: 1.6;
+}
+
 /* Related knowledge */
 .related-link {
   display: block;
