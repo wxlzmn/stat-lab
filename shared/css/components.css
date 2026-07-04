@@ -5,7 +5,9 @@
   left: 0;
   width: 100%;
   height: var(--navbar-height);
-  background: var(--bg-card);
+  background: rgba(255, 255, 255, 0.85);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
   border-bottom: 1px solid var(--border);
   display: flex;
   align-items: center;
@@ -21,10 +23,10 @@
 
 .navbar .brand {
   font-family: var(--font-display);
-  font-size: 1.1rem;
-  font-weight: 700;
+  font-size: 1.15rem;
+  font-weight: 800;
   color: var(--text-primary);
-  letter-spacing: -0.01em;
+  letter-spacing: -0.02em;
   white-space: nowrap;
   text-decoration: none;
 }
@@ -35,7 +37,7 @@
 
 .navbar .nav-links {
   display: flex;
-  gap: 4px;
+  gap: 2px;
   list-style: none;
   padding: 0;
   margin: 0;
@@ -51,29 +53,12 @@
   color: var(--text-secondary);
   white-space: nowrap;
   transition: color var(--transition-fast), background var(--transition-fast);
-  position: relative;
-}
-
-.navbar .nav-links a::after {
-  content: '';
-  position: absolute;
-  bottom: 2px;
-  left: 50%;
-  width: 0;
-  height: 2px;
-  background: var(--accent);
-  border-radius: 1px;
-  transition: width var(--transition-base), left var(--transition-base);
+  text-decoration: none;
 }
 
 .navbar .nav-links a:hover {
   color: var(--text-primary);
   background: var(--accent-soft);
-}
-
-.navbar .nav-links a:hover::after {
-  width: 60%;
-  left: 20%;
 }
 
 .navbar .subject-selector {
@@ -123,9 +108,9 @@
 .home-grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
-  gap: 20px;
-  padding: 24px;
-  max-width: 960px;
+  gap: 22px;
+  padding: 32px 24px;
+  max-width: 1000px;
   margin: 0 auto;
   position: relative;
   z-index: 1;
@@ -136,7 +121,7 @@
   background: var(--bg-card);
   border: 1px solid var(--border);
   border-radius: var(--radius);
-  padding: 36px 28px;
+  padding: 40px 32px;
   box-shadow: var(--shadow-sm);
   text-align: center;
   transition: transform var(--transition-base), box-shadow var(--transition-base), border-color var(--transition-fast);
@@ -153,13 +138,13 @@
   right: 0;
   height: 3px;
   background: linear-gradient(90deg, var(--subject-color), var(--subject-color-deep));
-  opacity: 0.6;
+  opacity: 0.5;
   transition: opacity var(--transition-fast), height var(--transition-fast);
 }
 
 .subject-card:hover {
   transform: translateY(-6px);
-  box-shadow: 0 12px 28px rgba(0, 0, 0, 0.1), 0 4px 12px rgba(0, 0, 0, 0.06);
+  box-shadow: 0 14px 32px rgba(0, 0, 0, 0.08), 0 4px 12px rgba(0, 0, 0, 0.05);
   border-color: var(--subject-color);
 }
 
@@ -171,16 +156,16 @@
 .subject-card .card-icon {
   font-size: 4rem;
   display: block;
-  margin-bottom: 16px;
+  margin-bottom: 18px;
   transition: transform var(--transition-base);
 }
 
 .subject-card:hover .card-icon {
-  transform: scale(1.1);
+  transform: scale(1.1) translateY(-2px);
 }
 
 .subject-card h3 {
-  font-size: 1.75rem;
+  font-size: 1.65rem;
   color: var(--text-primary);
   margin-bottom: 8px;
   font-weight: 700;
@@ -188,7 +173,7 @@
 
 .subject-card p {
   color: var(--text-secondary);
-  margin-bottom: 14px;
+  margin-bottom: 12px;
   font-size: 0.95rem;
   line-height: 1.65;
 }
@@ -196,7 +181,7 @@
 .subject-card .card-meta {
   font-size: 0.82rem;
   color: var(--text-muted);
-  margin-bottom: 20px;
+  margin-bottom: 22px;
 }
 
 .subject-card .card-meta span {
@@ -213,7 +198,7 @@
 
 .subject-card .enter-btn {
   display: inline-block;
-  padding: 12px 36px;
+  padding: 13px 40px;
   background: var(--accent);
   color: #fff;
   border-radius: var(--radius-sm);
@@ -226,7 +211,7 @@
 .subject-card .enter-btn:hover {
   background: var(--accent-hover);
   transform: scale(1.05);
-  box-shadow: 0 4px 16px rgba(59, 130, 246, 0.35);
+  box-shadow: 0 6px 20px rgba(59, 130, 246, 0.35);
   color: #fff;
 }
 
@@ -239,7 +224,7 @@
   background: var(--bg-card);
   border: 1px solid var(--border);
   border-radius: var(--radius);
-  padding: 24px;
+  padding: 26px;
   box-shadow: var(--shadow-sm);
   transition: transform var(--transition-base), box-shadow var(--transition-base), border-color var(--transition-fast);
   animation: fadeSlideIn 0.35s ease-out both;
@@ -260,7 +245,7 @@
 }
 
 .module-card:hover {
-  transform: translateY(-2px);
+  transform: translateY(-3px);
   box-shadow: var(--shadow-md);
   border-color: var(--border-solid);
 }
@@ -270,9 +255,9 @@
 }
 
 .module-card .card-icon {
-  font-size: 2rem;
+  font-size: 2.2rem;
   display: block;
-  margin-bottom: 10px;
+  margin-bottom: 12px;
 }
 
 .module-card h3 {
@@ -285,7 +270,7 @@
 
 .module-card p {
   color: var(--text-body);
-  margin-bottom: 16px;
+  margin-bottom: 18px;
   font-size: 0.88rem;
   line-height: 1.6;
 }
@@ -296,37 +281,176 @@
   flex-wrap: wrap;
 }
 
-/* ===== Content Block ===== */
-.content-block {
+/* ===== Chapter Card (subject home + lab) ===== */
+.chapter-card {
   background: var(--bg-card);
   border: 1px solid var(--border);
   border-radius: var(--radius);
-  padding: 24px 28px;
-  margin-bottom: 12px;
+  padding: 24px;
   box-shadow: var(--shadow-sm);
-  transition: border-color var(--transition-fast), box-shadow var(--transition-fast);
+  transition: transform var(--transition-base), box-shadow var(--transition-base), border-color var(--transition-fast);
+  animation: fadeSlideIn 0.35s ease-out both;
+  position: relative;
+  overflow: hidden;
 }
 
-.content-block:hover {
-  border-color: var(--border-solid);
+.chapter-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background: linear-gradient(90deg, var(--subject-color), var(--subject-color-deep));
+  opacity: 0.4;
+}
+
+.chapter-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
+  border-color: var(--subject-color);
+}
+
+.chapter-card .ch-icon {
+  font-size: 2rem;
+  display: block;
+  margin-bottom: 10px;
+}
+
+.chapter-card h3 {
+  font-size: 1.1rem;
+  color: var(--text-primary);
+  margin-bottom: 6px;
+  font-weight: 600;
+}
+
+.chapter-card .ch-desc {
+  font-size: 0.85rem;
+  color: var(--text-muted);
+  margin-bottom: 16px;
+}
+
+.chapter-card .ch-links {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.chapter-card .ch-links a {
+  font-size: 0.82rem;
+}
+
+/* ===== Extra Card (calculator/lab promo) ===== */
+.extra-card {
+  background: linear-gradient(135deg, var(--subject-color-light), var(--bg-card));
+  border: 1px solid var(--subject-color);
+  border-radius: var(--radius);
+  padding: 24px;
+  text-align: center;
+  box-shadow: var(--shadow-sm);
+  transition: transform var(--transition-base), box-shadow var(--transition-base);
+  animation: fadeSlideIn 0.35s ease-out both;
+}
+
+.extra-card:hover {
+  transform: translateY(-4px);
   box-shadow: var(--shadow);
 }
 
-.content-block h2 {
-  font-size: 1.4rem;
+.extra-card .card-icon {
+  font-size: 2.2rem;
+  display: block;
+  margin-bottom: 10px;
+}
+
+.extra-card p {
+  font-size: 0.88rem;
+  color: var(--text-secondary);
+  margin-bottom: 14px;
+}
+
+/* ===== Lab Page Container ===== */
+.lab-page-container {
+  max-width: 1000px;
+  margin: 0 auto;
+  padding: 28px 24px;
+}
+
+.lab-page-hero {
+  text-align: center;
+  padding: 32px 20px 8px;
+}
+
+.lab-page-hero h1 {
   color: var(--text-primary);
-  border-left: 3px solid var(--accent);
-  padding-left: 12px;
-  margin-bottom: 18px;
+  font-size: 1.8rem;
+  margin-bottom: 6px;
+}
+
+.lab-page-hero p {
+  color: var(--text-muted);
+  font-size: 0.92rem;
+}
+
+/* ===== Chapter Grid (subject home + lab index) ===== */
+.chapter-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 18px;
+  padding: 28px 24px;
+  max-width: 1000px;
+  margin: 0 auto;
+}
+
+/* ===== Subject Hero ===== */
+.subject-hero {
+  background: linear-gradient(135deg, var(--subject-color-light) 0%, #fff 100%);
+  padding: 36px 24px 28px;
+  text-align: center;
+  border-bottom: 1px solid var(--border);
+}
+
+.subject-hero h1 {
+  font-size: 2rem;
   font-weight: 700;
+  color: var(--text-primary);
+  margin-bottom: 6px;
+  letter-spacing: -0.01em;
+}
+
+.subject-hero p {
+  color: var(--text-muted);
+  font-size: 0.92rem;
+}
+
+.subject-hero .hero-icon {
+  font-size: 2.8rem;
+  display: block;
+  margin-bottom: 10px;
+}
+
+/* ===== Content Block ===== */
+.content-block {
+  background: transparent;
+  border: none;
+  border-radius: 0;
+  padding: 0 0 8px;
+  margin-bottom: 24px;
+  box-shadow: none;
+  transition: none;
+}
+
+.content-block:hover {
+  border-color: transparent;
+  box-shadow: none;
 }
 
 /* ===== Highlight Box ===== */
 .highlight-box {
-  padding: 16px 20px;
+  padding: 16px 22px;
   border-radius: var(--radius-sm);
   border-left: 3px solid;
-  margin-bottom: 16px;
+  margin-bottom: 18px;
   font-size: 0.95rem;
   line-height: 1.7;
   background: var(--bg-card);
@@ -353,11 +477,11 @@
 /* ===== Formula Block ===== */
 .formula-block {
   text-align: center;
-  padding: 28px 24px;
+  padding: 32px 28px;
   background: var(--bg-card);
   border: 1px solid var(--border);
   border-radius: var(--radius);
-  margin-bottom: 16px;
+  margin-bottom: 18px;
   box-shadow: var(--shadow-sm);
 }
 
@@ -365,7 +489,7 @@
   display: block;
   font-size: 0.85rem;
   color: var(--text-muted);
-  margin-top: 8px;
+  margin-top: 10px;
 }
 
 /* ===== Comparison Table ===== */
@@ -373,7 +497,7 @@
   width: 100%;
   border-collapse: collapse;
   font-size: 0.92rem;
-  margin-bottom: 16px;
+  margin-bottom: 18px;
   background: var(--bg-card);
   border: 1px solid var(--border);
   border-radius: var(--radius);
@@ -386,13 +510,13 @@
   color: var(--text-primary);
   font-weight: 600;
   text-align: left;
-  padding: 10px 14px;
+  padding: 12px 16px;
   border-bottom: 2px solid var(--accent);
   font-size: 0.85rem;
 }
 
 .comparison-table td {
-  padding: 10px 14px;
+  padding: 12px 16px;
   border-bottom: 1px solid var(--border);
   color: var(--text-body);
   line-height: 1.55;
@@ -409,7 +533,7 @@
 /* ===== Buttons ===== */
 .btn {
   display: inline-block;
-  padding: 8px 18px;
+  padding: 9px 20px;
   border: 1px solid var(--border-solid);
   border-radius: var(--radius-sm);
   background: var(--bg-card);
@@ -453,16 +577,17 @@
   background: var(--accent-hover);
   border-color: var(--accent-hover);
   color: #ffffff;
+  box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
 }
 
 /* ===== Tags ===== */
 .tag {
   display: inline-block;
-  padding: 3px 10px;
-  border-radius: 4px;
+  padding: 4px 12px;
+  border-radius: 5px;
   background: var(--accent-soft);
   color: var(--accent);
-  font-size: 0.75rem;
+  font-size: 0.78rem;
   font-weight: 600;
   border: 1px solid var(--accent-border);
 }
@@ -472,7 +597,7 @@ input[type="text"],
 input[type="number"],
 input[type="search"],
 select {
-  padding: 8px 14px;
+  padding: 9px 15px;
   border: 1px solid var(--border-solid);
   border-radius: var(--radius-sm);
   font-family: var(--font-body);
@@ -499,7 +624,7 @@ input:focus, select:focus {
   font-size: 0.83rem;
   line-height: 1.7;
   overflow: hidden;
-  margin-bottom: 16px;
+  margin-bottom: 18px;
   position: relative;
   border: 1px solid #334155;
   box-shadow: var(--shadow-sm);
@@ -520,7 +645,7 @@ input:focus, select:focus {
   margin: 0;
   background: transparent;
   border: none;
-  padding: 16px;
+  padding: 18px;
   color: #e2e8f0;
   font-size: inherit;
   line-height: inherit;
@@ -558,7 +683,7 @@ input:focus, select:focus {
 
 .code-block .output-explain {
   margin: 0;
-  padding: 10px 16px;
+  padding: 12px 16px;
   background: #131d2e;
   border-top: 1px solid #334155;
   color: #a5b4fc;
@@ -580,7 +705,7 @@ input:focus, select:focus {
   display: block;
   width: 100%;
   min-height: 80px;
-  padding: 14px 18px;
+  padding: 16px 20px;
   background: var(--bg-code-output);
   border: none;
   border-bottom: 1px solid #334155;
@@ -606,21 +731,21 @@ input:focus, select:focus {
   align-items: center;
   gap: 5px;
   margin: 10px 16px;
-  padding: 7px 18px;
+  padding: 8px 20px;
   background: linear-gradient(135deg, #22c55e, #16a34a);
   color: #fff;
   border: none;
-  border-radius: 5px;
-  font-size: 0.8rem;
+  border-radius: 6px;
+  font-size: 0.82rem;
   font-weight: 600;
   cursor: pointer;
   transition: transform 0.15s ease, box-shadow 0.15s ease, opacity 0.2s ease;
-  box-shadow: 0 2px 6px rgba(34, 197, 94, 0.25);
+  box-shadow: 0 2px 8px rgba(34, 197, 94, 0.3);
 }
 
 .code-block .code-run-btn:hover {
   transform: translateY(-1px);
-  box-shadow: 0 3px 10px rgba(34, 197, 94, 0.4);
+  box-shadow: 0 4px 14px rgba(34, 197, 94, 0.4);
 }
 
 .code-block .code-run-btn:active {
@@ -642,8 +767,8 @@ input:focus, select:focus {
 
 .code-live-output {
   display: none;
-  margin: 0 16px 12px;
-  padding: 12px 16px;
+  margin: 0 16px 14px;
+  padding: 14px 18px;
   background: var(--bg-code-output);
   border-radius: 0 0 var(--radius-sm) var(--radius-sm);
   font-family: var(--font-mono);
@@ -699,7 +824,7 @@ input:focus, select:focus {
 .code-live-output .output-figure {
   display: block;
   max-width: 100%;
-  margin: 10px 0;
+  margin: 12px 0;
   border-radius: 6px;
   border: 1px solid #334155;
   background: #fff;
@@ -729,15 +854,15 @@ input:focus, select:focus {
   transform: scale(0.98);
 }
 
-/* ===== Annotation System (unchanged) ===== */
+/* ===== Annotation System ===== */
 .ann-toolbar {
   position: fixed;
   z-index: 10000;
   background: #1e293b;
   border: 1px solid #334155;
-  border-radius: 8px;
-  padding: 8px;
-  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.5);
+  border-radius: 10px;
+  padding: 10px;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.5);
   display: flex;
   flex-direction: column;
   gap: 6px;
@@ -749,9 +874,9 @@ input:focus, select:focus {
 
 .ann-style-btn {
   flex: 1;
-  padding: 6px 8px;
+  padding: 7px 9px;
   border: 1px solid #475569;
-  border-radius: 4px;
+  border-radius: 6px;
   background: #0f172a;
   color: #e2e8f0;
   font-size: 0.78rem;
@@ -781,14 +906,14 @@ input:focus, select:focus {
 .ann-color-dot:hover { transform: scale(1.2); }
 .ann-color-sel { border-color: #fff; box-shadow: 0 0 0 2px #3b82f6; }
 
-.ann-note-area { display: none; border-top: 1px solid #334155; padding-top: 6px; }
+.ann-note-area { display: none; border-top: 1px solid #334155; padding-top: 8px; }
 .ann-note-area.show { display: block; }
 
 .ann-note-input {
   width: 100%;
-  padding: 6px 10px;
+  padding: 7px 11px;
   border: 1px solid #475569;
-  border-radius: 4px;
+  border-radius: 5px;
   background: #0f172a;
   color: #e2e8f0;
   font-size: 0.82rem;
@@ -799,12 +924,12 @@ input:focus, select:focus {
 .ann-note-input:focus { border-color: #3b82f6; }
 .ann-note-input::placeholder { color: #cbd5e1; }
 
-.ann-action-row { border-top: 1px solid #334155; padding-top: 6px; text-align: center; }
+.ann-action-row { border-top: 1px solid #334155; padding-top: 8px; text-align: center; }
 
 .ann-delete-btn {
   padding: 4px 16px;
   border: 1px solid #dc2626;
-  border-radius: 4px;
+  border-radius: 5px;
   background: transparent;
   color: #fca5a5;
   font-size: 0.78rem;
@@ -899,7 +1024,7 @@ mark.ann-has-note:hover::after { opacity: 1; }
 .ann-export-btn, .ann-close-btn {
   padding: 4px 10px;
   border: 1px solid #334155;
-  border-radius: 4px;
+  border-radius: 5px;
   background: #1e293b;
   color: #e2e8f0;
   font-size: 0.82rem;
@@ -915,7 +1040,7 @@ mark.ann-has-note:hover::after { opacity: 1; }
   right: 36px;
   background: #1e293b;
   border: 1px solid #334155;
-  border-radius: 6px;
+  border-radius: 8px;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
   z-index: 1;
   min-width: 120px;
@@ -925,7 +1050,7 @@ mark.ann-has-note:hover::after { opacity: 1; }
 .ann-export-menu button {
   display: block;
   width: 100%;
-  padding: 8px 14px;
+  padding: 9px 14px;
   border: none;
   background: transparent;
   color: #e2e8f0;
@@ -964,7 +1089,7 @@ mark.ann-has-note:hover::after { opacity: 1; }
   flex: 1;
   padding: 6px 32px 6px 8px;
   border: 1px solid #334155;
-  border-radius: 4px;
+  border-radius: 5px;
   background: #1e293b;
   color: #e2e8f0;
   font-size: 0.78rem;
@@ -1097,7 +1222,7 @@ mark.ann-has-note:hover::after { opacity: 1; }
 .ann-batch-delete, .ann-batch-export {
   padding: 4px 12px;
   border: 1px solid #334155;
-  border-radius: 4px;
+  border-radius: 5px;
   background: #1e293b;
   color: #e2e8f0;
   font-size: 0.75rem;
@@ -1150,4 +1275,27 @@ mark.ann-has-note:hover::after { opacity: 1; }
   justify-content: center;
   padding: 0 4px;
   box-sizing: border-box;
+}
+
+/* ===== Hero Title Glow ===== */
+.hero-title {
+  text-shadow: 0 0 40px rgba(96, 165, 250, 0.15);
+}
+
+/* ===== Section Heading Glow ===== */
+.content-block h2 {
+  position: relative;
+}
+
+.content-block h2::after {
+  content: '';
+  position: absolute;
+  left: 4px;
+  top: 0;
+  bottom: 0;
+  width: 4px;
+  background: linear-gradient(180deg, var(--accent), transparent);
+  opacity: 0.3;
+  filter: blur(3px);
+  pointer-events: none;
 }
