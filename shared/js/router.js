@@ -403,6 +403,17 @@ function renderGlossaryPanel(subjectId, chapterId) {
       var isOpen = body.style.display === 'block';
       body.style.display = isOpen ? 'none' : 'block';
       if (arrow) arrow.style.transform = isOpen ? '' : 'rotate(90deg)';
+      // Render KaTeX when expanding
+      if (!isOpen && typeof katex !== 'undefined') {
+        var formulaDivs = body.querySelectorAll('[style*="white-space:pre-wrap"]');
+        for (var f = 0; f < formulaDivs.length; f++) {
+          var latex = formulaDivs[f].textContent;
+          try {
+            formulaDivs[f].innerHTML = '';
+            katex.render(latex, formulaDivs[f], { throwOnError: false, displayMode: false });
+          } catch(e2) {}
+        }
+      }
     }
   });
 }
