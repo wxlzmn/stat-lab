@@ -3157,16 +3157,6 @@ var ECOSTATS_QUIZ = {
       "knowledgePoint": "ch6-s4"
     },
     {
-      "id": "ch6-q37",
-      "type": "multi",
-      "difficulty": 1,
-      "question": "中国数字经济的「四化」框架包括以下哪些？（多选）",
-      "options": ["A. 数字产业化", "B. 产业数字化", "C. 数字化治理", "D. 数据价值化", "E. 全球化"],
-      "answer": [0, 1, 2, 3],
-      "explanation": "数字经济'四化'框架：数字产业化（ICT核心产业）、产业数字化（传统产业数字化转型）、数字化治理（数字政府和数字社会协同治理）、数据价值化（数据要素化——确权→定价→交易→应用）。E（全球化）虽与数字经济有交集，但不属于四化框架本身。",
-      "knowledgePoint": "ch6-s1"
-    },
-    {
       "id": "ch6-q38",
       "type": "multi",
       "difficulty": 2,

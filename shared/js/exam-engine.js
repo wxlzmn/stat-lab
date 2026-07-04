@@ -41,6 +41,13 @@ var ExamEngine = {
         pool = pool.concat(chQs);
       }
     });
+    // Deduplicate by question ID
+    var seen = {};
+    pool = pool.filter(function(q) {
+      if (seen[q.id]) return false;
+      seen[q.id] = true;
+      return true;
+    });
     // Shuffle
     for (var i = pool.length - 1; i > 0; i--) {
       var j = Math.floor(Math.random() * (i + 1));
@@ -53,6 +60,18 @@ var ExamEngine = {
   selectAnswer: function(qIdx, answer) {
     if (this.submitted) return;
     this.userAnswers[qIdx] = answer;
+    var q = this.questions[qIdx];
+    // For fill/short/calc: update input value directly to avoid destroying the element
+    if (q && ['fill', 'short', 'calc'].indexOf(q.type) !== -1) {
+      var container = document.getElementById('exam-q-' + qIdx);
+      if (container) {
+        var input = container.querySelector('input[type="text"]');
+        if (input && input.value !== answer) {
+          input.value = answer;
+        }
+      }
+      return;
+    }
     this.render();
   },
 

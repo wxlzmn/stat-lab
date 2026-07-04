@@ -13,15 +13,15 @@
   .hero-section {
     position: relative;
     width: 100%;
-    min-height: 420px;
-    background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+    min-height: 440px;
+    background: linear-gradient(135deg, #0f172a 0%, #1e293b 60%, #0f172a 100%);
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
     text-align: center;
     overflow: hidden;
-    padding: 40px 20px;
+    padding: 48px 20px;
   }
 
   .hero-canvas {
@@ -40,7 +40,7 @@
 
   .hero-title {
     font-family: var(--font-display);
-    font-size: 3.5rem;
+    font-size: 3.8rem;
     font-weight: 800;
     background: linear-gradient(135deg, #60a5fa, #a78bfa, #60a5fa);
     background-size: 200% 200%;
@@ -48,7 +48,7 @@
     -webkit-text-fill-color: transparent;
     background-clip: text;
     animation: shimmer 4s ease-in-out infinite;
-    margin-bottom: 12px;
+    margin-bottom: 14px;
     letter-spacing: -0.03em;
   }
 
@@ -58,11 +58,12 @@
   }
 
   .hero-subtitle {
-    font-size: 1.25rem;
-    color: #cbd5e1;
+    font-size: 1.2rem;
+    color: #94a3b8;
     opacity: 0;
     animation: fadeIn 0.8s ease-out 0.5s forwards;
-    margin-bottom: 20px;
+    margin-bottom: 24px;
+    font-weight: 400;
   }
 
   .hero-divider {
@@ -70,7 +71,7 @@
     height: 3px;
     background: linear-gradient(90deg, #3b82f6, #8b5cf6);
     border-radius: 2px;
-    margin: 0 auto;
+    margin: 0 auto 28px;
     transform: scaleX(0);
     transform-origin: center;
     animation: expandDivider 1s ease-out 0.8s forwards;
@@ -80,7 +81,54 @@
     to { transform: scaleX(1); }
   }
 
-  </style>
+  .hero-cta {
+    display: flex;
+    gap: 14px;
+    justify-content: center;
+    flex-wrap: wrap;
+    opacity: 0;
+    animation: fadeIn 0.6s ease-out 1.2s forwards;
+  }
+
+  .hero-cta a {
+    display: inline-block;
+    padding: 11px 32px;
+    border-radius: var(--radius-sm);
+    font-weight: 600;
+    font-size: 0.92rem;
+    text-decoration: none;
+    transition: background var(--transition-fast), transform var(--transition-fast), box-shadow var(--transition-fast);
+  }
+
+  .hero-cta .cta-primary {
+    background: var(--accent);
+    color: #fff;
+  }
+
+  .hero-cta .cta-primary:hover {
+    background: var(--accent-hover);
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(59, 130, 246, 0.35);
+    color: #fff;
+  }
+
+  .hero-cta .cta-secondary {
+    background: rgba(255, 255, 255, 0.08);
+    color: #cbd5e1;
+    border: 1px solid #334155;
+  }
+
+  .hero-cta .cta-secondary:hover {
+    background: rgba(255, 255, 255, 0.14);
+    transform: translateY(-2px);
+    color: #fff;
+  }
+
+  /* Smooth scroll offset for anchored sections */
+  section[id] {
+    scroll-margin-top: calc(var(--navbar-height) + 16px);
+  }
+</style>
 </head>
 <body>
 <main>
@@ -88,8 +136,12 @@
     <canvas class="hero-canvas" id="particle-canvas"></canvas>
     <div class="hero-content">
       <h1 class="hero-title">Stat-Lab</h1>
-      <p class="hero-subtitle">统计学习平台 · 经济统计学 + 统计计算</p>
+      <p class="hero-subtitle">交互式统计学习平台 · 理论 + 计算 + 可视化</p>
       <div class="hero-divider"></div>
+      <div class="hero-cta">
+        <a href="#subjects" class="cta-primary">开始学习</a>
+        <a href="dashboard/index.html" class="cta-secondary">查看进度</a>
+      </div>
     </div>
   </div>
   <div class="stats-bar" id="stats-bar">
@@ -112,7 +164,7 @@
       </div>
     </div>
   </div>
-  <div id="subject-cards" class="home-grid"></div>
+  <div id="subject-cards" class="home-grid" style="padding-top: 12px;"></div>
 </main>
 <script src="shared/js/particle-network.js"></script>
 <script src="shared/js/storage.js"></script>
@@ -138,7 +190,6 @@
     function step(timestamp) {
       if (!startTime) startTime = timestamp;
       var progress = Math.min((timestamp - startTime) / duration, 1);
-      // Ease out cubic
       var eased = 1 - Math.pow(1 - progress, 3);
       el.textContent = Math.floor(eased * target);
       if (progress < 1) {
@@ -151,7 +202,6 @@
     requestAnimationFrame(step);
   }
 
-  // Trigger when stats bar enters viewport
   if (typeof IntersectionObserver !== 'undefined') {
     var statsBar = document.getElementById('stats-bar');
     if (statsBar) {
@@ -166,7 +216,7 @@
     }
   }
 
-  // ... rest of existing card rendering code unchanged ...
+  // Render subject cards
   var cardsHtml = '';
   for (var i = 0; i < SUBJECT_REGISTRY.length; i++) {
     var subj = SUBJECT_REGISTRY[i];
@@ -176,13 +226,13 @@
     var questionCount = subj.id === 'econstats' ? '125题' : '100+题';
     var desc = subj.id === 'econstats' ? 'GDP核算、价格指数、产业统计、住户调查' : '模拟仿真、优化方法、机器学习、数据可视化';
     cardsHtml += '' +
-      '<div class="subject-card" style="--i:' + i + ';border-color:var(--border);border-top:2px solid ' + subj.color + ';">' +
+      '<div class="subject-card" style="--i:' + i + ';border-color:var(--border);border-top:2px solid ' + subj.color + ';" id="subject-' + subj.id + '">' +
         '<span class="card-icon">' + subj.icon + '</span>' +
         '<h3 style="color:var(--text-primary);">' + subj.name + '</h3>' +
         '<p>' + desc + '</p>' +
         '<div style="font-size:0.82rem;color:var(--text-muted);margin-bottom:10px;">' + chapterCount + ' 章节 · ' + questionCount + '</div>' +
         '<div class="card-meta">' + toolsHtml + '</div>' +
-        '<a href="subjects/' + subj.id + '/index.html" class="enter-btn" style="background:var(--accent);">进入 →</a>' +
+        '<a href="subjects/' + subj.id + '/index.html" class="enter-btn" style="background:var(--accent);">进入学习 &rarr;</a>' +
       '</div>';
   }
   document.getElementById('subject-cards').innerHTML = cardsHtml;

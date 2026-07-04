@@ -1,0 +1,537 @@
+diff --git a/index.html b/index.html
+index d172b6f..702ab0c 100644
+--- a/index.html
++++ b/index.html
+@@ -10,37 +10,180 @@
+ <link rel="stylesheet" href="shared/css/pages.css">
+ <link rel="stylesheet" href="shared/css/responsive.css">
+ <style>
+-  .home-hero { text-align: center; padding: 48px 20px 12px; position: relative; z-index: 1; }
+-  .home-hero h1 { font-size: 2.2rem; color: var(--text-primary); margin-bottom: 8px; letter-spacing: -0.02em; }
+-  .home-hero p { color: var(--text-secondary); font-size: 1rem; }
+-  .home-hero .hero-divider { width: 48px; height: 2px; background: linear-gradient(90deg, var(--accent), var(--accent-hover)); border-radius: 1px; margin: 16px auto 12px; }
+-  .subject-card { animation-delay: calc(var(--i, 0) * 80ms); }
+-</style>
++  .hero-section {
++    position: relative;
++    width: 100%;
++    min-height: 420px;
++    background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
++    display: flex;
++    flex-direction: column;
++    align-items: center;
++    justify-content: center;
++    text-align: center;
++    overflow: hidden;
++    padding: 40px 20px;
++  }
++
++  .hero-canvas {
++    position: absolute;
++    top: 0;
++    left: 0;
++    width: 100%;
++    height: 100%;
++    z-index: 0;
++  }
++
++  .hero-content {
++    position: relative;
++    z-index: 1;
++  }
++
++  .hero-title {
++    font-family: var(--font-display);
++    font-size: 3.5rem;
++    font-weight: 800;
++    background: linear-gradient(135deg, #60a5fa, #a78bfa, #60a5fa);
++    background-size: 200% 200%;
++    -webkit-background-clip: text;
++    -webkit-text-fill-color: transparent;
++    background-clip: text;
++    animation: shimmer 4s ease-in-out infinite;
++    margin-bottom: 12px;
++    letter-spacing: -0.03em;
++  }
++
++  @keyframes shimmer {
++    0%, 100% { background-position: 0% 50%; }
++    50% { background-position: 100% 50%; }
++  }
++
++  .hero-subtitle {
++    font-size: 1.25rem;
++    color: #94a3b8;
++    opacity: 0;
++    animation: fadeIn 0.8s ease-out 0.5s forwards;
++    margin-bottom: 20px;
++  }
++
++  @keyframes fadeIn {
++    to { opacity: 1; }
++  }
++
++  .hero-divider {
++    width: 0;
++    height: 3px;
++    background: linear-gradient(90deg, #3b82f6, #8b5cf6);
++    border-radius: 2px;
++    margin: 0 auto;
++    animation: expandWidth 1s ease-out 0.8s forwards;
++  }
++
++  @keyframes expandWidth {
++    to { width: 80px; }
++  }
++
++  </style>
+ </head>
+ <body>
+ <main>
+-  <div class="home-hero">
+-    <h1>Stat-Lab</h1>
+-    <p>统计学习平台 · 经济统计学 + 统计计算</p>
+-    <div class="hero-divider"></div>
++  <div class="hero-section">
++    <canvas class="hero-canvas" id="particle-canvas"></canvas>
++    <div class="hero-content">
++      <h1 class="hero-title">Stat-Lab</h1>
++      <p class="hero-subtitle">统计学习平台 · 经济统计学 + 统计计算</p>
++      <div class="hero-divider"></div>
++    </div>
++  </div>
++  <div class="stats-bar" id="stats-bar">
++    <div class="stats-container">
++      <div class="stat-item">
++        <span class="stat-number" data-target="13">0</span>
++        <span class="stat-label">章节</span>
++      </div>
++      <div class="stat-item">
++        <span class="stat-number" data-target="250">0</span>
++        <span class="stat-label">题库</span>
++      </div>
++      <div class="stat-item">
++        <span class="stat-number" data-target="100">0</span>
++        <span class="stat-label">知识点</span>
++      </div>
++      <div class="stat-item">
++        <span class="stat-number" data-target="2">0</span>
++        <span class="stat-label">学科</span>
++      </div>
++    </div>
+   </div>
+   <div id="subject-cards" class="home-grid"></div>
+ </main>
++<script src="shared/js/particle-network.js"></script>
+ <script src="shared/js/storage.js"></script>
+ <script src="shared/js/router.js"></script>
+ <script>
+ (function() {
++  // Initialize particle network
++  var canvas = document.getElementById('particle-canvas');
++  if (canvas) {
++    var parent = canvas.parentElement;
++    ParticleNetwork.init(canvas, parent.offsetWidth, parent.offsetHeight);
++  }
++
++  // Stats counter animation
++  var statNumbers = document.querySelectorAll('.stat-number');
++  var counted = false;
++
++  function animateCount(el) {
++    var target = parseInt(el.getAttribute('data-target'));
++    var duration = 1500;
++    var start = 0;
++    var startTime = null;
++
++    function step(timestamp) {
++      if (!startTime) startTime = timestamp;
++      var progress = Math.min((timestamp - startTime) / duration, 1);
++      // Ease out cubic
++      var eased = 1 - Math.pow(1 - progress, 3);
++      el.textContent = Math.floor(eased * target);
++      if (progress < 1) {
++        requestAnimationFrame(step);
++      } else {
++        el.textContent = target + '+';
++      }
++    }
++
++    requestAnimationFrame(step);
++  }
++
++  // Trigger when stats bar enters viewport
++  if (typeof IntersectionObserver !== 'undefined') {
++    var statsBar = document.getElementById('stats-bar');
++    if (statsBar) {
++      var observer = new IntersectionObserver(function(entries) {
++        if (entries[0].isIntersecting && !counted) {
++          counted = true;
++          statNumbers.forEach(function(el) { animateCount(el); });
++          observer.disconnect();
++        }
++      }, { threshold: 0.5 });
++      observer.observe(statsBar);
++    }
++  }
++
++  // ... rest of existing card rendering code unchanged ...
+   var cardsHtml = '';
+   for (var i = 0; i < SUBJECT_REGISTRY.length; i++) {
+     var subj = SUBJECT_REGISTRY[i];
+     var toolNames = { knowledge: '知识点', quiz: '测验', calculators: '计算器', lab: '实验' };
+     var toolsHtml = subj.tools.map(function(t) { return '<span>' + (toolNames[t] || t) + '</span>'; }).join(' ');
++    var chapterCount = subj.chapters.length;
++    var questionCount = subj.id === 'econstats' ? '125题' : '100+题';
+     var desc = subj.id === 'econstats' ? 'GDP核算、价格指数、产业统计、住户调查' : '模拟仿真、优化方法、机器学习、数据可视化';
+     cardsHtml += '' +
+       '<div class="subject-card" style="--i:' + i + ';border-color:var(--border);border-top:2px solid ' + subj.color + ';">' +
+         '<span class="card-icon">' + subj.icon + '</span>' +
+         '<h3 style="color:var(--text-primary);">' + subj.name + '</h3>' +
+-        '<p>' + subj.chapters.length + ' 章节 · ' + desc + '</p>' +
++        '<p>' + desc + '</p>' +
++        '<div style="font-size:0.82rem;color:var(--text-muted);margin-bottom:10px;">' + chapterCount + ' 章节 · ' + questionCount + '</div>' +
+         '<div class="card-meta">' + toolsHtml + '</div>' +
+         '<a href="subjects/' + subj.id + '/index.html" class="enter-btn" style="background:var(--accent);">进入 →</a>' +
+       '</div>';
+diff --git a/shared/css/components.css b/shared/css/components.css
+index 5ec5aa7..0fa8a0c 100644
+--- a/shared/css/components.css
++++ b/shared/css/components.css
+@@ -136,13 +136,13 @@
+   background: var(--bg-card);
+   border: 1px solid var(--border);
+   border-radius: var(--radius);
+-  padding: 32px 28px;
++  padding: 36px 28px;
+   box-shadow: var(--shadow-sm);
+   text-align: center;
+   transition: transform var(--transition-base), box-shadow var(--transition-base), border-color var(--transition-fast);
+   position: relative;
+   overflow: hidden;
+-  animation: fadeSlideIn 0.35s ease-out both;
++  animation: fadeSlideIn 0.4s ease-out both;
+ }
+ 
+ .subject-card::before {
+@@ -151,30 +151,36 @@
+   top: 0;
+   left: 0;
+   right: 0;
+-  height: 2px;
++  height: 3px;
+   background: linear-gradient(90deg, var(--subject-color), var(--subject-color-deep));
+-  opacity: 0;
+-  transition: opacity var(--transition-fast);
++  opacity: 0.6;
++  transition: opacity var(--transition-fast), height var(--transition-fast);
+ }
+ 
+ .subject-card:hover {
+-  transform: translateY(-3px);
+-  box-shadow: var(--shadow-hover);
++  transform: translateY(-6px);
++  box-shadow: 0 12px 28px rgba(0, 0, 0, 0.1), 0 4px 12px rgba(0, 0, 0, 0.06);
+   border-color: var(--subject-color);
+ }
+ 
+ .subject-card:hover::before {
+   opacity: 1;
++  height: 4px;
+ }
+ 
+ .subject-card .card-icon {
+-  font-size: 2.8rem;
++  font-size: 4rem;
+   display: block;
+   margin-bottom: 16px;
++  transition: transform var(--transition-base);
++}
++
++.subject-card:hover .card-icon {
++  transform: scale(1.1);
+ }
+ 
+ .subject-card h3 {
+-  font-size: 1.35rem;
++  font-size: 1.75rem;
+   color: var(--text-primary);
+   margin-bottom: 8px;
+   font-weight: 700;
+@@ -182,48 +188,52 @@
+ 
+ .subject-card p {
+   color: var(--text-secondary);
+-  margin-bottom: 18px;
+-  font-size: 0.9rem;
++  margin-bottom: 14px;
++  font-size: 0.95rem;
+   line-height: 1.65;
+ }
+ 
+ .subject-card .card-meta {
+-  font-size: 0.8rem;
++  font-size: 0.82rem;
+   color: var(--text-muted);
+-  margin-bottom: 18px;
++  margin-bottom: 20px;
+ }
+ 
+ .subject-card .card-meta span {
+   display: inline-block;
+-  padding: 3px 10px;
+-  border-radius: 4px;
++  padding: 4px 12px;
++  border-radius: 6px;
+   background: var(--accent-soft);
+   color: var(--accent);
+-  margin: 2px 3px;
+-  font-size: 0.75rem;
++  margin: 3px 4px;
++  font-size: 0.78rem;
+   font-weight: 600;
+   border: 1px solid var(--accent-border);
+ }
+ 
+ .subject-card .enter-btn {
+   display: inline-block;
+-  padding: 10px 32px;
++  padding: 12px 36px;
+   background: var(--accent);
+   color: #fff;
+   border-radius: var(--radius-sm);
+   font-weight: 600;
+-  font-size: 0.9rem;
++  font-size: 0.95rem;
+   text-decoration: none;
+   transition: background var(--transition-fast), transform var(--transition-fast), box-shadow var(--transition-fast);
+ }
+ 
+ .subject-card .enter-btn:hover {
+   background: var(--accent-hover);
+-  transform: scale(1.03);
+-  box-shadow: 0 2px 8px rgba(59, 130, 246, 0.3);
++  transform: scale(1.05);
++  box-shadow: 0 4px 16px rgba(59, 130, 246, 0.35);
+   color: #fff;
+ }
+ 
++.subject-card {
++  animation-delay: calc(var(--i, 0) * 100ms);
++}
++
+ /* ===== Module Card ===== */
+ .module-card {
+   background: var(--bg-card);
+diff --git a/shared/css/pages.css b/shared/css/pages.css
+index bfb61c4..a8b8d2d 100644
+--- a/shared/css/pages.css
++++ b/shared/css/pages.css
+@@ -684,3 +684,74 @@
+   font-size: 0.9rem;
+   color: var(--text-primary);
+ }
++
++/* ===== Stats Bar ===== */
++.stats-bar {
++  background: var(--bg-card);
++  border-bottom: 1px solid var(--border);
++  padding: 24px 20px;
++  position: relative;
++  z-index: 1;
++}
++
++.stats-container {
++  display: flex;
++  justify-content: center;
++  gap: 48px;
++  max-width: 800px;
++  margin: 0 auto;
++  flex-wrap: wrap;
++}
++
++.stat-item {
++  text-align: center;
++  min-width: 100px;
++}
++
++.stat-number {
++  display: block;
++  font-family: var(--font-display);
++  font-size: 2rem;
++  font-weight: 800;
++  color: var(--accent);
++  line-height: 1.2;
++}
++
++.stat-label {
++  display: block;
++  font-size: 0.85rem;
++  color: var(--text-muted);
++  margin-top: 4px;
++}
++
++/* ===== Hero Mobile ===== */
++@media (max-width: 768px) {
++  .hero-section {
++    min-height: 320px;
++    padding: 30px 16px;
++  }
++  .hero-title {
++    font-size: 2.5rem;
++  }
++  .hero-subtitle {
++    font-size: 1rem;
++  }
++  .stats-container {
++    gap: 24px;
++  }
++  .stat-item {
++    min-width: 70px;
++  }
++  .stat-number {
++    font-size: 1.5rem;
++  }
++}
++
++@media (max-width: 480px) {
++  .hero-title {
++    font-size: 2rem;
++  }
++  .hero-subtitle {
++    font-size: 0.9rem;
++  }
++}
+diff --git a/shared/js/particle-network.js b/shared/js/particle-network.js
+new file mode 100644
+index 0000000..1fe1599
+--- /dev/null
++++ b/shared/js/particle-network.js
+@@ -0,0 +1,127 @@
++// Particle network background for homepage Hero section
++var ParticleNetwork = {
++  canvas: null,
++  ctx: null,
++  particles: [],
++  animationId: null,
++  mouse: { x: null, y: null, radius: 150 },
++  isMobile: false,
++
++  init: function(canvas, width, height) {
++    this.canvas = canvas;
++    this.ctx = canvas.getContext('2d');
++    this.isMobile = window.innerWidth < 768 || ('ontouchstart' in window);
++
++    var count = this.isMobile ? 40 : 100;
++    var maxSpeed = this.isMobile ? 0.5 : 0.8;
++
++    this.particles = [];
++    for (var i = 0; i < count; i++) {
++      this.particles.push({
++        x: Math.random() * width,
++        y: Math.random() * height,
++        vx: (Math.random() - 0.5) * maxSpeed * 2,
++        vy: (Math.random() - 0.5) * maxSpeed * 2,
++        radius: Math.random() * 2 + 1,
++        opacity: Math.random() * 0.5 + 0.3
++      });
++    }
++
++    canvas.width = width;
++    canvas.height = height;
++
++    canvas.addEventListener('mousemove', (function(e) {
++      var rect = canvas.getBoundingClientRect();
++      this.mouse.x = e.clientX - rect.left;
++      this.mouse.y = e.clientY - rect.top;
++    }).bind(this));
++
++    canvas.addEventListener('mouseleave', (function() {
++      this.mouse.x = null;
++      this.mouse.y = null;
++    }).bind(this));
++
++    window.addEventListener('resize', (function() {
++      canvas.width = canvas.parentElement.offsetWidth;
++      canvas.height = canvas.parentElement.offsetHeight;
++    }).bind(this));
++
++    this.animate();
++  },
++
++  animate: function() {
++    this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
++
++    var particles = this.particles;
++    var w = this.canvas.width;
++    var h = this.canvas.height;
++    var mouse = this.mouse;
++    var connectionDist = this.isMobile ? 100 : 120;
++
++    // Update positions
++    for (var i = 0; i < particles.length; i++) {
++      var p = particles[i];
++
++      // Mouse repulsion
++      if (mouse.x !== null && mouse.y !== null) {
++        var dx = p.x - mouse.x;
++        var dy = p.y - mouse.y;
++        var dist = Math.sqrt(dx * dx + dy * dy);
++        if (dist < mouse.radius && dist > 0) {
++          var force = (mouse.radius - dist) / mouse.radius * 0.5;
++          p.vx += (dx / dist) * force;
++          p.vy += (dy / dist) * force;
++        }
++      }
++
++      p.x += p.vx;
++      p.y += p.vy;
++
++      // Damping
++      p.vx *= 0.99;
++      p.vy *= 0.99;
++
++      // Wrap edges
++      if (p.x < 0) p.x = w;
++      if (p.x > w) p.x = 0;
++      if (p.y < 0) p.y = h;
++      if (p.y > h) p.y = 0;
++    }
++
++    // Draw connections
++    for (var i = 0; i < particles.length; i++) {
++      for (var j = i + 1; j < particles.length; j++) {
++        var dx = particles[i].x - particles[j].x;
++        var dy = particles[i].y - particles[j].y;
++        var dist = Math.sqrt(dx * dx + dy * dy);
++
++        if (dist < connectionDist) {
++          var opacity = (1 - dist / connectionDist) * 0.4;
++          this.ctx.beginPath();
++          this.ctx.strokeStyle = 'rgba(147, 197, 253, ' + opacity + ')';
++          this.ctx.lineWidth = 0.8;
++          this.ctx.moveTo(particles[i].x, particles[i].y);
++          this.ctx.lineTo(particles[j].x, particles[j].y);
++          this.ctx.stroke();
++        }
++      }
++    }
++
++    // Draw particles
++    for (var i = 0; i < particles.length; i++) {
++      var p = particles[i];
++      this.ctx.beginPath();
++      this.ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
++      this.ctx.fillStyle = 'rgba(147, 197, 253, ' + p.opacity + ')';
++      this.ctx.fill();
++    }
++
++    this.animationId = requestAnimationFrame((function() { this.animate(); }).bind(this));
++  },
++
++  destroy: function() {
++    if (this.animationId) {
++      cancelAnimationFrame(this.animationId);
++    }
++  }
++};

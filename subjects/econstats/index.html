@@ -12,11 +12,12 @@
 </head>
 <body>
 <main>
-  <div style="text-align:center;padding:32px 20px 8px;">
-    <h1 style="color:var(--text-primary);">经济统计学</h1>
-    <p style="color:var(--text-muted);font-size:0.9rem;">8 章节 · GDP核算、价格指数、产业统计</p>
+  <div class="subject-hero">
+    <span class="hero-icon">&#128200;</span>
+    <h1>经济统计学</h1>
+    <p>8 章节 · GDP核算、价格指数、产业统计、数据资产</p>
   </div>
-  <div id="chapter-grid" class="home-grid"></div>
+  <div id="chapter-grid" class="chapter-grid"></div>
 </main>
 <script src="../../shared/js/storage.js"></script>
 <script src="../../shared/js/router.js"></script>
@@ -27,20 +28,22 @@
   for (var c = 0; c < subject.chapters.length; c++) {
     var ch = subject.chapters[c];
     cardsHtml += '' +
-      '<div class="module-card" style="border-top:2px solid ' + subject.color + ';">' +
-        '<span class="card-icon">' + ch.icon + '</span>' +
+      '<div class="chapter-card" style="animation-delay:' + (c * 60) + 'ms;">' +
+        '<span class="ch-icon">' + ch.icon + '</span>' +
         '<h3>' + ch.title + '</h3>' +
-        '<p>' + ch.title + '</p>' +
-        '<div class="card-links">' +
+        '<div class="ch-desc">第 ' + (c + 1) + ' 章</div>' +
+        '<div class="ch-links">' +
           '<a href="knowledge/' + ch.id + '.html" class="btn">知识点</a>' +
           '<a href="quiz/' + ch.id + '.html" class="btn btn-primary">测验</a>' +
         '</div>' +
       '</div>';
   }
   cardsHtml += '' +
-    '<div class="module-card" style="border-top:2px solid ' + subject.color + ';">' +
-      '<span class="card-icon">🧮</span><h3>计算器</h3><p>价格指数、GDP换算、增长率</p>' +
-      '<div class="card-links"><a href="calculators/index.html" class="btn btn-primary">打开</a></div>' +
+    '<div class="extra-card" style="animation-delay:' + ((c + 1) * 60) + 'ms;">' +
+      '<span class="card-icon">&#128202;</span>' +
+      '<h3>计算器</h3>' +
+      '<p>价格指数、GDP换算、增长率</p>' +
+      '<div class="ch-links"><a href="calculators/index.html" class="btn btn-primary">打开</a></div>' +
     '</div>';
   document.getElementById('chapter-grid').innerHTML = cardsHtml;
   injectNavbar('subject-home', 'econstats');

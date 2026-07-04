@@ -12,12 +12,15 @@ var QuizEngine = {
     try {
       this.state.subjectId = subjectId;
       this.state.chapterId = chapterId;
-      this.state.questions = this.shuffleArray(questions.slice());
+      // Randomly sample ~70% of questions each session to reduce overlap
+      var pool = this.shuffleArray(questions.slice());
+      var sampleSize = Math.max(Math.ceil(pool.length * 0.7), Math.min(pool.length, 20));
+      this.state.questions = pool.slice(0, sampleSize);
       this.state.currentIndex = 0;
       this.state.answers = {};
       this.state.submitted = {};
       this.render();
-      console.log('QuizEngine: initialized ' + subjectId + ':' + chapterId + ' with ' + questions.length + ' questions');
+      console.log('QuizEngine: initialized ' + subjectId + ':' + chapterId + ' with ' + questions.length + ' questions (sampled ' + this.state.questions.length + ')');
     } catch(e) {
       console.error('QuizEngine.init failed:', e.message);
       var c = document.getElementById('quiz-container');
@@ -40,6 +43,25 @@ var QuizEngine = {
   selectAnswer: function(questionId, answer) {
     if (this.state.submitted[questionId]) return;
     this.state.answers[questionId] = answer;
+    var q = this.getCurrentQuestion();
+    // For fill/short/calc: update input value directly to avoid destroying the element
+    if (q && ['fill', 'short', 'calc'].indexOf(q.type) !== -1) {
+      var input = document.getElementById('fill-answer');
+      if (input && input.value !== answer) {
+        input.value = answer;
+      }
+      // Update submit button disabled state for fill/short/calc
+      var submitBtn = document.getElementById('submit-btn');
+      if (submitBtn) {
+        var hasAnswer = answer !== undefined && answer !== '';
+        if (hasAnswer) {
+          submitBtn.removeAttribute('disabled');
+        } else {
+          submitBtn.setAttribute('disabled', 'disabled');
+        }
+      }
+      return;
+    }
     this.render();
   },
 
@@ -229,6 +251,23 @@ var QuizEngine = {
             return '<div style="' + dotStyle + '" onclick="QuizEngine.jumpToQuestion(' + i + ')" title="Q' + (i+1) + '">' + (i + 1) + '</div>';
           }).join('') +
         '</div>';
+      // Bind fill-input events after DOM insertion (more reliable than inline oninput)
+      if (q && ['fill', 'short', 'calc'].indexOf(q.type) !== -1) {
+        var fillInput = document.getElementById('fill-answer');
+        if (fillInput) {
+          fillInput.oninput = function() {
+            QuizEngine.selectAnswer(q.id, this.value);
+            var sb = document.getElementById('submit-btn');
+            if (sb) {
+              if (this.value.trim()) {
+                sb.removeAttribute('disabled');
+              } else {
+                sb.setAttribute('disabled', 'disabled');
+              }
+            }
+          };
+        }
+      }
       // Render KaTeX formulas in quiz content
       if (typeof renderMathInElement !== 'undefined') {
         try {
@@ -327,8 +366,8 @@ var QuizEngine = {
 
     return '' +
       '<div style="margin-top:16px;">' +
-        '<button class="btn btn-primary" onclick="QuizEngine.submitAnswer()"' +
-          ' ' + (selected === undefined || (Array.isArray(selected) && selected.length === 0) ? 'disabled style="opacity:0.4;cursor:default;"' : '') +
+        '<button id="submit-btn" class="btn btn-primary" onclick="QuizEngine.submitAnswer()"' +
+          (selected === undefined || (Array.isArray(selected) && selected.length === 0) ? ' disabled="disabled"' : '') +
           ' style="width:100%;padding:12px;font-size:1rem;">' +
           '提交 ✓' +
         '</button>' +

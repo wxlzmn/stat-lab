@@ -292,11 +292,11 @@ function renderContentBlock(block, subjectId) {
       if (!glosVar || typeof window[glosVar] === 'undefined' || !block.chapter || !block.terms) return '';
       var terms = block.terms.map(function(tid) { var chapTerms = window[glosVar][block.chapter] || []; var found = chapTerms.filter(function(t) { return t.id === tid; }); return found.length > 0 ? found[0] : null; }).filter(function(t) { return t !== null; });
       return '<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:12px;margin:12px 0;">' + terms.map(function(t) {
-        return '<div style="border:1px solid var(--border);border-radius:var(--radius-sm);padding:14px;background:var(--bg-card);">';
-      }).join('') + terms.map(function(t) {
-        return '<div style="font-weight:600;color:var(--text-primary);">' + t.term + (t.english ? ' <span style="font-size:0.82rem;color:var(--text-muted);font-weight:400;">' + t.english + '</span>' : '') + '</div>' +
+        return '<div style="border:1px solid var(--border);border-radius:var(--radius-sm);padding:14px;background:var(--bg-card);">' +
+          '<div style="font-weight:600;color:var(--text-primary);">' + t.term + (t.english ? ' <span style="font-size:0.82rem;color:var(--text-muted);font-weight:400;">' + t.english + '</span>' : '') + '</div>' +
           '<div style="font-size:0.95rem;color:var(--text-body);line-height:1.55;margin-top:3px;">' + t.definition + '</div>' +
-          (t.formula ? '<div style="margin-top:5px;font-size:0.88rem;color:var(--accent);">$$' + t.formula + '$$</div>' : '');
+          (t.formula ? '<div style="margin-top:5px;font-size:0.88rem;color:var(--accent);">$$' + t.formula + '$$</div>' : '') +
+        '</div>';
       }).join('') + '</div>';
     }
     case 'visualization': return '<div class="viz-container" id="viz-' + (block.algo || 'default') + '" data-algo="' + (block.algo || '') + '"><canvas id="viz-canvas-' + (block.algo || 'default') + '" width="600" height="400"></canvas>' + (block.caption ? '<div style="font-size:0.85rem;color:var(--text-muted);margin-top:6px;">' + block.caption + '</div>' : '') + '</div>';

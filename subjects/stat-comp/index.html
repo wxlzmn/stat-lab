@@ -12,11 +12,12 @@
 </head>
 <body>
 <main>
-  <div style="text-align:center;padding:32px 20px 8px;">
-    <h1 style="color:var(--text-primary);">统计计算</h1>
-    <p style="color:var(--text-muted);font-size:0.9rem;">5 章节 · 模拟仿真、优化方法、机器学习</p>
+  <div class="subject-hero">
+    <span class="hero-icon">&#128187;</span>
+    <h1>统计计算</h1>
+    <p>5 章节 · 模拟仿真、优化方法、机器学习、数据可视化</p>
   </div>
-  <div id="chapter-grid" class="home-grid"></div>
+  <div id="chapter-grid" class="chapter-grid"></div>
 </main>
 <script src="../../shared/js/storage.js"></script>
 <script src="../../shared/js/router.js"></script>
@@ -26,22 +27,26 @@
   var cardsHtml = '';
   for (var c = 0; c < subject.chapters.length; c++) {
     var ch = subject.chapters[c];
+    var labLink = (ch.id === 's5-optimize' || ch.id === 's6-supervised' || ch.id === 's7-tree')
+      ? '<a href="lab/' + ch.id + '.html" class="btn">实验</a>' : '';
     cardsHtml += '' +
-      '<div class="module-card" style="border-top:2px solid ' + subject.color + ';">' +
-        '<span class="card-icon">' + ch.icon + '</span>' +
+      '<div class="chapter-card" style="animation-delay:' + (c * 60) + 'ms;">' +
+        '<span class="ch-icon">' + ch.icon + '</span>' +
         '<h3>' + ch.title + '</h3>' +
-        '<p>' + ch.title + '</p>' +
-        '<div class="card-links">' +
+        '<div class="ch-desc">第 ' + (c + 1) + ' 章</div>' +
+        '<div class="ch-links">' +
           '<a href="knowledge/' + ch.id + '.html" class="btn">知识点</a>' +
           '<a href="quiz/' + ch.id + '.html" class="btn btn-primary">测验</a>' +
-          (ch.id === 's5-optimize' || ch.id === 's6-supervised' || ch.id === 's7-tree' ? '<a href="lab/' + ch.id + '.html" class="btn">实验</a>' : '') +
+          labLink +
         '</div>' +
       '</div>';
   }
   cardsHtml += '' +
-    '<div class="module-card" style="border-top:2px solid ' + subject.color + ';">' +
-      '<span class="card-icon">🔬</span><h3>实验中心</h3><p>交互式算法可视化实验</p>' +
-      '<div class="card-links"><a href="lab/index.html" class="btn btn-primary">打开</a></div>' +
+    '<div class="extra-card" style="animation-delay:' + ((c + 1) * 60) + 'ms;">' +
+      '<span class="card-icon">&#128301;</span>' +
+      '<h3>实验中心</h3>' +
+      '<p>交互式算法可视化实验</p>' +
+      '<div class="ch-links"><a href="lab/index.html" class="btn btn-primary">打开</a></div>' +
     '</div>';
   document.getElementById('chapter-grid').innerHTML = cardsHtml;
   injectNavbar('subject-home', 'stat-comp');

@@ -12,11 +12,11 @@
 </head>
 <body>
 <main>
-  <div style="text-align:center;padding:32px 20px 8px;">
-    <h1 style="color:var(--text-primary);">代码实验室</h1>
-    <p style="color:var(--text-muted);">交互式算法实验 —— 拖动滑块，实时观察算法行为</p>
+  <div class="lab-page-hero">
+    <h1>代码实验室</h1>
+    <p>交互式算法实验 —— 拖动滑块，实时观察算法行为</p>
   </div>
-  <div id="lab-grid" class="home-grid"></div>
+  <div id="lab-grid" class="chapter-grid"></div>
 </main>
 <script src="../../../shared/js/storage.js"></script>
 <script src="../../../shared/js/router.js"></script>
@@ -33,11 +33,11 @@
   for (var i = 0; i < labs.length; i++) {
     var lab = labs[i];
     cardsHtml += '' +
-      '<div class="module-card" style="border-top:2px solid ' + subject.color + ';">' +
-        '<span class="card-icon">' + lab.icon + '</span>' +
+      '<div class="chapter-card" style="animation-delay:' + (i * 60) + 'ms;">' +
+        '<span class="ch-icon">' + lab.icon + '</span>' +
         '<h3>' + lab.title + '</h3>' +
-        '<p>' + lab.desc + '</p>' +
-        '<div class="card-links">' +
+        '<div class="ch-desc">' + lab.desc + '</div>' +
+        '<div class="ch-links">' +
           '<a href="' + lab.id + '.html" class="btn btn-primary">打开实验</a>' +
           '<a href="../knowledge/' + lab.id + '.html" class="btn">知识点</a>' +
         '</div>' +

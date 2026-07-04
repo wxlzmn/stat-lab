@@ -11,22 +11,25 @@
   <link rel="stylesheet" href="../shared/css/pages.css">
   <link rel="stylesheet" href="../shared/css/responsive.css">
   <style>
-    .search-hero { text-align:center; padding:40px 20px 30px; }
-    .search-hero input { width:100%; max-width:640px; padding:12px 18px; border:1px solid var(--border-solid); border-radius:var(--radius); font-size:1rem; background:var(--bg-card); color:var(--text-primary); outline:none; box-shadow:var(--shadow-sm); transition:border-color var(--transition-fast), box-shadow var(--transition-fast); }
-    .search-hero input:focus { border-color:var(--accent); box-shadow:0 0 0 3px rgba(59,130,246,0.1); }
-    .result-item { display:block; background:var(--bg-card); border:1px solid var(--border); border-radius:var(--radius); padding:16px 20px; margin-bottom:10px; text-decoration:none; color:inherit; transition:border-color var(--transition-fast), box-shadow var(--transition-fast), transform var(--transition-fast); box-shadow:var(--shadow-sm); }
-    .result-item:hover { background:var(--bg-card); border-color:var(--border-solid); box-shadow:var(--shadow); transform:translateX(3px); }
+    .search-hero { text-align:center; margin-bottom:28px; }
+    .search-hero input { width:100%; padding:15px 22px; border:1px solid var(--border-solid); border-radius:var(--radius); font-size:1rem; background:var(--bg-card); color:var(--text-primary); outline:none; transition:border-color var(--transition-fast), box-shadow var(--transition-fast); box-shadow:var(--shadow-sm); }
+    .search-hero input:focus { border-color:var(--accent); box-shadow:0 0 0 4px rgba(59,130,246,0.1); }
+    .search-index-info { margin-top:10px;font-size:0.78rem;color:var(--text-muted);text-align:center; }
+    .result-item { display:block; background:var(--bg-card); border:1px solid var(--border); border-radius:var(--radius); padding:18px 22px; margin-bottom:10px; text-decoration:none; color:inherit; transition:border-color var(--transition-fast), box-shadow var(--transition-fast), transform var(--transition-fast); box-shadow:var(--shadow-sm); }
+    .result-item:hover { background:var(--bg-card); border-color:var(--border-solid); box-shadow:var(--shadow); transform:translateX(4px); }
     .result-meta { display:flex; gap:8px; align-items:center; font-size:0.75rem; color:var(--text-secondary); margin-bottom:4px; flex-wrap:wrap; }
     .no-results { text-align:center; padding:48px; color:var(--text-secondary); }
   </style>
 </head>
 <body>
 
-  <main style="max-width:800px;margin:0 auto;padding:24px;">
+  <main class="search-container">
     <div class="search-hero">
       <h2 style="font-family:var(--font-display);color:var(--text-primary);margin-bottom:16px;">全文搜索</h2>
-      <input type="text" id="search-input" placeholder="搜索知识点、题目、术语、案例..." autofocus oninput="doSearch()">
-      <div style="margin-top:10px;font-size:0.78rem;color:var(--text-muted);">多关键词搜索（空格分隔）· 已索引 <span id="index-count">0</span> 条内容</div>
+      <div class="search-input-wrap">
+        <input type="text" id="search-input" placeholder="搜索知识点、题目、术语、案例..." autofocus oninput="doSearch()">
+      </div>
+      <div class="search-index-info">多关键词搜索（空格分隔）· 已索引 <span id="index-count">0</span> 条内容</div>
     </div>
     <div id="results"></div>
   </main>

@@ -13,15 +13,15 @@
   <style>
     .dash-section { background:var(--bg-card); border:1px solid var(--border); border-radius:var(--radius); padding:24px; margin-bottom:20px; box-shadow:var(--shadow-sm); transition:border-color var(--transition-fast), box-shadow var(--transition-fast); }
     .dash-section:hover { border-color:var(--border-solid); box-shadow:var(--shadow); }
-    .error-mini { padding:10px 14px; border-left:3px solid var(--warning); background:var(--warning-soft); border-radius:0 var(--radius-sm) var(--radius-sm) 0; margin-bottom:8px; font-size:0.84rem; cursor:pointer; transition:background var(--transition-fast); }
+    .error-mini { padding:11px 16px; border-left:3px solid var(--warning); background:var(--warning-soft); border-radius:0 var(--radius-sm) var(--radius-sm) 0; margin-bottom:10px; font-size:0.84rem; cursor:pointer; transition:background var(--transition-fast); }
     .error-mini:hover { background:var(--warning-border); }
-    .heatmap .day { width:32px; height:32px; border-radius:4px; background:var(--border); position:relative; }
+    .heatmap .day { width:32px; height:32px; border-radius:5px; background:var(--border); position:relative; }
     .heatmap .day.studied { background:var(--accent); opacity:0.75; }
     .heatmap .day .day-label { position:absolute; bottom:-18px; left:50%; transform:translateX(-50%); font-size:0.6rem; color:var(--text-secondary); }
   </style>
 </head>
 <body>
-  <div id="dash-content" style="max-width:1000px;margin:0 auto;padding:24px;"></div>
+  <div id="dash-content" class="page-container wide"></div>
 
   <script src="../shared/js/storage.js"></script>
   <script src="../shared/js/router.js"></script>
