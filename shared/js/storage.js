@@ -2,7 +2,17 @@ var EcoStore = {
   _keys: { errors: 'statlab_errors', progress: 'statlab_progress', studyLog: 'statlab_studylog' },
 
   _getJSON: function(key) { try { var r = localStorage.getItem(key); return r ? JSON.parse(r) : null; } catch(e) { return null; } },
-  _setJSON: function(key, val) { try { localStorage.setItem(key, JSON.stringify(val)); } catch(e) {} },
+  _setJSON: function(key, val) {
+    try { localStorage.setItem(key, JSON.stringify(val)); }
+    catch(e) {
+      if (e.name === 'QuotaExceededError') {
+        console.warn('[EcoStore] localStorage 已满，尝试清理旧数据...');
+        this._cleanupStudyLog();
+        try { localStorage.setItem(key, JSON.stringify(val)); }
+        catch(e2) { console.error('[EcoStore] 清理后仍写入失败:', e2.message); }
+      }
+    }
+  },
 
   addError: function(subjectId, chapterId, question) {
     var all = this._getJSON(this._keys.errors) || {};
@@ -89,5 +99,57 @@ var EcoStore = {
       else result[ds] = 0;
     }
     return result;
+  },
+
+  // Clean up study log entries older than 90 days
+  _cleanupStudyLog: function() {
+    var log = this._getJSON(this._keys.studyLog) || {};
+    var cutoff = new Date(); cutoff.setDate(cutoff.getDate() - 90);
+    var cutoffStr = cutoff.toISOString().split('T')[0];
+    var cleaned = false;
+    for (var d in log) {
+      if (log.hasOwnProperty(d) && d < cutoffStr) {
+        delete log[d];
+        cleaned = true;
+      }
+    }
+    if (cleaned) this._setJSON(this._keys.studyLog, log);
+  },
+
+  // Check localStorage usage estimate
+  _getStorageBytes: function() {
+    var bytes = 0;
+    try {
+      for (var key in localStorage) {
+        if (localStorage.hasOwnProperty(key)) {
+          bytes += localStorage[key].length + key.length * 2;
+        }
+      }
+    } catch(e) {}
+    return bytes;
+  },
+
+  // Export all learning data as JSON
+  exportData: function() {
+    return JSON.stringify({
+      progress: this._getJSON(this._keys.progress) || {},
+      errors: this._getJSON(this._keys.errors) || {},
+      studyLog: this._getJSON(this._keys.studyLog) || {},
+      exportedAt: new Date().toISOString()
+    }, null, 2);
+  },
+
+  // Download data as file
+  downloadExport: function() {
+    var json = this.exportData();
+    var blob = new Blob([json], { type: 'application/json;charset=utf-8' });
+    var url = URL.createObjectURL(blob);
+    var a = document.createElement('a');
+    a.href = url;
+    a.download = 'statlab-data-' + new Date().toISOString().split('T')[0] + '.json';
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
   }
 };

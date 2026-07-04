@@ -477,11 +477,14 @@ var AnnotationSystem = {
    */
   _listenMouseUp: function() {
     var self = this;
-    document.addEventListener('mouseup', function(e) {
+    var handler = function(e) {
       setTimeout(function() {
         self._onMouseUp(e);
       }, 10); // 延迟确保 selection 已更新
-    });
+    };
+    document.addEventListener('mouseup', handler);
+    // Store for cleanup
+    if (!this._mouseUpHandler) this._mouseUpHandler = handler;
   },
 
   _onMouseUp: function(e) {

@@ -1,21 +1,35 @@
-# Python
-__pycache__/
-*.py[cod]
-*.pyo
+# Dependencies
+node_modules/
+package-lock.json
 
-# Archives
-*.zip
-*.rar
-*.7z
-
-# OS files
-.DS_Store
-Thumbs.db
-desktop.ini
+# Build / dist
+dist/
+build/
 
 # IDE
 .vscode/
 .idea/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Screenshots / test results
+screenshots/
+test-results/
+
+# Dev tooling
+.superpowers/
+docs/superpowers/
 
 # Logs
 *.log
+npm-debug.log*
+
+# Local env
+.env
+.env.local

@@ -133,13 +133,21 @@
 .subject-card::before {
   content: '';
   position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  height: 3px;
-  background: linear-gradient(90deg, var(--subject-color), var(--subject-color-deep));
-  opacity: 0.5;
-  transition: opacity var(--transition-fast), height var(--transition-fast);
+  top: -40px;
+  right: -40px;
+  width: 120px;
+  height: 120px;
+  border-radius: 50%;
+  opacity: 0.08;
+  pointer-events: none;
+}
+
+.subject-card:nth-child(1)::before {
+  background: var(--subject-color);
+}
+
+.subject-card:nth-child(2)::before {
+  background: #3b82f6;
 }
 
 .subject-card:hover {
@@ -149,8 +157,7 @@
 }
 
 .subject-card:hover::before {
-  opacity: 1;
-  height: 4px;
+  opacity: 0.15;
 }
 
 .subject-card .card-icon {
@@ -1298,27 +1305,6 @@ mark.ann-has-note:hover::after { opacity: 1; }
   opacity: 0.3;
   filter: blur(3px);
   pointer-events: none;
-}
-
-/* Decorative corner gradient on subject cards */
-.subject-card::before {
-  content: '';
-  position: absolute;
-  top: -40px;
-  right: -40px;
-  width: 120px;
-  height: 120px;
-  border-radius: 50%;
-  opacity: 0.08;
-  pointer-events: none;
-}
-
-.subject-card:nth-child(1)::before {
-  background: #f59e0b;
-}
-
-.subject-card:nth-child(2)::before {
-  background: #3b82f6;
 }
 
 /* Particle canvas — between SVG decoration and hero text */

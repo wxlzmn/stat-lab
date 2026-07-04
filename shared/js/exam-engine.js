@@ -172,7 +172,7 @@ var ExamEngine = {
         '<div style="font-size:0.8rem;color:#78716c;margin-top:6px;">💡 ' + q.explanation + '</div>' +
         '</div>';
       if (!isCorrect && userAns !== undefined && typeof EcoStore !== 'undefined') {
-        EcoStore.addError('econstats', (q.knowledgePoint || '未知'), {
+        EcoStore.addError(self.config.subjectId || 'econstats', (q.knowledgePoint || '未知'), {
           id: q.id, type: q.type, question: q.question, options: q.options,
           answer: q.answer, explanation: q.explanation, knowledgePoint: q.knowledgePoint, userAnswer: userAns
         });

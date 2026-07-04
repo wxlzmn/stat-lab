@@ -109,14 +109,6 @@
     margin-top: 8px;
   }
 
-  .knowledge-layout {
-    flex-direction: column;
-  }
-
-  .knowledge-right-panel {
-    display: none;
-  }
-
   .sidebar {
     display: none;
   }
@@ -127,7 +119,6 @@
   }
 
   .home-grid {
-    grid-template-columns: 1fr;
     padding: 16px;
     gap: 14px;
   }
@@ -167,10 +158,6 @@
 
   .search-container {
     padding: 20px 12px;
-  }
-
-  .lab-layout {
-    flex-direction: column;
   }
 
   .lab-editor,

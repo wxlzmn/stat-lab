@@ -4,6 +4,7 @@ var FloatingParticles = {
   ctx: null,
   particles: [],
   animationId: null,
+  resizeHandler: null,
   isMobile: false,
 
   init: function(container) {
@@ -39,14 +40,15 @@ var FloatingParticles = {
 
       self.animate();
 
-      window.addEventListener('resize', function() {
+      self.resizeHandler = function() {
         var cw = container.offsetWidth;
         var ch = container.offsetHeight;
         if (cw > 0 && ch > 0) {
           self.canvas.width = cw;
           self.canvas.height = ch;
         }
-      });
+      };
+      window.addEventListener('resize', self.resizeHandler);
     }, 200);
   },
 
@@ -81,5 +83,8 @@ var FloatingParticles = {
 
   destroy: function() {
     if (this.animationId) cancelAnimationFrame(this.animationId);
+    if (this.resizeHandler) {
+      window.removeEventListener('resize', this.resizeHandler);
+    }
   }
 };

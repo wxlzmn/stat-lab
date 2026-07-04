@@ -77,6 +77,8 @@ function injectNavbar(pageType, subjectId, chapterId, chapterTitle) {
 
   var nav = document.createElement('nav');
   nav.className = 'navbar';
+  nav.setAttribute('role', 'navigation');
+  nav.setAttribute('aria-label', '主导航');
 
   var brandHtml = '<a href="' + depth + 'index.html" class="brand">Stat-Lab</a>';
 
@@ -127,7 +129,7 @@ function injectNavbar(pageType, subjectId, chapterId, chapterTitle) {
   updateErrorBadge();
 
   // Scroll shadow for navbar
-  window.addEventListener('scroll', function() {
+  var scrollHandler = function() {
     if (nav) {
       if (window.scrollY > 4) {
         nav.classList.add('scrolled');
@@ -135,7 +137,10 @@ function injectNavbar(pageType, subjectId, chapterId, chapterTitle) {
         nav.classList.remove('scrolled');
       }
     }
-  }, { passive: true });
+  };
+  window.addEventListener('scroll', scrollHandler, { passive: true });
+  // Expose for cleanup
+  nav._scrollHandler = scrollHandler;
 }
 
 function switchSubject(subjectId) {
@@ -165,6 +170,7 @@ function renderBreadcrumb(subject, chapterId, chapterTitle, pageType) {
   var depth = '../../../';
   var bc = document.createElement('div');
   bc.className = 'breadcrumb';
+  bc.setAttribute('aria-label', '面包屑导航');
   bc.innerHTML = '' +
     '<a href="' + depth + 'index.html">首页</a>' +
     '<span class="sep">/</span>' +
@@ -204,6 +210,13 @@ function toggleTheme() {
     document.documentElement.removeAttribute('data-theme');
     localStorage.removeItem('statlab_theme');
   } catch(e) { console.warn('Theme init failed:', e); }
+
+  // Cross-tab sync: listen for storage events to update error badge and progress
+  window.addEventListener('storage', function(e) {
+    if (e.key === 'statlab_errors' && typeof EcoStore !== 'undefined') {
+      updateErrorBadge();
+    }
+  });
 })();
 
 function renderKnowledgePage(subjectId, chapterId) {

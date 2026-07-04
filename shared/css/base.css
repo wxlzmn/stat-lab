@@ -166,7 +166,7 @@ pre code {
 }
 
 @keyframes popIn {
-  0% { transform: scale(0.96); opacity: 0.5; }
+  0% { transform: scale(0.96); opacity: 0.6; }
   60% { transform: scale(1.02); }
   100% { transform: scale(1); opacity: 1; }
 }
@@ -250,6 +250,6 @@ dd {
 @media (max-width: 768px) {
   body::after {
     opacity: 0.03;
-    background-size: 1.5x cover;
+    background-size: cover;
   }
 }

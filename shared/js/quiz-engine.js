@@ -14,12 +14,14 @@ var QuizEngine = {
       this.state.chapterId = chapterId;
       // Randomly sample ~70% of questions each session to reduce overlap
       var pool = this.shuffleArray(questions.slice());
-      var sampleSize = Math.max(Math.ceil(pool.length * 0.7), Math.min(pool.length, 20));
+      var sampleSize = Math.min(pool.length, Math.max(Math.ceil(pool.length * 0.7), 20));
       this.state.questions = pool.slice(0, sampleSize);
       this.state.currentIndex = 0;
       this.state.answers = {};
       this.state.submitted = {};
       this.render();
+      // Keyboard shortcuts for quiz navigation
+      this._setupKeyboard();
       console.log('QuizEngine: initialized ' + subjectId + ':' + chapterId + ' with ' + questions.length + ' questions (sampled ' + this.state.questions.length + ')');
     } catch(e) {
       console.error('QuizEngine.init failed:', e.message);
@@ -34,6 +36,37 @@ var QuizEngine = {
       var tmp = arr[i]; arr[i] = arr[j]; arr[j] = tmp;
     }
     return arr;
+  },
+
+  _setupKeyboard: function() {
+    var self = this;
+    this._keyHandler = function(e) {
+      // Don't intercept when typing in inputs/textareas
+      if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') return;
+
+      if (e.key === 'ArrowRight' || e.key === 'ArrowDown') {
+        e.preventDefault();
+        self.nextQuestion();
+      } else if (e.key === 'ArrowLeft' || e.key === 'ArrowUp') {
+        e.preventDefault();
+        self.prevQuestion();
+      } else if (e.key === 'Enter' || e.key === ' ') {
+        // Submit if a submit button is focused
+        var btn = document.getElementById('submit-btn');
+        if (btn && document.activeElement === btn) {
+          e.preventDefault();
+          self.submitAnswer();
+        }
+      }
+    };
+    document.addEventListener('keydown', this._keyHandler);
+  },
+
+  _teardownKeyboard: function() {
+    if (this._keyHandler) {
+      document.removeEventListener('keydown', this._keyHandler);
+      this._keyHandler = null;
+    }
   },
 
   getCurrentQuestion: function() {
@@ -122,7 +155,7 @@ var QuizEngine = {
         var userStr = String(userAnswer).trim().toLowerCase();
         if (Array.isArray(question.answer)) {
           return question.answer.some(function(kw) {
-            return userStr.indexOf(kw.toLowerCase()) !== -1;
+            return kw.toLowerCase().indexOf(userStr) !== -1 || userStr.length >= 2 && userStr.indexOf(kw.toLowerCase()) !== -1;
           });
         }
         return userStr === String(question.answer).trim().toLowerCase();
@@ -141,13 +174,13 @@ var QuizEngine = {
             var userVal = String(userBlanks[i] || '').trim().toLowerCase();
             var expected = String(b).trim().toLowerCase();
             if (!userVal) return false;
-            return userVal.indexOf(expected) !== -1 || expected.indexOf(userVal) !== -1;
+            return userVal.length >= 1 && expected.indexOf(userVal) !== -1;
           });
         }
         // Handle object-based blanks (array of {id, answer})
         return fBlanks.every(function(b) {
           var userVal = String(userBlanks[b.id] || '').trim().toLowerCase();
-          return b.answer.some(function(a) { return userVal.indexOf(a.toLowerCase()) !== -1; });
+          return b.answer.some(function(a) { return a.toLowerCase().indexOf(userVal) !== -1 || userVal.length >= 2 && userVal.indexOf(a.toLowerCase()) !== -1; });
         });
       case 'code-analysis':
         var analysis = String(userAnswer).toLowerCase();
@@ -186,13 +219,15 @@ var QuizEngine = {
     var total = this.state.questions.length;
     var self = this;
     var submittedCount = 0;
+    // Build ID->question map for O(1) lookup
+    var qMap = {};
+    for (var i = 0; i < this.state.questions.length; i++) {
+      qMap[this.state.questions[i].id] = this.state.questions[i];
+    }
     for (var qid in this.state.submitted) {
       if (this.state.submitted.hasOwnProperty(qid) && this.state.submitted[qid]) {
         submittedCount++;
-        var q = null;
-        for (var i = 0; i < this.state.questions.length; i++) {
-          if (this.state.questions[i].id === qid) { q = this.state.questions[i]; break; }
-        }
+        var q = qMap[qid];
         if (q && this.checkAnswer(q, this.state.answers[qid])) correct++;
       }
     }
@@ -323,7 +358,7 @@ var QuizEngine = {
         } else if (isSelected) {
           cls += ' selected';
         }
-        return '<div class="' + cls + '" onclick="QuizEngine.toggleMulti(\'' + q.id + '\', ' + i + ')" style="display:flex;align-items:center;gap:8px;">' +
+        return '<div class="' + cls + '" onclick="QuizEngine.toggleMulti(\'' + q.id + '\', ' + i + ')" onkeydown="if(event.key===\'Enter\'||event.key===\' \'){event.preventDefault();QuizEngine.toggleMulti(\'' + q.id + '\',' + i + ')}" role="checkbox" aria-checked="' + isSelected + '" tabindex="0" style="display:flex;align-items:center;gap:8px;">' +
           '<span style="width:18px;height:18px;border:2px solid ' + (isSelected ? 'var(--accent)' : 'var(--border-solid)') + ';border-radius:3px;display:flex;align-items:center;justify-content:center;font-size:10px;flex-shrink:0;">' + (isSelected ? '✓' : '') + '</span>' +
           opt +
         '</div>';
@@ -339,7 +374,7 @@ var QuizEngine = {
       } else if (i === selected) {
         cls += ' selected';
       }
-      return '<div class="' + cls + '" onclick="QuizEngine.selectAnswer(\'' + q.id + '\', ' + i + ')" style="display:flex;align-items:center;gap:8px;">' +
+      return '<div class="' + cls + '" onclick="QuizEngine.selectAnswer(\'' + q.id + '\', ' + i + ')" onkeydown="if(event.key===\'Enter\'||event.key===\' \'){event.preventDefault();QuizEngine.selectAnswer(\'' + q.id + '\',' + i + ')}" role="radio" aria-checked="' + (i === selected) + '" tabindex="0" style="display:flex;align-items:center;gap:8px;">' +
         '<span style="width:18px;height:18px;border:2px solid ' + (i === selected && !submitted ? 'var(--accent)' : 'var(--border-solid)') + ';border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:10px;flex-shrink:0;">' + (i === selected && !submitted ? '●' : '') + '</span>' +
         opt +
       '</div>';
@@ -377,7 +412,7 @@ var QuizEngine = {
   renderResult: function(container) {
     if (!container) container = document.getElementById('quiz-container');
     var score = this.getScore();
-    var pct = score.submitted > 0 ? Math.round(score.correct / score.submitted * 100) : 0;
+    var pct = score.total > 0 ? Math.round(score.correct / score.total * 100) : 0;
     var emoji = pct >= 90 ? '🏆' : pct >= 75 ? '🎉' : pct >= 60 ? '👍' : '📚';
 
     container.innerHTML = '' +

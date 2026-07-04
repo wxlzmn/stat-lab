@@ -71,6 +71,29 @@
   /* Annotation colors */
   --ann-color: #fde047;
 
+  /* Code block colors */
+  --code-border: #334155;
+  --code-header-bg: #0f172a;
+  --code-header-text: #94a3b8;
+  --code-lang-text: #64748b;
+  --code-output-green: #86efac;
+  --code-output-error: #fca5a5;
+  --code-explain-bg: #1a2538;
+  --code-explain-label: #f59e0b;
+  --code-explain-text: #94a3b8;
+  --code-output-explain-bg: #131d2e;
+  --code-output-explain-label: #818cf8;
+  --code-editor-focus: #3b82f6;
+  --code-run-green: #22c55e;
+  --code-run-green-deep: #16a34a;
+  --code-loading-gray: #94a3b8;
+
+  /* Figure background */
+  --bg-figure: #ffffff;
+
+  /* Error highlight */
+  --error-border: #ef4444;
+
   /* Legacy compatibility aliases */
   --border-dashed: #d1d5db;
   --border-style: solid;
