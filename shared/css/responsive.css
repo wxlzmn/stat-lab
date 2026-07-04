@@ -4,6 +4,10 @@
     flex-direction: column;
   }
 
+  .knowledge-right-panel {
+    display: none;
+  }
+
   .sidebar {
     position: relative;
     top: 0;
@@ -107,6 +111,10 @@
 
   .knowledge-layout {
     flex-direction: column;
+  }
+
+  .knowledge-right-panel {
+    display: none;
   }
 
   .sidebar {

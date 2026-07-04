@@ -72,6 +72,127 @@
   z-index: 1;
 }
 
+/* ===== Knowledge Page Right Panel ===== */
+.knowledge-right-panel {
+  width: 280px;
+  min-width: 280px;
+  position: sticky;
+  top: var(--navbar-height);
+  height: calc(100vh - var(--navbar-height));
+  overflow-y: auto;
+  padding: 24px 16px;
+  scrollbar-width: thin;
+  scrollbar-color: var(--border) transparent;
+}
+
+.knowledge-right-panel::-webkit-scrollbar {
+  width: 4px;
+}
+
+.knowledge-right-panel::-webkit-scrollbar-thumb {
+  background: var(--border);
+  border-radius: 2px;
+}
+
+.panel-section {
+  margin-bottom: 24px;
+}
+
+.panel-section-title {
+  font-family: var(--font-display);
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  margin-bottom: 10px;
+  padding-bottom: 6px;
+  border-bottom: 2px solid var(--accent);
+  letter-spacing: -0.01em;
+}
+
+/* Progress ring */
+.progress-ring-container {
+  text-align: center;
+  padding: 12px 0;
+}
+
+.progress-ring-container svg {
+  width: 100px;
+  height: 100px;
+  transform: rotate(-90deg);
+}
+
+.progress-ring-bg {
+  fill: none;
+  stroke: var(--border);
+  stroke-width: 6;
+}
+
+.progress-ring-fill {
+  fill: none;
+  stroke: var(--accent);
+  stroke-width: 6;
+  stroke-linecap: round;
+  transition: stroke-dashoffset 0.6s ease;
+}
+
+.progress-text {
+  font-size: 0.82rem;
+  color: var(--text-muted);
+  margin-top: 8px;
+}
+
+/* Glossary quick ref */
+.glossary-item {
+  padding: 8px 10px;
+  border-radius: var(--radius-sm);
+  margin-bottom: 4px;
+  font-size: 0.82rem;
+  cursor: pointer;
+  transition: background var(--transition-fast);
+}
+
+.glossary-item:hover {
+  background: var(--accent-soft);
+}
+
+.glossary-term {
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+.glossary-def {
+  color: var(--text-muted);
+  font-size: 0.78rem;
+  margin-top: 2px;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+/* Related knowledge */
+.related-link {
+  display: block;
+  padding: 8px 10px;
+  border-radius: var(--radius-sm);
+  margin-bottom: 4px;
+  font-size: 0.82rem;
+  color: var(--text-secondary);
+  text-decoration: none;
+  transition: background var(--transition-fast), color var(--transition-fast), transform var(--transition-fast);
+}
+
+.related-link:hover {
+  background: var(--accent-soft);
+  color: var(--accent);
+  transform: translateX(2px);
+}
+
+.related-link .link-icon {
+  margin-right: 6px;
+  font-size: 0.75rem;
+}
+
 /* ===== Quiz Container ===== */
 .quiz-container {
   max-width: 760px;

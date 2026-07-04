@@ -247,6 +247,7 @@ function renderKnowledgePage(subjectId, chapterId) {
     }
 
     initTocHighlight();
+    renderKnowledgeRightPanel(subjectId, chapterId);
     if (typeof renderMathInElement !== 'undefined') {
       renderMathInElement(document.body, { delimiters: [{left: '$$', right: '$$', display: true}, {left: '$', right: '$', display: false}], ignoredTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code'] });
     }
@@ -318,6 +319,103 @@ function initTocHighlight() {
     });
   }, { rootMargin: '-15% 0px -65% 0px' });
   document.querySelectorAll('.content-block').forEach(function(b) { observer.observe(b); });
+}
+
+function renderKnowledgeRightPanel(subjectId, chapterId) {
+  var container = document.querySelector('.knowledge-layout');
+  if (!container) return;
+
+  var panel = document.createElement('aside');
+  panel.className = 'knowledge-right-panel';
+  panel.innerHTML = '<div class="panel-section" id="panel-progress"></div>' +
+    '<div class="panel-section" id="panel-glossary"></div>' +
+    '<div class="panel-section" id="panel-related"></div>';
+  container.appendChild(panel);
+
+  // Progress ring
+  renderProgressPanel(subjectId, chapterId);
+  // Glossary quick ref
+  renderGlossaryPanel(subjectId, chapterId);
+  // Related knowledge links
+  renderRelatedPanel(subjectId, chapterId);
+}
+
+function renderProgressPanel(subjectId, chapterId) {
+  var el = document.getElementById('panel-progress');
+  if (!el || typeof EcoStore === 'undefined') return;
+
+  var progress = EcoStore.getProgress(subjectId, chapterId);
+  var completed = progress ? progress.completed : 0;
+  var total = progress ? progress.total : 0;
+  var pct = total > 0 ? Math.round(completed / total * 100) : 0;
+
+  var circumference = 2 * Math.PI * 40;
+  var offset = circumference - (pct / 100) * circumference;
+
+  el.innerHTML = '' +
+    '<div class="panel-section-title">学习进度</div>' +
+    '<div class="progress-ring-container">' +
+      '<svg viewBox="0 0 100 100">' +
+        '<circle class="progress-ring-bg" cx="50" cy="50" r="40" />' +
+        '<circle class="progress-ring-fill" cx="50" cy="50" r="40" ' +
+          'stroke-dasharray="' + circumference + '" ' +
+          'stroke-dashoffset="' + offset + '" />' +
+      '</svg>' +
+      '<div style="position:relative;display:inline-block;margin-top:-30px;">' +
+        '<div style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);font-family:var(--font-display);font-size:1.2rem;font-weight:700;color:var(--accent);">' + pct + '%</div>' +
+      '</div>' +
+    '</div>' +
+    '<div class="progress-text">已掌握 ' + completed + '/' + total + ' 个知识点</div>';
+}
+
+function renderGlossaryPanel(subjectId, chapterId) {
+  var el = document.getElementById('panel-glossary');
+  if (!el) return;
+
+  var glosVar = subjectId === 'econstats' ? 'ECOSTATS_GLOSSARY' : null;
+  if (!glosVar || typeof window[glosVar] === 'undefined') return;
+
+  var terms = (window[glosVar][chapterId] || []).slice(0, 5);
+  if (terms.length === 0) return;
+
+  el.innerHTML = '<div class="panel-section-title">术语速查</div>' +
+    terms.map(function(t) {
+      return '<div class="glossary-item" title="' + escapeHtml(t.definition) + '">' +
+        '<div class="glossary-term">' + escapeHtml(t.term) + (t.english ? ' <span style="font-size:0.75rem;color:var(--text-muted);">' + escapeHtml(t.english) + '</span>' : '') + '</div>' +
+        '<div class="glossary-def">' + escapeHtml(t.definition) + '</div>' +
+      '</div>';
+    }).join('') +
+    (terms.length > 3 ? '<div style="text-align:center;margin-top:8px;"><a href="glossary/' + chapterId + '.html" class="related-link"><span class="link-icon">›</span>查看全部术语</a></div>' : '');
+}
+
+function renderRelatedPanel(subjectId, chapterId) {
+  var el = document.getElementById('panel-related');
+  if (!el) return;
+
+  var subject = null;
+  for (var i = 0; i < SUBJECT_REGISTRY.length; i++) {
+    if (SUBJECT_REGISTRY[i].id === subjectId) { subject = SUBJECT_REGISTRY[i]; break; }
+  }
+  if (!subject) return;
+
+  var chapterIdx = -1;
+  for (var c = 0; c < subject.chapters.length; c++) {
+    if (subject.chapters[c].id === chapterId) { chapterIdx = c; break; }
+  }
+  if (chapterIdx < 0) return;
+
+  var prevCh = chapterIdx > 0 ? subject.chapters[chapterIdx - 1] : null;
+  var nextCh = chapterIdx < subject.chapters.length - 1 ? subject.chapters[chapterIdx + 1] : null;
+
+  var html = '<div class="panel-section-title">相关章节</div>';
+  if (prevCh) {
+    html += '<a href="../knowledge/' + prevCh.id + '.html" class="related-link"><span class="link-icon">←</span>' + escapeHtml(prevCh.title) + '</a>';
+  }
+  if (nextCh) {
+    html += '<a href="../knowledge/' + nextCh.id + '.html" class="related-link"><span class="link-icon">→</span>' + escapeHtml(nextCh.title) + '</a>';
+  }
+  html += '<a href="../index.html" class="related-link"><span class="link-icon">📚</span>本章目录</a>';
+  el.innerHTML = html;
 }
 
 function showError(msg) {
