@@ -383,11 +383,11 @@ function renderGlossaryPanel(subjectId, chapterId) {
       return '<div class="glossary-accordion">' +
         '<div class="glossary-accordion-toggle" data-glossary-idx="' + i + '">' +
           '<span class="glossary-term">' + escapeHtml(t.term) + (t.english ? ' <span style="font-size:0.75rem;color:var(--text-muted);font-weight:400;">' + escapeHtml(t.english) + '</span>' : '') + '</span>' +
-          '<span class="glossary-arrow" style="float:right;font-size:0.7rem;color:var(--text-muted);transition:transform 0.2s;">▶</span>' +
+          '<span class="glossary-arrow" style="margin-left:auto;font-size:0.7rem;color:var(--text-muted);transition:transform 0.2s;">▶</span>' +
         '</div>' +
         '<div class="glossary-accordion-body" data-idx="' + i + '" style="display:none;padding:8px 10px 10px;font-size:0.82rem;color:var(--text-body);line-height:1.6;">' +
           escapeHtml(t.definition) +
-          (t.formula ? '<div style="margin-top:6px;font-size:0.85rem;color:var(--accent);white-space:pre-wrap;">' + escapeHtml(t.formula) + '</div>' : '') +
+          (t.formula ? '<div style="margin-top:6px;font-size:0.85rem;color:var(--accent);white-space:pre-wrap;">' + t.formula + '</div>' : '') +
         '</div>' +
       '</div>';
     }).join('');
