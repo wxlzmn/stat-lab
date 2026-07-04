@@ -245,3 +245,11 @@ dd {
   margin-left: 1.5rem;
   margin-bottom: 0.75rem;
 }
+
+/* Reduce SVG decoration density on mobile */
+@media (max-width: 768px) {
+  body::after {
+    opacity: 0.03;
+    background-size: 1.5x cover;
+  }
+}
